@@ -1,0 +1,907 @@
+// CUP specification for a simple expression evaluator (no actions)
+
+package net.eclipse.why.editeur.lexer;
+
+import java_cup.runtime.*;
+import net.eclipse.why.editeur.lexer.ast.*;
+
+parser code {:
+/* VERBATIM */
+
+:};
+
+/* Terminals (tokens returned by the scanner). */
+terminal		ABSURD, AND, ARRAY, AS, ASSERT, AXIOM, BEGIN, BOOL;
+terminal		DO, DONE, ELSE, END, EXCEPTION, EXISTS, EXTERNAL;
+terminal		FALSE, FOR, FORALL, FUN, FUNCTION, GOAL, IF, IN, INT;
+terminal		INVARIANT, LET, LOGIC, NOT, OF, OR, PARAMETER;
+terminal		PREDICATE, PROP, RAISE, RAISES, READS, REAL, REC, REF;
+terminal		RETURNS, THEN, TRUE, TRY, TYPE, UNIT, VARIANT, VOID;
+terminal		WHILE, WITH, WRITES;
+terminal		QUOTE, COMMA, LEFTPAR, RIGHTPAR, BANG, COLON, SEMICOLON;
+terminal		COLONEQUAL, ARROW, LRARROW, EQUAL, LT, LE, GT, GE;
+terminal		NOTEQ, PLUS, MINUS, TIMES, SLASH, PERCENT, AT, DOT;
+terminal		LEFTSQ, RIGHTSQ, LEFTB, RIGHTB, LEFTBLEFTB, RIGHTBRIGHTB;
+terminal		BAR, BARBAR, AMPAMP, BIGARROW;
+terminal		FPI;
+terminal String		IDENTIFIER;
+terminal String		STRING_LITERAL;
+terminal String	    	INTEGER_LITERAL;
+terminal String		FLOAT_LITERAL;
+terminal		prec_recfun, prec_fun, prec_simple, prec_letrec;
+terminal		prec_no_else, prec_named, prec_forall, prec_exists;
+terminal		prec_if, prec_relation, uminus, prec_app, prec_ident;
+
+/* Non Terminals. */
+non terminal WhyFile		file;
+non terminal List1Decl		list1_decl;
+non terminal Declaration	decl;
+non terminal TypeV		type_v;
+non terminal SType		simple_type_v;
+non terminal PType		primitive_type;
+non terminal TypeC		type_c;
+non terminal Result		result;
+non terminal Effects		effects;
+non terminal Opt		opt_reads, opt_writes, opt_raises, opt_assertion;
+non terminal Assert		assertion;
+non terminal			opt_post_condition;
+non terminal PostCond		post_condition;
+non terminal BrAssert		bracket_assertion;
+non terminal List1BrAssert	list1_bracket_assertion;
+non terminal List0BrAssert	list0_bracket_assertion;
+non terminal ListCondition	list1_exn_condition_sep_bar;
+non terminal Condition		exn_condition;
+non terminal LogicType		logic_type;
+non terminal			list0_primitive_type_sep_comma;
+non terminal List1PType		list1_primitive_type_sep_comma;
+non terminal			list0_logic_binder_sep_comma;
+non terminal ListLBinder	list1_logic_binder_sep_comma;
+non terminal LogicBinder	logic_binder;
+non terminal External		external_;
+non terminal LExpr		lexpr;
+non terminal Triggers		triggers;
+non terminal ListTrigger	list1_trigger_sep_bar;
+non terminal			trigger;
+non terminal List1LExpr		list1_lexpr_sep_comma;
+non terminal Relation		relation, relation_id;
+non terminal TypeVar		type_var;
+non terminal List1TypeVar	list1_type_var_sep_comma;
+non terminal Expr		expr, simple_expr;
+non terminal ListSimpleExpr	list1_simple_expr;
+non terminal ListHandler	list1_handler_sep_bar;
+non terminal Handler		handler;
+non terminal OptCast		opt_cast;
+non terminal InvVar		invariant_variant;
+non terminal OptInv		opt_invariant;
+non terminal Recfun		recfun;
+non terminal OptVar		opt_variant;
+non terminal Variant		variant;
+non terminal			binders;
+non terminal ListBinder		list1_binder;
+non terminal Binder		binder;
+non terminal Ident		ident;
+non terminal QIdent		qualid_ident;
+non terminal			list0_ident_sep_comma;
+non terminal List1IdentSep	list1_ident_sep_comma;
+non terminal			ident_or_string;
+
+
+
+/* Precedences */
+precedence nonassoc	prec_recfun;
+precedence nonassoc	prec_fun;
+precedence left		LEFTB, LEFTBLEFTB;
+precedence left		prec_simple;
+precedence left		COLON ;
+precedence left		prec_letrec;
+precedence left		IN;
+precedence right	SEMICOLON;
+precedence left		prec_no_else;
+precedence left		ELSE;
+precedence right	prec_named;
+precedence left		COLONEQUAL;
+precedence right	prec_forall, prec_exists;
+precedence right	ARROW, LRARROW;
+precedence right	OR, BARBAR;
+precedence right	AND, AMPAMP;
+precedence right	NOT;
+precedence right	prec_if;
+precedence left		prec_relation;
+precedence left		EQUAL, NOTEQ, LT, LE, GT, GE;
+precedence left		PLUS, MINUS;
+precedence left		TIMES, SLASH, PERCENT;
+precedence right	uminus;
+precedence left		prec_app;
+precedence left		prec_ident;
+precedence left		LEFTSQ;
+
+
+/* The grammar */
+
+start with file;
+
+file ::=	list1_decl:ld
+//{ $1 }
+{: RESULT = new WhyFile(ld); :}
+     ;
+
+list1_decl ::=	decl:d
+//{ [$1] }
+{: RESULT = new List1Decl(d); :}
+	   |	decl:d list1_decl:ld
+//{ $1 :: $2 }
+{: ld.add(d); RESULT = ld; :}
+   	   ;
+
+decl ::=	LET:l ident:i EQUAL expr:e
+//{ Program ($2, $4) }
+{: RESULT = new DLetEq(new Loc(lleft, lright), i, e); :}
+     |		LET:l ident:i binders:b EQUAL list0_bracket_assertion:l0 expr:e
+//{ Program ($2, locate (Slam ($3, $5, force_function_post $6))) }
+{: RESULT = new DLetEq2(new Loc(lleft, lright), i, b, l0, e); :}
+     |		LET:l REC recfun:r
+//{ Program (rec_name $3, locate $3) }
+{: RESULT = new DLetRec(new Loc(lleft, lright), r); :}
+     |		EXCEPTION:except ident:i
+//{ Exception (loc (), $2, None) }
+{: RESULT = new DExcept(new Loc(exceptleft, exceptright), i); :}
+     |		EXCEPTION:except ident:i OF primitive_type:pt
+//{ Exception (loc (), $2, Some $4) }
+{: RESULT = new DExceptOf(new Loc(exceptleft, exceptright), i, pt); :}
+     |		external_:e PARAMETER list1_ident_sep_comma:l1 COLON type_v:t
+//{ Parameter (loc_i 3, $1, $3, $5) }
+{: RESULT = new DParam(new Loc(eleft, eright), e, l1, t); :}
+     |		external_:e LOGIC list1_ident_sep_comma:l1 COLON logic_type:l
+//{ Logic (loc_i 3, $1, $3, $5) }
+{: RESULT = new DLogic(new Loc(eleft, eright), e, l1, l); :}
+     |		AXIOM:a ident:i COLON lexpr:le
+//{ Axiom (loc (), $2, $4) }
+{: RESULT = new DAxiom(new Loc(aleft, aright), i, le); :}
+     |		PREDICATE:p ident:i LEFTPAR list0_logic_binder_sep_comma:l0 RIGHTPAR EQUAL lexpr:le
+//{ Predicate_def (loc (), $2, $4, $7) }
+{: RESULT = new DPred(new Loc(pleft, pright), i, l0, le); :}
+     |		FUNCTION:f ident:i LEFTPAR list0_logic_binder_sep_comma:l0 RIGHTPAR COLON primitive_type:pt EQUAL
+     lexpr:le
+//{ Function_def (loc (), $2, $4, $7, $9) }
+{: RESULT = new DFunc(new Loc(fleft, fright), i, l0,
+pt, le); :}
+     |		GOAL:g ident:i COLON lexpr:le
+//{ Goal (loc (), $2, $4) }
+{: RESULT = new DGoal(new Loc(gleft, gright), i, le); :}
+     |		external_:ext TYPE ident:id
+//{ TypeDecl (loc_i 3, $1, [], $3) }
+{: RESULT = new DType(new Loc(extleft, extright), ext, id); :}
+     |		external_:ext TYPE type_var:tv ident:i
+//{ TypeDecl (loc_i 4, $1, [$3], $4) }
+{: RESULT = new DType2(new Loc(extleft, extright), ext, tv, i); :}
+     |		external_:ext TYPE LEFTPAR list1_type_var_sep_comma:l1 RIGHTPAR ident:id
+//{ TypeDecl (loc_i 6, $1, $4, $6) }
+{: RESULT = new DType3(new Loc(extleft, extright), ext, l1, id); :}
+     ;
+
+type_v ::=	simple_type_v:st ARROW type_c:t
+//{ PVarrow ([Ident.anonymous, $1], $3) }
+{: RESULT = new TypeV(new Loc(stleft, stright), null, st, t); :}
+       |	ident:id COLON simple_type_v:st ARROW type_c:t
+//{ PVarrow ([($1, $3)], $5) }
+{: RESULT = new TypeV(new Loc(idleft, idright), id, st, t); :}
+       |	simple_type_v:st
+//{ $1 }
+{: RESULT = new TypeV(new Loc(stleft, stright), null, st, null); :}
+       ;
+
+simple_type_v ::=	primitive_type:pt ARRAY
+//{ PVref (PPTexternal ([$1], Ident.farray, loc_i 2)) }
+{: RESULT = new STypeArr(new Loc(ptleft, ptright), pt); :}
+              |		primitive_type:pt REF
+//{ PVref $1 }
+{: RESULT = new STypeRef(new Loc(ptleft, ptright), pt); :}
+              |		primitive_type:pt
+//{ PVpure $1 }
+{: RESULT = new STypePType(new Loc(ptleft, ptright), pt); :}
+              |		LEFTPAR:l type_v:t RIGHTPAR
+//{ $2 }
+{: RESULT = new STypePar(new Loc(lleft, lright), t); :}
+     ;
+
+primitive_type ::=	INT:i
+//{ PPTint }
+{: RESULT = new PTypeInt(); :}
+               |	BOOL:b
+//{ PPTbool }
+{: RESULT = new PTypeBool(); :}
+               |	REAL:r
+//{ PPTreal }
+{: RESULT = new PTypeReal(); :}
+               |	UNIT:u
+//{ PPTunit }
+{: RESULT = new PTypeUnit(); :}
+               |	type_var:t
+//{ PPTvarid ($1, loc ()) }
+{: RESULT = new PTypeVar(new Loc(tleft, tright), t); :}
+               |	ident:id
+//{ PPTexternal ([], $1, loc ()) }
+{: RESULT = new PTypeId(new Loc(idleft, idright), id); :}
+               |	primitive_type:pt ident:id
+//{ PPTexternal ([$1], $2, loc_i 2) }
+{: RESULT = new PTypePrim(new Loc(ptleft, ptright), pt, id); :}
+               |	LEFTPAR:l primitive_type:p COMMA list1_primitive_type_sep_comma:l1 RIGHTPAR ident:id
+//{ PPTexternal ($2 :: $4, $6, loc_i 6) }
+{: RESULT = new PTypePrims(new Loc(lleft, lright), p, l1, id); :}
+/*
+               |	LEFTPAR list1_primitive_type_sep_comma RIGHTPAR
+//{ match $2 with [p] -> p | _ -> raise Parse_error }
+*/
+     ;
+
+type_c ::=	LEFTB:l opt_assertion:opta RIGHTB result:res effects:eff LEFTB opt_post_condition:optp RIGHTB
+//{ let id,v = $4 in { pc_result_name = id; pc_result_type = v; pc_effect = $5; pc_pre = list_of_some $2; pc_post = $7 } }
+{: RESULT = new TypeC(new Loc(lleft, lright), opta, res, eff, optp); :}
+       |	type_v:t
+//{ ptype_c_of_v $1 }
+{: RESULT = new TypeC(new Loc(tleft, tright), t); :}
+       ;
+
+result ::=	RETURNS:r ident:id COLON type_v:t
+//{ $2, $4 }
+{: RESULT = new Result(new Loc(rleft, rright), id, t); :}
+       | 	type_v:t
+//{ Ident.result, $1 }
+{: RESULT = new Result(new Loc(tleft, tright), t); :}
+       ;
+
+effects ::=	opt_reads:ord opt_writes:owr opt_raises:ors
+//{ { pe_reads = $1; pe_writes = $2; pe_raises = $3 } }
+{: RESULT = new Effects(new Loc(ordleft, ordright), ord, owr, ors); :}
+        ;
+
+opt_reads ::=	/* epsilon */
+//{ [] }
+{: /* do nothing */ :}
+          |	READS:r list0_ident_sep_comma:l0
+//{ $2 }
+{: RESULT = new OptReads(new Loc(rleft, rright), l0); :}
+          ;
+
+opt_writes ::=	/* epsilon */
+//{ [] }
+{: /* do nothing */ :}
+           |	WRITES:w list0_ident_sep_comma:l0
+//{ $2 }
+{: RESULT = new OptWrites(new Loc(wleft, wright), l0); :}
+           ;
+
+opt_raises ::=	/* epsilon */
+//{ [] }
+{: /* do nothing */ :}
+           |	RAISES:r list0_ident_sep_comma:l0
+//{ $2 }
+{: RESULT = new OptRaises(new Loc(rleft, rright), l0); :}
+           ;
+
+opt_assertion ::=	/* epsilon */
+//{ None }
+{: /* do nothing */ :}
+              |		assertion:a
+//{ Some $1 }
+{: RESULT = new OptAssert(new Loc(aleft, aright), a); :}
+              ;
+
+assertion ::=	lexpr:l         
+//{ { pa_name = Anonymous; pa_value = $1; pa_loc = loc () } }
+{: RESULT = new Assert(new Loc(lleft, lright), l, null); :}
+          |	lexpr:l AS ident:id 
+//{ { pa_name = Name $3; pa_value = $1; pa_loc = loc () } }
+{: RESULT = new Assert(new Loc(lleft, lright), l, id); :}
+          ;
+
+opt_post_condition ::=	/* epsilon */
+//{ None }
+{: /* do nothing */ :}
+                   |	post_condition:post
+//{ Some $1 }
+{: RESULT = post; :}
+                   ;
+
+post_condition ::=	assertion:a
+//{ $1, [] }
+{: RESULT = new PostCond(new Loc(aleft, aright), a, null); :}
+               | assertion:a BAR list1_exn_condition_sep_bar:l1
+//{ $1, $3 }
+{: RESULT = new PostCond(new Loc(aleft, aright), a, l1); :}
+               | BAR:b list1_exn_condition_sep_bar:l1
+/*   { Format.eprintf "%awarning: no postcondition; false inserted@\n" 
+       Loc.report_position (loc ());
+     (* if Options.werror then exit 1; *)
+     ({ pa_name = Anonymous; pa_value = mk_pp PPfalse; pa_loc = loc () }, $2) }
+*/
+{: RESULT = new PostCond(new Loc(bleft, bright), null, l1); :}
+               ;
+
+bracket_assertion ::=	LEFTB:l assertion:a RIGHTB
+//{ $2 }
+{: RESULT = new BrAssert(new Loc(lleft, lright), a); :}
+                  ;
+
+list1_bracket_assertion ::=	bracket_assertion:b
+//{ [$1] }
+{: List1BrAssert lba = new List1BrAssert(); lba.add(b); RESULT = lba; :}
+                        |	bracket_assertion:b list1_bracket_assertion:lba
+//{ $1 :: $2 }
+{: lba.add(b); RESULT = lba; :}
+                        ;
+
+list0_bracket_assertion ::=	/* epsilon */
+//{ [] }
+{: /* do nothing */ :}
+                        |	LEFTB:l RIGHTB
+//{ [] }
+{: RESULT = new List0BrAssert(new Loc(lleft, lright), null); :}
+                        |	list1_bracket_assertion:l
+//{ $1 }
+{: RESULT = new List0BrAssert(new Loc(lleft, lright), l); :}
+                        ;
+
+list1_exn_condition_sep_bar ::=	exn_condition:e
+//{ [$1] }
+{: ListCondition l = new ListCondition(); l.add(e); RESULT = l; :}
+                            |	exn_condition:e BAR list1_exn_condition_sep_bar:l
+//{ $1 :: $3 }
+{: l.add(e); RESULT = l; :}
+                            ;
+
+exn_condition ::=	ident:id BIGARROW assertion:ass
+//{ $1,$3 }
+{: RESULT = new Condition(new Loc(idleft, idright), id, ass); :}
+              ;
+
+logic_type ::=	list0_primitive_type_sep_comma:l0 ARROW PROP
+//{ PPredicate $1 }
+{: RESULT = new LogicType1(new Loc(l0left, l0right), l0); :}
+           |	PROP:p
+//{ PPredicate [] }
+{: RESULT = new LogicType2(new Loc(pleft, pright)); :}
+           |	list0_primitive_type_sep_comma:l0 ARROW primitive_type:p
+//{ PFunction ($1, $3) }
+{: RESULT = new LogicType3(new Loc(l0left, l0right), l0, p); :}
+           |	primitive_type:p
+//{ PFunction ([], $1) }
+{: RESULT = new LogicType4(new Loc(pleft, pright), p); :}
+           ;
+
+list0_primitive_type_sep_comma ::=	/* epsilon */
+//{ [] }
+{: /* do nothing */ :}
+                               |	list1_primitive_type_sep_comma:l
+//{ $1 }
+{: RESULT = l; :}
+                               ;
+
+list1_primitive_type_sep_comma ::=	primitive_type:p
+//{ [$1] }
+{: List1PType l = new List1PType(); l.add(p); RESULT = l; :}
+                               | primitive_type:p COMMA list1_primitive_type_sep_comma:l
+//{ $1 :: $3 }
+{: l.add(p); RESULT = l; :}
+                               ;
+
+list0_logic_binder_sep_comma ::=	/* epsilon */
+//{ [] }
+{: /* do nothing */ :}
+                             |		list1_logic_binder_sep_comma:l
+//{ $1 }
+{: RESULT = l; :}
+                             ;
+
+list1_logic_binder_sep_comma ::=	logic_binder:lb
+//{ [$1] }
+{: ListLBinder l = new ListLBinder(); l.add(lb); RESULT = l; :}
+                             |		logic_binder:lb COMMA list1_logic_binder_sep_comma:l
+//{ $1 :: $3 }
+{: l.add(lb); RESULT = l; :}
+                             ;
+
+logic_binder ::=	ident:id COLON primitive_type:p       
+//{ ($1, $3) }
+{: RESULT = new LogicBinder1(new Loc(idleft, idright), id, p); :}
+             |		ident:id COLON primitive_type:p ARRAY 
+//{ ($1, PPTexternal ([$3], Ident.farray, loc_i 3)) }
+{: RESULT = new LogicBinder2(new Loc(idleft, idright), id, p); :}
+             ;
+
+external_ ::=	/* epsilon */
+//{ false }
+{: /* do nothing */ :}
+          |	EXTERNAL
+//{ true  }
+{: RESULT = new External(); :}
+          ;
+
+lexpr ::=	lexpr:l1 ARROW lexpr:l2 
+//{ infix_pp $1 PPimplies $3 }
+{: RESULT = new LExprArrow(new Loc(l1left, l1right), l1, l2); :}
+      |		lexpr:l1 LRARROW lexpr:l2 
+//{ infix_pp $1 PPiff $3 }
+{: RESULT = new LExprLRArrow(new Loc(l1left, l1right), l1, l2); :}
+      |		lexpr:l1 OR lexpr:l2 
+//{ infix_pp $1 PPor $3 }
+{: RESULT = new LExprOr(new Loc(l1left, l1right), l1, l2); :}
+      |		lexpr:l1 AND lexpr:l2
+//{ infix_pp $1 PPand $3 }
+{: RESULT = new LExprAnd(new Loc(l1left, l1right), l1, l2); :}
+      |		NOT:n lexpr:l 
+//{ prefix_pp PPnot $2 }
+{: RESULT = new LExprNot(new Loc(nleft, nright), l); :}
+      |		lexpr:l1 relation:r lexpr:l2
+//{ infix_pp $1 $2 $3 }
+{: RESULT = new LExprRel(new Loc(l1left, l1right), l1, r, l2); :}
+		%prec prec_relation
+      |		lexpr:l1 PLUS lexpr:l2
+//{ infix_pp $1 PPadd $3 }
+{: RESULT = new LExprPlus(new Loc(l1left, l1right), l1, l2); :}
+      |		lexpr:l1 MINUS lexpr:l2
+//{ infix_pp $1 PPsub $3 }
+{: RESULT = new LExprLess(new Loc(l1left, l1right), l1, l2); :}
+      |		lexpr:l1 TIMES lexpr:l2
+//{ infix_pp $1 PPmul $3 }
+{: RESULT = new LExprTimes(new Loc(l1left, l1right), l1, l2); :}
+      |		lexpr:l1 SLASH lexpr:l2
+//{ infix_pp $1 PPdiv $3 }
+{: RESULT = new LExprSlash(new Loc(l1left, l1right), l1, l2); :}
+      |		lexpr:l1 PERCENT lexpr:l2
+//{ infix_pp $1 PPmod $3 }
+{: RESULT = new LExprPercent(new Loc(l1left, l1right), l1, l2); :}
+      |		MINUS:m lexpr:l
+//{ prefix_pp PPneg $2 }
+{: RESULT = new LExprMinus(new Loc(mleft, mright), l); :}
+		%prec uminus
+      |		qualid_ident:q
+//{ mk_pp (PPvar $1) }
+{: RESULT = new LExprQIdent(new Loc(qleft, qright), q); :}
+      |		qualid_ident:q LEFTPAR list1_lexpr_sep_comma:l RIGHTPAR
+//{ mk_pp (PPapp ($1, $3)) }
+{: RESULT = new LExprIdentList(new Loc(qleft, qright), q, l); :}
+      |		qualid_ident:q LEFTSQ lexpr:e RIGHTSQ
+//{ mk_pp (PPapp (Ident.access, [mk_pp_i 1 (PPvar $1); $3])) }
+{: RESULT = new LExprIdentExpr(new Loc(qleft, qright), q, e); :}
+      |		IF:i lexpr:l1 THEN lexpr:l2 ELSE lexpr:l3 
+//{ mk_pp (PPif ($2, $4, $6)) }
+{: RESULT = new LExprIf(new Loc(ileft, iright), l1, l2, l3); :}
+		%prec prec_if
+      |		FORALL:f list1_ident_sep_comma:l COLON primitive_type:p triggers:t DOT lexpr:e
+/*
+         { let rec mk = function
+       | [] -> assert false
+       | [id] -> mk_pp (PPforall (id, $4, $5, $7))
+       | id :: l -> mk_pp (PPforall (id, $4, [], mk l))
+     in
+     mk $2 }
+*/
+{: RESULT = new LExprForall(new Loc(fleft, fright), l, p, t, e); :}
+		%prec prec_forall
+      |		EXISTS:ex ident:id COLON primitive_type:p DOT lexpr:l
+//{ mk_pp (PPexists ($2, $4, $6)) }
+{: RESULT = new LExprExists(new Loc(exleft, exright), id, p, l); :}
+		%prec prec_exists
+      |		FPI:f LEFTPAR lexpr:l COMMA FLOAT_LITERAL:f1 COMMA FLOAT_LITERAL:f2 RIGHTPAR
+/*
+   { let f1 = Float_lexer.split $5 in
+     let f2 = Float_lexer.split $7 in
+     mk_pp (PPfpi ($3, f1, f2)) }
+*/
+{: RESULT = new LExprFpi(new Loc(fleft, fright), l, f1, f2); :}
+      |		INTEGER_LITERAL:i
+//{ mk_pp (PPconst (ConstInt $1)) }
+{: RESULT = new LExprInteger(i); :}
+      |		FLOAT_LITERAL:f
+//{ let (f,i,e) = Float_lexer.split $1 in mk_pp (PPconst (ConstFloat (f,i,e))) }
+{: RESULT = new LExprFloat(f); :}
+      |		TRUE:t
+//{ mk_pp PPtrue }
+{: RESULT = new LExprBool(true); :}
+      |		FALSE
+//{ mk_pp PPfalse }    
+{: RESULT = new LExprBool(false); :}
+      |		VOID
+//{ mk_pp (PPconst ConstUnit) }
+{: RESULT = new LExprVoid(); :}
+      |		LEFTPAR:l lexpr:e RIGHTPAR
+//{ $2 }
+{: RESULT = new LExprPar(new Loc(lleft, lright), e); :}
+      |		ident_or_string:id COLON lexpr:e
+//{ mk_pp (PPnamed ($1, $3)) }
+{: RESULT = new LExprIdStr(new Loc(idleft, idright), id, e); :}
+		%prec prec_named
+      ;
+
+triggers ::=	/* epsilon */
+//{ [] }
+{: /* do nothing */ :}
+         |	LEFTSQ:l list1_trigger_sep_bar:lt RIGHTSQ
+//{ $2 }
+{: RESULT = new Triggers(new Loc(lleft, lright), lt); :}
+         ;
+
+list1_trigger_sep_bar ::=	trigger:t
+//{ [$1] }
+{: ListTrigger l = new ListTrigger(); l.add(t); RESULT = l; :}
+                      |		trigger:t BAR list1_trigger_sep_bar:l
+//{ $1 :: $3 }
+{: l.add(t); RESULT = l; :}
+                      ;
+
+trigger ::=	list1_lexpr_sep_comma:l
+//{ $1 }
+{: RESULT = l; :}
+        ;
+
+list1_lexpr_sep_comma ::=	lexpr:e
+//{ [$1] }
+{: List1LExpr l = new List1LExpr(); l.add(e); RESULT = l; :}
+                      |		lexpr:e COMMA list1_lexpr_sep_comma:l
+//{ $1 :: $3 }
+{: l.add(e); RESULT = l; :}
+                      ;
+
+relation ::=	LT
+//{ PPlt }
+{: RESULT = new Relation(" < "); :}
+         |	LE
+//{ PPle }
+{: RESULT = new Relation(" <= "); :}
+         |	GT
+//{ PPgt }
+{: RESULT = new Relation(" > "); :}
+         |	GE
+//{ PPge }
+{: RESULT = new Relation(" >= "); :}
+         |	EQUAL
+//{ PPeq }
+{: RESULT = new Relation(" = "); :}
+         |	NOTEQ
+//{ PPneq }
+{: RESULT = new Relation(" <> "); :}
+         ;
+
+type_var ::=	QUOTE:q ident:id
+//{ $2 }
+{: RESULT = new TypeVar(new Loc(qleft, qright), id); :}
+         ;
+
+list1_type_var_sep_comma ::=	type_var:t
+//{ [$1] }
+{: List1TypeVar l = new List1TypeVar(); l.add(t); RESULT = l; :}
+                         |	type_var:t COMMA list1_type_var_sep_comma:l
+//{ $1 :: $3 }
+{: l.add(t); RESULT = l; :}
+                         ;
+
+expr ::=	simple_expr:se
+//{ $1 }
+{: RESULT = se; :}
+		%prec prec_simple
+     |		ident:id COLONEQUAL expr:e
+//{ locate (Sapp (locate (Sapp (locate (Svar Ident.ref_set), locate_i 1 (Svar $1))),$3)) }
+{: RESULT = new ExprIdExpr(new Loc(idleft, idright), id, e); :}
+     |		ident:id LEFTSQ expr:e RIGHTSQ COLONEQUAL expr:f
+/*
+   { locate 
+       (Sapp (locate 
+		(Sapp (locate 
+			 (Sapp (locate (Svar Ident.array_set), 
+				locate_i 1 (Svar $1))),
+			 $3)),
+		$6)) }
+*/
+{: RESULT = new ExprIdExprExpr(new Loc(idleft, idright), id, e, f); :}
+     |		IF:i expr:e THEN expr:f ELSE expr:g
+//{ locate (Sif ($2, $4, $6)) }
+{: RESULT = new ExprIfThenElse(new Loc(ileft, iright), e, f, g); :}
+     |		IF:i expr:e THEN expr:f
+//{ locate (Sif ($2, $4, locate (Sconst ConstUnit))) }
+{: RESULT = new ExprIfThenElse(new Loc(ileft, iright), e, f, null); :}
+		%prec prec_no_else
+     |		WHILE:w expr:e DO invariant_variant:inv expr:f DONE
+/*
+   { (* syntactic suget for
+        try loop { invariant variant } if b then e else raise Exit
+        with Exit -> void end *)
+     let inv,var = $4 in
+     locate 
+       (Stry
+	  (locate 
+	     (Sloop (inv, var, 
+		     locate 
+		       (Sif ($2, $5,
+			     locate (Sraise (exit_exn, None, None)))))),
+	     [((exit_exn, None), locate (Sconst ConstUnit))])) }
+*/
+{: RESULT = new ExprWhile(new Loc(wleft, wright), e, inv, f); :}
+     |		IDENTIFIER:ident COLON expr:e
+//{ locate (Slabel ($1, $3)) }
+{: RESULT = new ExprIdentifier(new Loc(identleft, identright), ident, e); :}
+     |		LET:let ident:id EQUAL expr:e IN expr:f
+//{ locate (Sletin ($2, $4, $6)) }
+{: RESULT = new ExprLetIn(new Loc(letleft, letright), id, e, f); :}
+     |		LET:let ident:id EQUAL REF expr:e IN expr:f
+//{ locate (Sletref ($2, $5, $7)) }
+{: RESULT = new ExprLetRefIn(new Loc(letleft, letright), id, e, f); :}
+     |		FUN:fun binders:b ARROW list0_bracket_assertion:l0 expr:e
+//{ locate (Slam ($2, $4, force_function_post $5)) }
+{: RESULT = new ExprFun(new Loc(funleft, funright), b, l0, e); :}
+		%prec prec_fun
+     |		LET:let ident:id binders:b EQUAL list0_bracket_assertion:l0 expr:e IN expr:f
+//{ let b =  force_function_post ~warn:true $6 in locate (Sletin ($2, locate (Slam ($3, $5, b)), $8)) }
+{: RESULT = new ExprLetEq(new Loc(letleft, letright), id, b, l0, e, f); :}
+     |		LET:let REC recfun:r
+//{ locate $3 }
+{: RESULT = new ExprLetRec(new Loc(letleft, letright), r); :}
+		%prec prec_letrec
+     |		LET:let REC recfun:r IN expr:e
+//{ locate (Sletin (rec_name $3, locate $3, $5)) }
+{: RESULT = new ExprLetRecIn(new Loc(letleft, letright), r, e); :}
+     |		RAISE:r ident:id opt_cast:o
+//{ locate (Sraise ($2, None, $3)) }
+{: RESULT = new ExprRaise(new Loc(rleft, rright), id, o); :}
+     |		RAISE:r LEFTPAR ident:id expr:e RIGHTPAR opt_cast:o
+//{ locate (Sraise ($3, Some $4 , $6)) }
+{: RESULT = new ExprRaise2(new Loc(rleft, rright), id, e, o); :}
+     |		TRY:t expr:e WITH list1_handler_sep_bar:l END
+//{ locate (Stry ($2, $4)) }
+{: RESULT = new ExprTry(new Loc(tleft, tright), e, l); :}
+     |		ABSURD:a opt_cast:o
+//{ locate (Sabsurd $2) }
+{: RESULT = new ExprAbsurd(new Loc(aleft, aright), o); :}
+     |		simple_expr:s list1_simple_expr:l
+//{ locate (app $1 $2) }
+{: RESULT = new ExprSExpr(new Loc(sleft, sright), s, l); :}
+		%prec prec_app
+     |		expr:e BARBAR expr:f
+//{ let ptrue = locate (Sconst (ConstBool true)) in locate (Sif ($1, ptrue, $3)) }
+{: RESULT = new ExprBarBar(new Loc(eleft, eright), e, f); :}
+     |		expr:e AMPAMP expr:f
+//{ let pf = locate (Sconst (ConstBool false)) in locate (Sif ($1, $3, pf)) }
+{: RESULT = new ExprAmpAmp(new Loc(eleft, eright), e, f); :}
+     |		NOT:n expr:e
+/*
+   { let pf = locate (Sconst (ConstBool false)) in
+     let pt = locate (Sconst (ConstBool true)) in
+     locate (Sif ($2, pf, pt)) }
+*/
+{: RESULT = new ExprNot(new Loc(nleft, nright), e); :}
+     |		expr:e relation_id expr:f
+//{ bin_op $2 $1 $3 }
+{: RESULT = new ExprRel(new Loc(eleft, eright), e, f); :}
+		%prec prec_relation
+     |		expr:e PLUS expr:f
+//{ bin_op (loc_i 2, Ident.t_add) $1 $3 }
+{: RESULT = new ExprPlus(new Loc(eleft, eright), e, f); :}
+     |		expr:e MINUS expr:f
+//{ bin_op (loc_i 2, Ident.t_sub) $1 $3 }
+{: RESULT = new ExprLess(new Loc(eleft, eright), e, f); :}
+     |		expr:e TIMES expr:f
+//{ bin_op (loc_i 2, Ident.t_mul) $1 $3 }
+{: RESULT = new ExprTimes(new Loc(eleft, eright), e, f); :}
+     |		expr:e SLASH expr:f
+//{ bin_op (loc_i 2, Ident.t_div) $1 $3 }
+{: RESULT = new ExprSlash(new Loc(eleft, eright), e, f); :}
+     |		expr:e PERCENT expr:f
+//{ bin_op (loc_i 2, Ident.t_mod_int) $1 $3 }
+{: RESULT = new ExprPercent(new Loc(eleft, eright), e, f); :}
+     |		MINUS:m expr:e
+//{ un_op (loc_i 1, Ident.t_neg) $2 }
+{: RESULT = new ExprMinus(new Loc(mleft, mright), e); :}
+		%prec uminus
+     |		expr:e SEMICOLON expr:f
+//{ locate (Sseq ($1, $3)) }
+{: RESULT = new ExprColon(new Loc(eleft, eright), e, f); :}
+     |		ASSERT:a list1_bracket_assertion:l SEMICOLON expr:e
+//{ locate (Sassert ($2, $4)) }
+{: RESULT = new ExprAssert(new Loc(aleft, aright), l, e); :}
+     |		expr:e LEFTB post_condition:p RIGHTB
+//{ locate (Spost ($1, $3, Transparent)) }
+{: RESULT = new ExprPCond(new Loc(eleft, eright), e, p); :}
+     |		expr:e LEFTBLEFTB post_condition:p RIGHTBRIGHTB
+//{ locate (Spost ($1, $3, Opaque)) }
+{: RESULT = new ExprPCond2(new Loc(eleft, eright), e, p); :}
+     ;
+
+simple_expr ::=	ident:id
+//{ locate (Svar $1) }
+{: RESULT = new ExprIdent(id); :}
+		%prec prec_ident
+            |	INTEGER_LITERAL:i
+//{ locate (Sconst (ConstInt $1)) }
+{: RESULT = new ExprInt(i); :}
+            |	FLOAT_LITERAL:f
+//{ let f = Float_lexer.split $1 in locate (Sconst (ConstFloat f)) }
+{: RESULT = new ExprFloat(f); :}
+            |	VOID
+//{ locate (Sconst ConstUnit) }
+{: RESULT = new ExprVoid(); :}
+            |	TRUE
+//{ locate (Sconst (ConstBool true)) }
+{: RESULT = new ExprBoolean(true); :}
+            |	FALSE
+//{ locate (Sconst (ConstBool false)) }
+{: RESULT = new ExprBoolean(false); :}
+            |	BANG:b ident:id
+//{ locate (Sderef $2) }
+{: RESULT = new ExprBang(new Loc(bleft, bright), id); :}
+            |	ident:id LEFTSQ expr:e RIGHTSQ
+/*
+   { locate 
+       (Sapp (locate (Sapp (locate (Svar Ident.array_get), 
+			    locate_i 1 (Svar $1))),
+	      $3)) }
+*/
+{: RESULT = new ExprExprSQ(new Loc(idleft, idright), id, e); :}
+            |	LEFTSQ:l type_c:t RIGHTSQ
+//{ locate (Sany $2) }
+{: RESULT = new ExprTypeSQ(new Loc(lleft, lright), t); :}
+            |	LEFTPAR:l expr:e RIGHTPAR
+//{ $2 }
+{: RESULT = new ExprExprPar(new Loc(lleft, lright), e); :}
+            |	BEGIN:b expr:e END
+//{ $2 }
+{: RESULT = new ExprBegin(new Loc(bleft, bright), e); :}
+            ;
+
+list1_simple_expr ::=	simple_expr:se
+//{ [$1] }
+{: ListSimpleExpr l = new ListSimpleExpr(); l.add(se); RESULT = l; :}
+			%prec prec_simple
+                  |	simple_expr:se list1_simple_expr:l
+//{ $1 :: $2 }
+{: l.add(se); RESULT = l; :}
+                  ;
+
+list1_handler_sep_bar ::=	handler:h
+//{ [$1] }
+{: ListHandler l = new ListHandler(); l.add(h); RESULT = l; :}
+                      |		handler:h BAR list1_handler_sep_bar:l
+//{ $1 :: $3 }
+{: l.add(h); RESULT = l; :}
+                      ;
+
+handler ::=	ident:id ARROW expr:e
+//{ (($1, None), $3) }
+{: RESULT = new Handler(new Loc(idleft, idright), id, null, e); :}
+        |	ident:id ident:jd ARROW expr:e
+//{ (($1, Some $2), $4) }
+{: RESULT = new Handler(new Loc(idleft, idright), id, jd, e); :}
+        ;
+
+opt_cast ::=	/* epsilon */
+//{ None }
+{: /* do nothing */ :}
+         |	COLON:c type_v:t
+//{ Some $2 }
+{: RESULT = new OptCast(new Loc(cleft, cright), t); :}
+         ;
+
+invariant_variant ::=	/* epsilon */
+//{ None, None }
+{: /* do nothing */ :}
+                  |	LEFTB:l opt_invariant:o RIGHTB
+//{ $2, None }
+{: RESULT = new InvVar(new Loc(lleft, lright), o, null); :}
+                  |	LEFTB:l opt_invariant:o VARIANT variant:v RIGHTB
+//{ $2, Some $4 }
+{: RESULT = new InvVar(new Loc(lleft, lright), o, v); :}
+                  ;
+
+opt_invariant ::=	/* epsilon */
+//{ None }
+{: /* do nothing */ :}
+              |		INVARIANT:i assertion:a
+//{ Some $2 }
+{: RESULT = new OptInv(new Loc(ileft, iright), a); :}
+              ;
+
+recfun ::=	ident:id binders:b COLON type_v:t opt_variant:o EQUAL list0_bracket_assertion:l0 expr:e
+//{ Srec ($1, $2, $4, $5, $7, force_function_post $8) }
+{: RESULT = new Recfun(new Loc(idleft, idright), id, b, t, o, l0, e); :}
+		%prec prec_recfun
+       ;
+
+opt_variant ::=	LEFTB:l VARIANT variant:v RIGHTB
+//{ Some $3 }
+{: RESULT = new OptVar(new Loc(lleft, lright), v); :}
+            |	/* epsilon */
+//{ None }
+{: /* do nothing */ :}
+            ;
+
+variant ::=	lexpr:l FOR ident:id
+//{ ($1, $3) }
+{: RESULT = new Variant(new Loc(lleft, lright), l, id); :}
+        |	lexpr:l
+//{ ($1, Ident.t_zwf_zero) }
+{: RESULT = new Variant(new Loc(lleft, lright), l, null); :}
+        ;
+
+binders ::=	list1_binder:l
+//{ List.flatten $1 }
+{: RESULT = l; :}
+        ;
+
+list1_binder ::=	binder:b
+//{ [$1] }
+{: ListBinder l = new ListBinder(); l.add(b); RESULT = l; :}
+             |		binder:b list1_binder:l
+//{ $1 :: $2 }
+{: l.add(b); RESULT = l; :}
+             ;
+
+binder ::=	LEFTPAR:lp RIGHTPAR
+//{ [Ident.anonymous, PVpure PPTunit] }
+{: RESULT = new Binder(new Loc(lpleft, lpright), null, null); :}
+       |	LEFTPAR:lp list1_ident_sep_comma:l COLON type_v:t RIGHTPAR 
+//{ List.map (fun s -> (s, $4)) $2 }
+{: RESULT = new Binder(new Loc(lpleft, lpright), l, t); :}
+       ;
+
+relation_id ::=	LT
+//{ loc (), Ident.t_lt }
+{: RESULT = new Relation("<"); :}
+            |	LE
+//{ loc (), Ident.t_le }
+{: RESULT = new Relation("<="); :}
+            |	GT
+//{ loc (), Ident.t_gt }
+{: RESULT = new Relation(">"); :}
+            |	GE
+//{ loc (), Ident.t_ge }
+{: RESULT = new Relation(">="); :}
+            |	EQUAL
+//{ loc (), Ident.t_eq }
+{: RESULT = new Relation("="); :}
+            |	NOTEQ
+//{ loc (), Ident.t_neq }
+{: RESULT = new Relation("<>"); :}
+            ;
+
+ident ::=	IDENTIFIER:id
+//{ Ident.create $1 }
+{: RESULT = new Ident(new Loc(idleft, idright), id); :}
+      ;
+
+qualid_ident ::=	IDENTIFIER:id
+//{ Ident.create $1 }
+{: RESULT = new QIdentId(new Loc(idleft, idright), id); :}
+             |		IDENTIFIER:id AT
+//{ Ident.at_id (Ident.create $1) "" }
+{: RESULT = new QIdentAt(new Loc(idleft, idright), id, null); :}
+             |		IDENTIFIER:id1 AT IDENTIFIER:id2
+//{ Ident.at_id (Ident.create $1) $3 }
+{: RESULT = new QIdentAt(new Loc(id1left, id1right), id1, id2);
+:}
+             ;
+
+list0_ident_sep_comma ::=	/* epsilon */
+//{ [] }
+{: /* do nothing */ :}
+                      |		list1_ident_sep_comma:l
+//{ $1 }
+{: RESULT = l; :}
+                      ;
+
+list1_ident_sep_comma ::=	ident:id
+//{ [$1] }
+{: List1IdentSep l = new List1IdentSep(); l.add(id); RESULT = l; :}
+                      |		ident:id COMMA list1_ident_sep_comma:l
+//{ $1 :: $3 }
+{: l.add(id); RESULT = l; :}
+                      ;
+
+ident_or_string ::=	IDENTIFIER:id
+//{ $1 }
+{: RESULT = id; :}
+                |	STRING_LITERAL:s
+//{ $1 }
+{: RESULT = new String(s); :}
+                ;
+
+
+

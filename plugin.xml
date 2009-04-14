@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="why"
+            name="Why Editor"
+            icon="icons/why_icon.gif"
+            class="net.eclipse.why.editeur.editors.why.WHYEditor"
+            id="net.eclipse.why.editeur.editors.why.WHYEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="jc"
+            name="Jessie Editor"
+            icon="icons/jessie.gif"
+            class="net.eclipse.why.editeur.editors.jessie.JCEditor"
+            id="net.eclipse.why.editeur.editors.jessie.JCEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            name="Modeling Language Editor for C Programs"
+            icon="icons/ml_file2.gif"
+            class="net.eclipse.why.editeur.editors.cml.CMLEditor"
+            id="net.eclipse.why.editeur.editors.cml.CMLEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Verification Conditions Generator"
+            visible="true"
+            id="net.eclipse.why.editeur.actionSet">
+         <action
+               tooltip="Run verification conditions generator"
+               label="Verification Conditions Generator"
+               icon="icons/vcg.gif"
+               class="net.eclipse.why.editeur.actions.Runner"
+               toolbarPath="sampleGroup"
+               id="net.eclipse.why.editeur.actions.Runner">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            nameFilter="*.c"
+            name="Why options"
+            class="net.eclipse.why.editeur.properties.WhyPropertyPage"
+            id="net.eclipse.why.editeur.properties.WhyPropertyPage1">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            nameFilter="*.jc"
+            name="Why options"
+            class="net.eclipse.why.editeur.properties.WhyPropertyPage"
+            id="net.eclipse.why.editeur.properties.WhyPropertyPage2">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+   	  <page
+   	  		id="net.eclipse.why.editeur.preferences.MainPreferencesPage"
+   	  		name="Why"
+   	  		class="net.eclipse.why.editeur.preferences.MainPreferencesPage">
+   	  </page>
+   	  <page
+   	  		id="net.eclipse.why.editeur.preferences.VerificationToolsPreferencesPage"
+   	  		name="Verification Tools"
+   	  		class="net.eclipse.why.editeur.preferences.VerificationToolsPreferencesPage"
+   	  		category="net.eclipse.why.editeur.preferences.MainPreferencesPage">
+   	  </page>
+   	  <page
+   	  		id="net.eclipse.why.editeur.preferences.ProversPreferencesPage"
+   	  		name="Provers"
+   	  		class="net.eclipse.why.editeur.preferences.ProversPreferencesPage"
+   	  		category="net.eclipse.why.editeur.preferences.MainPreferencesPage">
+   	  </page>
+   	  <page
+   	  		id="net.eclipse.why.editeur.preferences.ColorsPreferencesPage"
+   	  		name="Colors"
+   	  		class="net.eclipse.why.editeur.preferences.ColorsPreferencesPage"
+   	  		category="net.eclipse.why.editeur.preferences.MainPreferencesPage">
+   	  </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="WHY"
+            id="net.eclipse.why.editeur">
+      </category>
+      <view
+            name="Prover View"
+            icon="icons/view/cubo.gif"
+            category="net.eclipse.why.editeur"
+            class="net.eclipse.why.editeur.views.ProverView"
+            id="net.eclipse.why.editeur.views.ProverView">
+      </view>
+      <view
+      		name="PO Viewer"
+      		icon="icons/view/plume.gif"
+      		category="net.eclipse.why.editeur"
+      		class="net.eclipse.why.editeur.views.POViewer"
+      		id="net.eclipse.why.editeur.views.POViewer">
+      </view>
+   </extension>
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               relative="org.eclipse.ui.views.TaskList"
+               ratio="0.5"
+               relationship="right"
+               id="net.eclipse.why.editeur.views.ProverView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+</plugin>
