@@ -28,7 +28,7 @@
       <editor
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             name="Modeling Language Editor for C Programs"
-            icon="icons/ml_file2.gif"
+            icon="icons/c_file_obj.gif"
             class="net.eclipse.why.editeur.editors.cml.CMLEditor"
             id="net.eclipse.why.editeur.editors.cml.CMLEditor">
       </editor>
@@ -68,6 +68,15 @@
       </page>
    </extension>
    <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            nameFilter="*.java"
+            name="Why options"
+            class="net.eclipse.why.editeur.properties.WhyPropertyPage"
+            id="net.eclipse.why.editeur.properties.WhyPropertyPage3">
+      </page>
+   </extension>
+   <extension
          point="org.eclipse.ui.preferencePages">
    	  <page
    	  		id="net.eclipse.why.editeur.preferences.MainPreferencesPage"
@@ -96,19 +105,19 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="WHY"
+            name="Why"
             id="net.eclipse.why.editeur">
       </category>
       <view
             name="Prover View"
-            icon="icons/view/cubo.gif"
+            icon="icons/library_obj.gif"
             category="net.eclipse.why.editeur"
             class="net.eclipse.why.editeur.views.ProverView"
             id="net.eclipse.why.editeur.views.ProverView">
       </view>
       <view
       		name="PO Viewer"
-      		icon="icons/view/plume.gif"
+      		icon="icons/read_obj.gif"
       		category="net.eclipse.why.editeur"
       		class="net.eclipse.why.editeur.views.POViewer"
       		id="net.eclipse.why.editeur.views.POViewer">
