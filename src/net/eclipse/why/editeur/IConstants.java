@@ -32,54 +32,81 @@ public interface IConstants {
 	public final static String LINE_SEPARATOR		=	"NEXT.";
 	public final static String ELEMENT_SEPARATOR	=	"#";
 	
-	
 	// Images of buttons in Prover View
-	//final static URL url0							=	EditeurWHY.getDefault().getBundle().getEntry("icons/empty.gif");
-	final static URL url1							=	EditeurWHY.getDefault().getBundle().getEntry("icons/start.gif");
-	final static URL url2							=	EditeurWHY.getDefault().getBundle().getEntry("icons/balls/ballgree.gif");
-	final static URL url3							=	EditeurWHY.getDefault().getBundle().getEntry("icons/balls/ballred.gif");
-	final static URL url4							=	EditeurWHY.getDefault().getBundle().getEntry("icons/golden_arrow.gif");
-	final static URL url5							=	EditeurWHY.getDefault().getBundle().getEntry("icons/balls/ballpink.gif");
-	final static URL url6							=	EditeurWHY.getDefault().getBundle().getEntry("icons/ist2_2366446-hourglass.gif");
-	final static URL url7							=	EditeurWHY.getDefault().getBundle().getEntry("icons/balls/ballpurp.gif");
-	final static URL url8							=	EditeurWHY.getDefault().getBundle().getEntry("icons/cross.gif");
-	final static URL url9							=	EditeurWHY.getDefault().getBundle().getEntry("icons/hourglass.gif");
-	final static URL url10							=	EditeurWHY.getDefault().getBundle().getEntry("icons/unknown.gif");
-	final static URL url11							=	EditeurWHY.getDefault().getBundle().getEntry("icons/green_check.gif");
-	final static URL url12							=	EditeurWHY.getDefault().getBundle().getEntry("icons/balls/ballwhit.gif");
-	final static URL url13							=	EditeurWHY.getDefault().getBundle().getEntry("icons/x.gif");
-	final static URL url14							=	EditeurWHY.getDefault().getBundle().getEntry("icons/goal.gif");
-	final static URL url15							=	EditeurWHY.getDefault().getBundle().getEntry("icons/func.gif");
-	//public final static Image IMAGE_EMPTY			=	new Image(null, ImageDescriptor.createFromURL(url0).getImageData());
-	public final static Image IMAGE_START			=	new Image(null, ImageDescriptor.createFromURL(url1).getImageData());
-	public final static Image IMAGE_VALID			=	new Image(null, ImageDescriptor.createFromURL(url11).getImageData());
-	public final static Image IMAGE_INVALID			=	new Image(null, ImageDescriptor.createFromURL(url13).getImageData());
-	public final static Image IMAGE_WORKING			=	new Image(null, ImageDescriptor.createFromURL(url4).getImageData());
-	public final static Image IMAGE_BALL_PINK		=	new Image(null, ImageDescriptor.createFromURL(url5).getImageData());
-	public final static Image IMAGE_WAITING			=	new Image(null, ImageDescriptor.createFromURL(url6).getImageData());
-	public final static Image IMAGE_BALL_PURP		=	new Image(null, ImageDescriptor.createFromURL(url7).getImageData());
-	public final static Image IMAGE_FAILURE			=	new Image(null, ImageDescriptor.createFromURL(url8).getImageData());
-	public final static Image IMAGE_TIME_OUT		=	new Image(null, ImageDescriptor.createFromURL(url9).getImageData());
-	public final static Image IMAGE_UNKNOWN			=	new Image(null, ImageDescriptor.createFromURL(url10).getImageData());
-	public final static Image IMAGE_UNPROVED		=	new Image(null, ImageDescriptor.createFromURL(url13).getImageData());
-	public final static Image IMAGE_BALL_WHITE		=	new Image(null, ImageDescriptor.createFromURL(url12).getImageData());
-	public final static Image IMAGE_BALL_GREEN		=	new Image(null, ImageDescriptor.createFromURL(url2).getImageData());
-	public final static Image IMAGE_BALL_RED		=	new Image(null, ImageDescriptor.createFromURL(url3).getImageData());
-	public final static Image IMAGE_PO				=	new Image(null, ImageDescriptor.createFromURL(url14).getImageData());
-	public final static Image IMAGE_FUNC			=	new Image(null, ImageDescriptor.createFromURL(url15).getImageData());
+	final static URL imageBallGreenUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/ballgree.gif");
+	final static URL imageBallRedUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/ballred.gif");
+	final static URL imageBallPinkUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/ballpink.gif");
+	final static URL imageBallPurpleUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/ballpurp.gif");
+	final static URL imageBallWhiteUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/ballwhit.gif");
+
+	final static URL imageWorkingUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/time_obj.gif");
+	final static URL imageStartUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/move.gif");
+	final static URL imageFailureUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/fatalerror_obj.gif");
+	final static URL imageTimeoutUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/warning_st_obj.gif");
+	final static URL imageUnknownUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/unknown_type_obj.gif");
+	final static URL imageValidUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/ok_st_obj.gif");
+	final static URL imageInvalidUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/error_obj.gif");
+
+	final static URL imagePoUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/goal.gif");
+	final static URL imageFuncUrl = EditeurWHY.getDefault().getBundle().getEntry(
+			"icons/func.gif");
+
+	public final static Image IMAGE_START = new Image(null, ImageDescriptor
+			.createFromURL(imageStartUrl).getImageData());
+	public final static Image IMAGE_VALID = new Image(null, ImageDescriptor
+			.createFromURL(imageValidUrl).getImageData());
+	public final static Image IMAGE_INVALID = new Image(null, ImageDescriptor
+			.createFromURL(imageInvalidUrl).getImageData());
+	public final static Image IMAGE_WORKING = new Image(null, ImageDescriptor
+			.createFromURL(imageWorkingUrl).getImageData());
+	public final static Image IMAGE_FAILURE = new Image(null, ImageDescriptor
+			.createFromURL(imageFailureUrl).getImageData());
+	public final static Image IMAGE_TIME_OUT = new Image(null, ImageDescriptor
+			.createFromURL(imageTimeoutUrl).getImageData());
+	public final static Image IMAGE_UNKNOWN = new Image(null, ImageDescriptor
+			.createFromURL(imageUnknownUrl).getImageData());
+	public final static Image IMAGE_UNPROVED = new Image(null, ImageDescriptor
+			.createFromURL(imageInvalidUrl).getImageData());
+
+	public final static Image IMAGE_PO = new Image(null, ImageDescriptor
+			.createFromURL(imagePoUrl).getImageData());
+	public final static Image IMAGE_FUNC = new Image(null, ImageDescriptor
+			.createFromURL(imageFuncUrl).getImageData());
+
 	
-	
-	
+	public final static Image IMAGE_BALL_PINK = new Image(null, ImageDescriptor
+			.createFromURL(imageBallPinkUrl).getImageData());
+	public final static Image IMAGE_BALL_PURP = new Image(null, ImageDescriptor
+			.createFromURL(imageBallPurpleUrl).getImageData());
+	public final static Image IMAGE_BALL_WHITE = new Image(null,
+			ImageDescriptor.createFromURL(imageBallWhiteUrl).getImageData());
+	public final static Image IMAGE_BALL_GREEN = new Image(null,
+			ImageDescriptor.createFromURL(imageBallGreenUrl).getImageData());
+	public final static Image IMAGE_BALL_RED = new Image(null, ImageDescriptor
+			.createFromURL(imageBallRedUrl).getImageData());
+		
 	// URLs of images for Prover View functions
-	final static URL URL_KILL_BUTTON				=   EditeurWHY.getDefault().getBundle().getEntry("icons/cone_17.png");
-	final static URL URL_RUN_ALL_PROVERS			=   EditeurWHY.getDefault().getBundle().getEntry("icons/321.gif");
-	final static URL URL_COLLAPSE_BTN				=   EditeurWHY.getDefault().getBundle().getEntry("icons/collapse.gif");
-	final static URL URL_EXPAND_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/expand.gif");
-	final static URL URL_MARK_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/mark.gif");
-	final static URL URL_SPLIT_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/prism.gif");
-	final static URL URL_SAVE_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/floppy_disk.gif");
-	final static URL URL_LOAD_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/fld312.gif");
-	
+	final static URL URL_RUN_ALL_PROVERS			=   EditeurWHY.getDefault().getBundle().getEntry("icons/run.gif");
+	final static URL URL_MARK_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/bookmark_obj.gif");
+	final static URL URL_SPLIT_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/split.gif");
+	final static URL URL_KILL_BUTTON				=   EditeurWHY.getDefault().getBundle().getEntry("icons/nav_stop.gif");
+	final static URL URL_COLLAPSE_BTN				=   EditeurWHY.getDefault().getBundle().getEntry("icons/collapseall.gif");
+	final static URL URL_EXPAND_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/expandall.gif");
+	final static URL URL_SAVE_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/save.gif");
+	final static URL URL_LOAD_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/folder_obj.gif");
 	
 	//Few defined colors
 	final static Color COLOR_GREEN  				=	new Color( null,   0,    120,   60 );
@@ -92,11 +119,9 @@ public interface IConstants {
 	final static Color HIGHLIGHT_RED				=	new Color(null, 200, 0, 0);
 	
 	
-	
 	//Property Page
 	public static final String PROP_WHYOPT			=	"OPT_PROPERTY";
 	public static final String PROP_WHYOPT_DEFAULT	=	"1000";
-	
 	
 	//Preferences Page ID Strings
 	public static final String PREF_POV_BACKGROUND_COLOR      							=	"POV_BACKGROUND_COLOR";

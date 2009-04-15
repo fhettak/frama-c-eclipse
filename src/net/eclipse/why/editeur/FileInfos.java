@@ -32,7 +32,6 @@ public class FileInfos {
 	public static String[] commands = new String[]{""}; //Commands by prover
 	public static String[] proverStats = new String[]{("")}; //Provers statistics
 	volatile public static boolean showOnlyUnprovedGoals = false; //'Show only unproved POs' option
-	volatile public static boolean images_mode = false; //Color(by default) or image mode
 	volatile public static int markedGoal = 0; //Number of the marked PO, if exists...
 	
 	

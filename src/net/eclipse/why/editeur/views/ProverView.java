@@ -80,8 +80,6 @@ public class ProverView extends ViewPart {
 	private Action kill;
 	private Action foldTree;
 	private Action unfoldTree;
-	private Action imagesMode;
-	private Action colorsMode;
 	private Action runAllProvers;
 	private Action mark;
 	private Action split;
@@ -89,12 +87,9 @@ public class ProverView extends ViewPart {
 	private Action load;
 
 	// Colors
-	private Color goalBtColor, goalProvedBtColor, goalUnprovedBtColor,
-			goalWorkingBtColor;
-	private Color subGoalBtColor, subGoalProvedBtColor, subGoalUnprovedBtColor,
-			subGoalWorkingBtColor;
-	private Color funcBtColor, funcProvedBtColor, funcUnprovedBtColor,
-			funcWorkingBtColor;
+	private Color goalBtColor;
+	private Color subGoalBtColor;
+	private Color funcBtColor;
 	private Color assistantGoalBgColor, assistantSubGoalBgColor,
 			assistantFuncBgColor;
 	private Color markedGoalColor, markedFuncColor;
@@ -492,11 +487,6 @@ public class ProverView extends ViewPart {
 				column.addSelectionListener(new ProverSelectionListener());
 			column.pack();
 		}
-
-		// the last empty column
-		column = new TreeColumn(viewer, SWT.LEFT);
-		column.setText("");
-		column.pack();
 	}
 
 	/**
@@ -553,33 +543,6 @@ public class ProverView extends ViewPart {
 		rgb = PreferenceConverter.getColor(store,
 				IConstants.PREF_FUNCS_BUTTON_BG_COLOR);
 		funcBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_GOALS_BUTTON_PROVED_COLOR);
-		goalProvedBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_SUBGOALS_BUTTON_PROVED_COLOR);
-		subGoalProvedBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_GOALS_BUTTON_UNPROVED_COLOR);
-		goalUnprovedBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_SUBGOALS_BUTTON_UNPROVED_COLOR);
-		subGoalUnprovedBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_GOALS_BUTTON_WORKING_COLOR);
-		goalWorkingBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_SUBGOALS_BUTTON_WORKING_COLOR);
-		subGoalWorkingBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_FUNCS_BUTTON_PROVED_COLOR);
-		funcProvedBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_FUNCS_BUTTON_UNPROVED_COLOR);
-		funcUnprovedBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_FUNCS_BUTTON_WORKING_COLOR);
-		funcWorkingBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
 		rgb = PreferenceConverter.getColor(store,
 				IConstants.PREF_GOALS_ASSISTANT_BUTTON_BG_COLOR);
 		assistantGoalBgColor = new Color(null, rgb.red, rgb.green, rgb.blue);
@@ -969,9 +932,6 @@ public class ProverView extends ViewPart {
 		manager.add(foldTree);
 		manager.add(unfoldTree);
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		manager.add(imagesMode);
-		manager.add(colorsMode);
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		manager.add(runAllProvers);
 		manager.add(kill);
 		manager.add(mark);
@@ -1032,32 +992,6 @@ public class ProverView extends ViewPart {
 		};
 		reset.setText("Reset");
 		reset.setAccelerator(SWT.CTRL + SWT.SHIFT + 'X');
-
-		// puts images in buttons
-		imagesMode = new Action() {
-			public void run() {
-				if (!FileInfos.images_mode) {
-					colorsMode.setChecked(FileInfos.images_mode);
-					FileInfos.images_mode = !FileInfos.images_mode;
-					update.run();
-				}
-			}
-		};
-		imagesMode.setChecked(FileInfos.images_mode);
-		imagesMode.setText("Images mode");
-
-		// puts colors in buttons
-		colorsMode = new Action() {
-			public void run() {
-				if (FileInfos.images_mode) {
-					FileInfos.images_mode = !FileInfos.images_mode;
-					imagesMode.setChecked(FileInfos.images_mode);
-					update.run();
-				}
-			}
-		};
-		colorsMode.setChecked(!FileInfos.images_mode);
-		colorsMode.setText("Colors mode");
 
 		// marks the selected goal
 		mark = new Action() {
@@ -2556,17 +2490,7 @@ public class ProverView extends ViewPart {
 	private void setButtonStart(Button b, boolean is_goal, boolean is_subGoal,
 			boolean is_prover) {
 		if (is_prover) {
-			if (FileInfos.images_mode) {
 				b.setImage(IConstants.IMAGE_START);
-			} else {
-				if (is_goal)
-					if (is_subGoal)
-						b.setBackground(subGoalBtColor);
-					else
-						b.setBackground(goalBtColor);
-				else
-					b.setBackground(funcBtColor);
-			}
 		} else {
 			b.setImage(null);
 			if (is_goal) {
@@ -2592,17 +2516,7 @@ public class ProverView extends ViewPart {
 	 *            is it a subgoal button
 	 */
 	private void setButtonProved(Button b, boolean is_goal, boolean is_subGoal) {
-		if (FileInfos.images_mode) {
 			b.setImage(IConstants.IMAGE_VALID);
-		} else {
-			if (is_goal)
-				if (is_subGoal)
-					b.setBackground(subGoalProvedBtColor);
-				else
-					b.setBackground(goalProvedBtColor);
-			else
-				b.setBackground(funcProvedBtColor);
-		}
 	}
 
 	/**
@@ -2620,7 +2534,6 @@ public class ProverView extends ViewPart {
 	 */
 	private void setButtonUnproved(Button b, boolean is_goal,
 			boolean is_subGoal, int errno) {
-		if (FileInfos.images_mode) {
 			switch (errno) {
 			case 2:
 				b.setImage(IConstants.IMAGE_INVALID);
@@ -2638,15 +2551,6 @@ public class ProverView extends ViewPart {
 				b.setImage(IConstants.IMAGE_UNPROVED);
 				break;
 			}
-		} else {
-			if (is_goal)
-				if (is_subGoal)
-					b.setBackground(subGoalUnprovedBtColor);
-				else
-					b.setBackground(goalUnprovedBtColor);
-			else
-				b.setBackground(funcUnprovedBtColor);
-		}
 	}
 
 	/**
@@ -2661,16 +2565,6 @@ public class ProverView extends ViewPart {
 	 *            is it a subgoal button
 	 */
 	private void setButtonWorking(Button b, boolean is_goal, boolean is_subGoal) {
-		if (FileInfos.images_mode) {
 			b.setImage(IConstants.IMAGE_WORKING);
-		} else {
-			if (is_goal)
-				if (is_subGoal)
-					b.setBackground(subGoalWorkingBtColor);
-				else
-					b.setBackground(goalWorkingBtColor);
-			else
-				b.setBackground(funcWorkingBtColor);
-		}
 	}
 }

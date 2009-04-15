@@ -39,17 +39,14 @@ public class Runner implements IWorkbenchWindowActionDelegate {
 			parent = a.getViewer().getParent();
 		}
 		public void aboutToRun(IJobChangeEvent event) {
-			// TODO Auto-generated method stub
-			
+			return;
 		}
 		public void awake(IJobChangeEvent event) {
-			// TODO Auto-generated method stub
-			
+			return;
 		}
 		public void done(IJobChangeEvent event) {
 			parent.getDisplay().syncExec(new Runnable() {
 					public void run() {
-			System.out.println ("Updating");
 			a.warn();
 			a.makeColumns();
 			a.CURSOR = 0;
@@ -60,16 +57,13 @@ public class Runner implements IWorkbenchWindowActionDelegate {
 			});
 		}
 		public void running(IJobChangeEvent event) {
-			// TODO Auto-generated method stub
-			
+			return;
 		}
 		public void scheduled(IJobChangeEvent event) {
-			// TODO Auto-generated method stub
-			
+			return;
 		}
 		public void sleeping(IJobChangeEvent event) {
-			// TODO Auto-generated method stub
-			
+			return;
 		}
 	}
 	
