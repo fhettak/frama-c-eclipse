@@ -178,9 +178,13 @@ public class ExecVerifTool {
 		if( (array=c.getCommands()) == null ) {
 			return false;
 		}
+		File rootFolder = new File(FileInfos.getRoot());
+		
+		if (!rootFolder.exists())
+			rootFolder.mkdir();
 		
 		//and try to execute it
-		if(!executor.execute(new File(FileInfos.getRoot()), array, true)) {
+		if(!executor.execute(rootFolder, array, true)) {
 			ERROR = executor.getError();
 			return false;
 		}

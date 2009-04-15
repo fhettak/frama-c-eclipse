@@ -71,7 +71,6 @@ public class Commands {
 			String w = "";
 		
 			if(type.equals("c")) { // ##### C FILE #####
-			
 				recognized = true;
 				w = "frama-c -jessie-analysis ";
 				if(separation) {
@@ -89,7 +88,7 @@ public class Commands {
 				if(overflow) {
 					w += "-jessie-int-model bounded ";
 				}
-				w += FileInfos.getName() + ".c";
+				w += "../" + FileInfos.getName() + ".c";
 				commands.add(w);
 			
 			} else if(type.equals("java")) { // ##### JAVA FILE #####

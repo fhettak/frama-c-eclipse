@@ -162,17 +162,15 @@ public interface IConstants {
 		dp + " yices/%s_po%n_why.smt"												+ ELEMENT_SEPARATOR	+ LINE_SEPARATOR +
 		"assistant"																	+ ELEMENT_SEPARATOR +
 		"CoqIDE"																	+ ELEMENT_SEPARATOR +
-		"make -f %s.makefile coq/%s_ctx_why.vo"										+ ELEMENT_SEPARATOR	+
-		"make -f %s.makefile coq/%s_po%n_why.v"										+ ELEMENT_SEPARATOR	+
-		"coqc -I coq coq/%s_po%n_why.v"												+ ELEMENT_SEPARATOR	+
-		"coqide -I coq coq/%s_po%n_why.v"											+ ELEMENT_SEPARATOR	+ LINE_SEPARATOR
+		"make -f %s.makefile coq/%s_why.v"										+ ELEMENT_SEPARATOR	+
+		"coqide -I coq coq/%s_why.v"											+ ELEMENT_SEPARATOR	+ LINE_SEPARATOR
 	;
 	
 	//of verification tools commands
 	public static final String PREF_LIST_OF_COMMANDS_DEFAULT_VALUE						=
-		"c"																								+ LINE_SEPARATOR +
-		"frama-c -jessie-analysis -jc-opt -separation %s.c"													+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
-		"make -C %s.jessie -f %s.makefile goals"													+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
+		"c"	+ LINE_SEPARATOR +
+		"frama-c -jessie-analysis -jc-opt -separation ../%s.c"						+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
+		"make -f %s.makefile goals"													+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
 		"java"																							+ LINE_SEPARATOR +
 		"krakatoa %s.java"															+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
 		"jessie -locs %s.jloc %s.jc"												+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
