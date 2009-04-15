@@ -95,12 +95,6 @@
    	  		class="net.eclipse.why.editeur.preferences.ProversPreferencesPage"
    	  		category="net.eclipse.why.editeur.preferences.MainPreferencesPage">
    	  </page>
-   	  <page
-   	  		id="net.eclipse.why.editeur.preferences.ColorsPreferencesPage"
-   	  		name="Colors"
-   	  		class="net.eclipse.why.editeur.preferences.ColorsPreferencesPage"
-   	  		category="net.eclipse.why.editeur.preferences.MainPreferencesPage">
-   	  </page>
    </extension>
    <extension
          point="org.eclipse.ui.views">

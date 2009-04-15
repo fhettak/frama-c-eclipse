@@ -61,28 +61,7 @@ public class EditeurWHY extends AbstractUIPlugin {
 	
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
 		
-		//Couleurs des boutons de la ProverView et du texte dans le POViewer
-		PreferenceConverter.setDefault(store, IConstants.PREF_POV_BACKGROUND_COLOR, IConstants.PREF_POV_BACKGROUND_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_GOALS_BUTTON_BG_COLOR, IConstants.PREF_GOALS_BUTTON_BG_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_SUBGOALS_BUTTON_BG_COLOR, IConstants.PREF_SUBGOALS_BUTTON_BG_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_FUNCS_BUTTON_BG_COLOR, IConstants.PREF_FUNCS_BUTTON_BG_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_GOALS_BUTTON_PROVED_COLOR, IConstants.PREF_GOALS_BUTTON_PROVED_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_SUBGOALS_BUTTON_PROVED_COLOR, IConstants.PREF_SUBGOALS_BUTTON_PROVED_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_GOALS_BUTTON_WORKING_COLOR, IConstants.PREF_GOALS_BUTTON_WORKING_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_SUBGOALS_BUTTON_WORKING_COLOR, IConstants.PREF_SUBGOALS_BUTTON_WORKING_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_GOALS_BUTTON_UNPROVED_COLOR, IConstants.PREF_GOALS_BUTTON_UNPROVED_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_SUBGOALS_BUTTON_UNPROVED_COLOR, IConstants.PREF_SUBGOALS_BUTTON_UNPROVED_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_FUNCS_BUTTON_PROVED_COLOR, IConstants.PREF_FUNCS_BUTTON_PROVED_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_FUNCS_BUTTON_WORKING_COLOR, IConstants.PREF_FUNCS_BUTTON_WORKING_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_FUNCS_BUTTON_UNPROVED_COLOR, IConstants.PREF_FUNCS_BUTTON_UNPROVED_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_FUNCS_ASSISTANT_BUTTON_BG_COLOR, IConstants.PREF_FUNCS_ASSISTANT_BUTTON_BG_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_GOALS_ASSISTANT_BUTTON_BG_COLOR, IConstants.PREF_GOALS_ASSISTANT_BUTTON_BG_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_SUBGOALS_ASSISTANT_BUTTON_BG_COLOR, IConstants.PREF_SUBGOALS_ASSISTANT_BUTTON_BG_COLOR_DEFAULT_VALUE);
-		
-		PreferenceConverter.setDefault(store, IConstants.PREF_MARKED_GOAL_TEXT_COLOR, IConstants.PREF_MARKED_GOAL_TEXT_COLOR_DEFAULT_VALUE);
-		PreferenceConverter.setDefault(store, IConstants.PREF_MARKED_FUNC_TEXT_COLOR, IConstants.PREF_MARKED_FUNC_TEXT_COLOR_DEFAULT_VALUE);
-		
-		//Nb lines to show in the Prover View
+		// Number of lines to show in the Prover View
 		store.setDefault(IConstants.PREF_SHOW_NB_LINES, IConstants.PREF_SHOW_NB_LINES_DEFAULT_VALUE);
 		store.setDefault(IConstants.PREF_SHOW_ALL_LINES, IConstants.PREF_SHOW_ALL_LINES_DEFAULT_VALUE);
 		

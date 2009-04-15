@@ -62,9 +62,7 @@ public class POViewer extends ViewPart {
 
 	
 	public void createPartControl(Composite parent) {
-		text = new StyledText(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-		checkColors();
-		
+		text = new StyledText(parent, SWT.H_SCROLL | SWT.V_SCROLL);		
 		makeActions();
 		contributeToActionBars();
 	}
@@ -146,9 +144,6 @@ public class POViewer extends ViewPart {
 			return;
 		}
 		
-		//updates colors
-		checkColors();
-		
 		if(ttext > 0) //if we've a title text
 			setPartName(IConstants.PO_VIEW_TITLE + " : po " + ttext); //put it in the view
 		else
@@ -213,11 +208,8 @@ public class POViewer extends ViewPart {
 		if(POMode) {
 			return;
 		}
-		
-		//updates colors
-		checkColors();
-		
-		//no tooltip text and no goal number to show in the title
+				
+		// no tooltip text and no goal number to show in the title
 		setTitleToolTip(null);
 		setPartName(IConstants.PO_VIEW_TITLE);
 		
@@ -232,28 +224,13 @@ public class POViewer extends ViewPart {
 			}
 		}
 	}
-	
-	
-	/**
-	 * Colors update : change the foreground and the
-	 * background colors of this view
-	 */
-	private void checkColors() {
-		IPreferenceStore store = EditeurWHY.getDefault().getPreferenceStore();
-		RGB bg = PreferenceConverter.getColor(store, IConstants.PREF_POV_BACKGROUND_COLOR);
-		Color bgColor = new Color(null,bg.red, bg.green, bg.blue);
-		Color fgColor = new Color(null,0, 0, 0);
-		text.setBackground(bgColor); //from preferences
-		text.setForeground(fgColor); //black by default
-	}
-	
+		
 	/**
 	 * Update the view : check new colors and print the
 	 * Context file or the selected PO.
 	 */
 	public void update() {
 		try {
-			checkColors();
 			if(POMode) {
 				inputPO();
 			} else {

@@ -30,7 +30,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -45,7 +44,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -532,32 +530,6 @@ public class ProverView extends ViewPart {
 			else
 				NUMBER_OF_SUBGOALS += poa.getNbSubGoals();
 		}
-
-		// Gets out from preferences values the background colors for buttons
-		RGB rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_GOALS_BUTTON_BG_COLOR);
-		goalBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_SUBGOALS_BUTTON_BG_COLOR);
-		subGoalBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_FUNCS_BUTTON_BG_COLOR);
-		funcBtColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_GOALS_ASSISTANT_BUTTON_BG_COLOR);
-		assistantGoalBgColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_SUBGOALS_ASSISTANT_BUTTON_BG_COLOR);
-		assistantSubGoalBgColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_FUNCS_ASSISTANT_BUTTON_BG_COLOR);
-		assistantFuncBgColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_MARKED_GOAL_TEXT_COLOR);
-		markedGoalColor = new Color(null, rgb.red, rgb.green, rgb.blue);
-		rgb = PreferenceConverter.getColor(store,
-				IConstants.PREF_MARKED_FUNC_TEXT_COLOR);
-		markedFuncColor = new Color(null, rgb.red, rgb.green, rgb.blue);
 
 		// initializes buttons boards
 		goalsButton = new Button[NUMBER_OF_GOALS][proversNumber];

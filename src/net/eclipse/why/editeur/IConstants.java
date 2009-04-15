@@ -123,25 +123,6 @@ public interface IConstants {
 	public static final String PROP_WHYOPT			=	"OPT_PROPERTY";
 	public static final String PROP_WHYOPT_DEFAULT	=	"1000";
 	
-	//Preferences Page ID Strings
-	public static final String PREF_POV_BACKGROUND_COLOR      							=	"POV_BACKGROUND_COLOR";
-	public static final String PREF_GOALS_BUTTON_BG_COLOR       						=	"GOALS_BUTTON_BG_COLOR";
-	public static final String PREF_SUBGOALS_BUTTON_BG_COLOR       						=	"SUBGOALS_BUTTON_BG_COLOR";
-	public static final String PREF_FUNCS_BUTTON_BG_COLOR   							=	"FUNCS_BUTTON_BG_COLOR";
-	public static final String PREF_GOALS_BUTTON_PROVED_COLOR							=	"GOALS_BUTTON_PROVED_COLOR";
-	public static final String PREF_SUBGOALS_BUTTON_PROVED_COLOR						=	"SUBGOALS_BUTTON_PROVED_COLOR";
-	public static final String PREF_FUNCS_BUTTON_PROVED_COLOR							=	"FUNCS_BUTTON_PROVED_COLOR";
-	public static final String PREF_GOALS_BUTTON_WORKING_COLOR	 						=	"GOALS_BUTTON_WORKING_COLOR";
-	public static final String PREF_SUBGOALS_BUTTON_WORKING_COLOR	 					=	"SUBGOALS_BUTTON_WORKING_COLOR";
-	public static final String PREF_FUNCS_BUTTON_WORKING_COLOR	 						=	"FUNCS_BUTTON_WORKING_COLOR";
-	public static final String PREF_GOALS_BUTTON_UNPROVED_COLOR	 						=	"GOALS_BUTTON_UNPROVED_COLOR";
-	public static final String PREF_SUBGOALS_BUTTON_UNPROVED_COLOR 						=	"SUBGOALS_BUTTON_UNPROVED_COLOR";
-	public static final String PREF_FUNCS_BUTTON_UNPROVED_COLOR	 						=	"FUNCS_BUTTON_UNPROVED_COLOR";
-	public static final String PREF_GOALS_ASSISTANT_BUTTON_BG_COLOR 					=	"GOALS_ASSISTANT_BUTTON_BG_COLOR";
-	public static final String PREF_SUBGOALS_ASSISTANT_BUTTON_BG_COLOR					=	"SUBGOALS_ASSISTANT_BUTTON_BG_COLOR";
-	public static final String PREF_FUNCS_ASSISTANT_BUTTON_BG_COLOR 					=	"FUNCS_ASSISTANT_BUTTON_BG_COLOR";
-	public static final String PREF_MARKED_GOAL_TEXT_COLOR								=	"MARKED_GOAL_TEXT_COLOR";
-	public static final String PREF_MARKED_FUNC_TEXT_COLOR								=	"MARKED_FUNC_TEXT_COLOR";
 	public static final String PREF_SHOW_NB_LINES            							=	"SHOW_NB_LINES";
 	public static final String PREF_SHOW_ALL_LINES           							=	"SHOW_ALL_LINES";
 	public static final String PREF_LIST_OF_COMMANDS         							=	"LIST_OF_COMMANDS";
@@ -154,9 +135,6 @@ public interface IConstants {
 	public static final String PREF_RUN_OPTIONS_ADVANCED_MODE							=	"RUN_OPTIONS_ADVANCED_MODE";
 	public static final String PREF_DTD_USING_FILE										=	"DTD_USING_FILE";
 	public static final String PREF_DTD_FILE_LOCATION									=	"DTD_FILE_LOCATION";
-
-	
-	
 	
 	// I] PREFERENCES DEFAULT VALUES
 	
