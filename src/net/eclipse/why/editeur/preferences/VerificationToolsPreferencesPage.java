@@ -5,8 +5,8 @@ import java.util.Vector;
 
 import net.eclipse.why.editeur.EditeurWHY;
 import net.eclipse.why.editeur.IConstants;
-import net.eclipse.why.editeur.actions.TraceDisplay;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.BooleanFieldEditor;
@@ -639,7 +639,7 @@ public class VerificationToolsPreferencesPage extends PreferencePage implements 
 					//get the first one
 					cmd = champs[0];
 				} catch(Exception e) {
-					TraceDisplay.print(MessageType.ERROR, "VerificationToolsPreferencesPage, error checking a command : " + e);
+					TraceView.print(MessageType.ERROR, "VerificationToolsPreferencesPage, error checking a command : " + e);
 				}
 				//create the new command in the Extension x
 				new Command(x, cmd);

@@ -3,11 +3,13 @@ package net.eclipse.why.editeur.actions;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.regex.Matcher;
 
 import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.IConstants;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
 import net.eclipse.why.editeur.editors.GeneralEditor;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -99,7 +101,7 @@ public class Highlightor {
 	}
 	
 	/**
-	 * Initialisation function : there is not previous
+	 * Initialization function : there is not previous
 	 * StyledText and not previous ModifyListener
 	 */
 	private static void reinit() {
@@ -127,8 +129,6 @@ public class Highlightor {
 	 * @param false if the zone is an error area, true otherwise
 	 */
 	private static void highLight(String file, boolean green) {
-		
-		
 		int a, b;
 		FileReader fr;
 		BufferedReader in;
@@ -136,38 +136,21 @@ public class Highlightor {
 		try {
 				
 			String c;
-			String file2 = file;
 			int ch = 0;
 			int i = 1;
 			
 			//Open the source file
 			IEditorPart editor = null;
-			int q = 0;
-			while(q<2) {
-				if(q==1) {
-					file2 = FileInfos.getRoot() + file2;
-				}
-				try {
-					int begNameIndex = file2.lastIndexOf(File.separator);
-					String fileName = file2.substring(begNameIndex+1);
+			try {
 					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-					int pluginPathLength = root.getLocation().toString().length();
-					String relativePath = file2.substring(pluginPathLength,begNameIndex);
-					IResource resource = root.findMember(new Path(relativePath));
-					IContainer cont = (IContainer) resource;
-					IFile ifile = cont.getFile(new Path(fileName));
+					IFile ifile = root.getFileForLocation(new Path(file));
 					IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 					IWorkbenchPage page = window.getActivePage();
 					editor = IDE.openEditor(page, ifile, true);
-					q = 3;
-					adjust_zone = file2.equals(FileInfos.getFullName());
-				} catch(Exception e) {
-					q++;
-				}
-			}
-			
-			if(q == 2) {
-				TraceDisplay.print(MessageType.WARNING, "Highlightor.highlight() : File " + file + " unknown");
+					adjust_zone = file.equals(FileInfos.getFullName());
+			} catch (Exception e) {
+				TraceView.print(MessageType.WARNING, "File is unknown: " + file);
+				e.printStackTrace();
 				return;
 			}
 			
@@ -175,7 +158,7 @@ public class Highlightor {
 			if(line > 0) {
 				
 				//Computation of first character number after which the text will be highlighted
-				fr = new FileReader(file2);
+				fr = new FileReader(file);
 				in = new BufferedReader(fr);
 				
 				while( (c = in.readLine()) != null ) {
@@ -187,11 +170,6 @@ public class Highlightor {
 				fr.close();
 				in.close();
 				
-				//Ici on ajuste les bornes de la zone a surligner
-				//car il peut y avoir des pb avec les retours à la ligne
-				//de 2 caractères (\r\n) alors qu'un seul n'est pris en compte dans le fichier
-				//ce qui peut induire un décalage non négligeable dans les gros fichiers :
-				//1000 lignes => 1000 caractères de décalage !!!
 				//Here we adjust the landmarks of highlighted text zone
 				//to compensate for '\r\n' in the text.
 				a = char1;
@@ -293,7 +271,7 @@ public class Highlightor {
 			}
 			
 		} catch(Exception e) {
-			TraceDisplay.print(MessageType.ERROR, "Highlightor.highLight() : " + e);
+			TraceView.print(MessageType.ERROR, "Highlightor.highLight() : " + e);
 		}
 	}
 	
@@ -303,9 +281,8 @@ public class Highlightor {
 	 * 
 	 * @return the file in which this zone is
 	 */
-	private static String checkZoneFromXPLFile() {
+	private static String checkZoneFromXPLFile(String file) {
 		
-		String file = FileInfos.getRoot() + "why" + File.separator + FileInfos.getName() + "_po" + goalNum + ".xpl";
 		String c = "";
 		String result_file = "";
 		
@@ -399,15 +376,8 @@ public class Highlightor {
 				
 				x = err[e].indexOf("-");
 				y = err[e].indexOf(":");
-				char2 = Integer.parseInt(err[e].substring(x+1,y)); //last but not least, the 34 !
-				
-				//Si vous avez joué ces numéros, sachez que cette semaine le tiercé
-				//rapporte dans l'ordre 2457€, dans le désordre, un peu plus de 153€.
-				//Quand au 2 sur 4, il vous rapporte dans les 70€ grâce à la casaque orange
-				//Moulons du Paquet le numéro 18 qui partait outsider avec une cote
-				//de 15 contre 1 ...
-				
-				break; //il était temps!
+				char2 = Integer.parseInt(err[e].substring(x+1,y)); //last but not least, the 34 !				
+				break;
 			}
 		}
 		
@@ -432,12 +402,12 @@ public class Highlightor {
 	 * 
 	 * @return the 'kind' attribute of the PO
 	 */
-	public static String selectFromXPL() {
-		String file = checkZoneFromXPLFile();
+	public static String selectFromXPL(String xplFile) {
+		String file = checkZoneFromXPLFile(xplFile);
 		if(exists(file)) {
 			highLight(file,true);
 		} else {
-			TraceDisplay.print(MessageType.WARNING, "No source file found in .xpl file for this goal");
+			TraceView.print(MessageType.WARNING, "No source file found in .xpl file for this goal");
 		}
 		return kind;
 	}

@@ -8,12 +8,13 @@ import java.util.ArrayList;
 
 import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.WhyCode;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
 import net.eclipse.why.editeur.lexer.ast.LExprAnd;
 import net.eclipse.why.editeur.lexer.ast.LExprIdStr;
 import net.eclipse.why.editeur.lexer.ast.LExprPar;
 import net.eclipse.why.editeur.lexer.ast.Pointer;
 import net.eclipse.why.editeur.lexer.ast.PrintVisitor;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 
 /**
@@ -162,7 +163,7 @@ public class Splitter {
 			if(ff != null) {
 				for(int fff=0; fff<ff.length; fff++) {
 					if(!ff[fff].delete()) {
-						TraceDisplay.print(MessageType.ERROR, "File " + ff[fff].getName() + " cannot be deleted!");
+						TraceView.print(MessageType.ERROR, "File " + ff[fff].getName() + " cannot be deleted!");
 					}
 				}
 			}
@@ -188,7 +189,7 @@ public class Splitter {
 			return elem;
 			
 		} catch (IOException e) {
-			TraceDisplay.print(MessageType.ERROR, "Splitter.split() : " + e);
+			TraceView.print(MessageType.ERROR, "Splitter.split() : " + e);
 			return 0;
 		}
 	}

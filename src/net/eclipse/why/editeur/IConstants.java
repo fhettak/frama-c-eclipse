@@ -2,8 +2,6 @@ package net.eclipse.why.editeur;
 
 import java.net.URL;
 
-import net.eclipse.why.editeur.actions.DP;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -146,20 +144,13 @@ public interface IConstants {
 		"assistant"	+	ELEMENT_SEPARATOR
 	;
 	
-	public static final String dp = DP.get(); //of dp and others commands for provers
+	public static final String dp = "why-dp";
 	public static final String PREF_LIST_OF_PROOF_COMMANDS_DEFAULT_VALUE				=
 		"prover"																	+ ELEMENT_SEPARATOR +
-		"Simplify"																	+ ELEMENT_SEPARATOR +
-		"why --simplify -dir simplify -no-prelude why/%s_ctx.why why/%s_po%n.why"	+ ELEMENT_SEPARATOR	+
-		dp + " simplify/%s_po%n_why.sx"												+ ELEMENT_SEPARATOR	+ LINE_SEPARATOR +
-		"prover"																	+ ELEMENT_SEPARATOR +
 		"Alt-Ergo"																	+ ELEMENT_SEPARATOR +
-		"why --why -dir ergo -no-prelude why/%s_ctx.why why/%s_po%n.why"			+ ELEMENT_SEPARATOR	+
-		dp + " ergo/%s_po%n_why.why"												+ ELEMENT_SEPARATOR	+ LINE_SEPARATOR +
-		"prover"																	+ ELEMENT_SEPARATOR +
-		"Yices"																		+ ELEMENT_SEPARATOR +
-		"why --smtlib -dir yices -no-prelude why/%s_ctx.why why/%s_po%n.why" 		+ ELEMENT_SEPARATOR	+
-		dp + " yices/%s_po%n_why.smt"												+ ELEMENT_SEPARATOR	+ LINE_SEPARATOR +
+		"why --why -dir ergo -no-prelude why/%s_ctx.why why/%g_po_%n.why"			+ ELEMENT_SEPARATOR	+
+		dp + " ergo/%g_po_%n_why.why"												+ ELEMENT_SEPARATOR +	
+																					LINE_SEPARATOR +
 		"assistant"																	+ ELEMENT_SEPARATOR +
 		"CoqIDE"																	+ ELEMENT_SEPARATOR +
 		"make -f %s.makefile coq/%s_why.v"										+ ELEMENT_SEPARATOR	+
@@ -168,14 +159,9 @@ public interface IConstants {
 	
 	//of verification tools commands
 	public static final String PREF_LIST_OF_COMMANDS_DEFAULT_VALUE						=
-		"c"	+ LINE_SEPARATOR +
-		"frama-c -jessie-analysis -jc-opt -separation ../%s.c"						+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
-		"make -f %s.makefile goals"													+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
-		"java"																							+ LINE_SEPARATOR +
-		"krakatoa %s.java"															+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
-		"jessie -locs %s.jloc %s.jc"												+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
-		"make -f %s.makefile goals"													+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
-		"jc"																							+ LINE_SEPARATOR +
+		"c"																			+ LINE_SEPARATOR +
+		"frama-c -jessie-analysis -jessie-gen-goals -jc-opt -separation ../%s.c"	+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
+		"jc"																		+ LINE_SEPARATOR +
 		"jessie -locs %s.jloc %s.jc"												+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
 		"make -f %s.makefile goals"													+ ELEMENT_SEPARATOR + LINE_SEPARATOR
 	;

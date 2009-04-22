@@ -1,14 +1,11 @@
 package net.eclipse.why.editeur;
 
 /**
- * The function of this class is to generate a title for POs
+ * This class is holding the titles for POs
  * 
- * @author oudot
+ * @author A. Oudot
  */
 public class GoalTitles {
-
-	
-
 	
 	/**
 	 * Match board between kinds, complementary texts and goal titles
@@ -36,7 +33,7 @@ public class GoalTitles {
 	
 	/**
 	 * Giving a kind of PO associated with a text, this function returns
-	 * a title automaticaly generated, or null in insonsistent cases.
+	 * a title automatically generated, or null in inconsistent cases.
 	 * 
 	 * @param kind the kind of the PO
 	 * @param text the PO's text

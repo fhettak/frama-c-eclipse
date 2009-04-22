@@ -6,8 +6,8 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import net.eclipse.why.editeur.actions.TraceDisplay;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 /**
  * Class used to store all the global informations
@@ -88,15 +88,13 @@ public class FileInfos {
 	
 	
 	/**
-	 * Initialisation of provers from the Preferences Page
+	 * Initialization of provers from the Preferences Page
 	 */
 	public static void initProvers() {
 		
 		provers = EditeurWHY.getDefault().getPreferenceStore().getString(IConstants.PREF_LIST_OF_PROOF_COMMANDS).split(IConstants.LINE_SEPARATOR);
 		int l = provers.length;
 		
-		//Ici on récupère le noms de chacun des prouveurs ainsi que l'extension
-		//correspondante et l'exécutable s'il existe!
 		//We get here the names of each prover with his extension and the
 		//executable file name, if it exists!
 		if( l > 1 || (l == 1 && !(provers[0].trim().equals("")) ) ) {
@@ -155,8 +153,6 @@ public class FileInfos {
 		String[] newProverStats 	= new String[]{("")};
 		
 		
-		//Ici on récupère le noms des nouveaux prouveurs ainsi que les extensions
-		//correspondantes ainsi que l'exécutable s'il existe !
 		//We get here the names of each new prover with his extension and the
 		//executable file name, if it exists!
 		if(l2 > 1 || (l2 == 1 && !newProvers[0].trim().equals("")) ) {
@@ -177,9 +173,7 @@ public class FileInfos {
 				newProverStats[t] 		= "";
 			}
 		}
-		
-		
-		//Comparaison anciens prouveurs - Nouveaux prouveurs !
+				
 		//We compare old and new provers
 		if(l1 != l2) {
 			equals = false; //not the same number of provers
@@ -202,17 +196,12 @@ public class FileInfos {
 				permutations_tab[o] = -1;
 			}
 			
-			//On compare un à un les anciens prouveurs aux nouveaux en utilisant leur nom !
-			//On estime qu'un prouveur s'appelant 'prout-prout-tagada' avant et après modif
-			//reste le même ...
 			//We compare old and new provers using their names! Indeed we consider that
 			//a prover named 'alt-ergo', a total random named prover not to make advertising,
 			//before and after having been modified is the same one...
 			for(int r=0; r<l2; r++) {
 				
 				for(int o=0; o<l1; o++) {
-					//si donc un prouveur existait, on récupère les infos sur les états pour les
-					//placer dans le nouveau tableau !
 					//if the prover was defined, we get all corresponding states fields
 					if(provers[o].equals(newProvers[r])) {
 						for(int v=0; v<whyFileNumber; v++) {
@@ -223,52 +212,21 @@ public class FileInfos {
 				}
 			}
 			
-			//Reste à remplacer les anciennes valeurs par les nouvelles ...
-			//We subsitute old values by new values
+			//We substitute old values by new values
 			provers = newProvers;
 			status = newStatus;
 			commands = newCommands;
 			proverStats = newProverStats;
 			
-			//We make necessary switches in PO baord
+			//We make necessary switches in PO board
 			for(int d = 0; d<goals.size(); d++) {
 				((PO)goals.get(d)).pswitch(permutations_tab);
 			}
 			
 		}
 		
-		
-		//	   A préciser : cette fonction opère les changements quel que soit le
-		//   nombre des nouveaux prouveurs par apport aux anciens (<, = ou >), effectue
-		//   les changement idoines en cas de simple inversion des prouveurs dans les
-		//   Préférences et, bien sûr, en cas d'ajout ou de suppression !
 	}
-	
-	/*
-	 * Création d'un répertoire pour chacun des prouveurs. Les buts exprimés dans le langage
-	 * de ces prouveurs seront placés dans les répertoires créés correspondament.<BR>
-	 *
-	private static void createProverDirectories() {
 		
-		if(program != null) {
-			
-			int l = provers.length;
-		
-			if(l > 1 || (l == 1 && !(provers[0].trim().equals("")) ) ) {
-			
-				for(int v=0; v<l; v++) {
-					String destDir = rootDir + FileInfos.provers[v].toLowerCase();
-					File directory = new File(destDir);
-		
-					if(!directory.isDirectory()) {
-						directory.mkdir();
-						TraceDisplay.printMsg("Directory " + destDir + " created");
-					}
-				}
-			}
-		}
-	}/**/
-	
 	/**
 	 * This function completes the ArrayList object <code>doubleCharsInCFile</code>.
 	 * It contains locations of all "\r\n" strings which are in the source file. 
@@ -296,7 +254,7 @@ public class FileInfos {
 			is.close();
 			
 		} catch(Exception e) {
-			TraceDisplay.print(MessageType.ERROR, "FileInfos.locateDoubleCharsInCFile() : " + e);
+			TraceView.print(MessageType.ERROR, "FileInfos.locateDoubleCharsInCFile() : " + e);
 		}
 	}
 	
@@ -304,9 +262,9 @@ public class FileInfos {
 	 * Compute highlight zones locations which depends on positions
 	 * of "\r\n" strings in the source file.
 	 * 
-	 * @param mark nb of characters before lines to highlight
-	 * @param h1 charcter of the line where starts the highlight
-	 * @param h2 charcter of the line where stops the highlight
+	 * @param mark number of characters before lines to highlight
+	 * @param h1 character of the line where starts the highlight
+	 * @param h2 character of the line where stops the highlight
 	 * @return the three new integer
 	 */
 	public static int[] adjustHighLightZone(int mark, int h1, int h2) {

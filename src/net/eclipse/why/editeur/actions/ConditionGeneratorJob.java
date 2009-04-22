@@ -3,7 +3,8 @@ package net.eclipse.why.editeur.actions;
 import net.eclipse.why.editeur.Context;
 import net.eclipse.why.editeur.Goal;
 import net.eclipse.why.editeur.WhyElement;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
@@ -16,9 +17,9 @@ import org.eclipse.core.runtime.Status;
  */
 public class ConditionGeneratorJob extends WorkspaceJob {
 
-	private ExecVerifTool exec;
+	private VerificationToolExecutor exec;
 
-	public ConditionGeneratorJob(ExecVerifTool evt) {
+	public ConditionGeneratorJob(VerificationToolExecutor evt) {
 		super("Verification Conditions Generation");
 		exec = evt;
 		return;
@@ -33,7 +34,6 @@ public class ConditionGeneratorJob extends WorkspaceJob {
 
 			monitor.beginTask("Cleaning up", 3);
 
-			
 			WhyElement.clean();
 			Context.clean();
 			Goal.clean();
@@ -60,7 +60,7 @@ public class ConditionGeneratorJob extends WorkspaceJob {
 			}
 			monitor.done();
 		} catch (Exception e) {
-			TraceDisplay.print(MessageType.ERROR, "VCGThread.run() : " + e);
+			TraceView.print(MessageType.ERROR, "VCGThread.run() : " + e);
 		}
 		return Status.OK_STATUS;
 	}

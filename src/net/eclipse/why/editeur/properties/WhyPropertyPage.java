@@ -1,8 +1,8 @@
 package net.eclipse.why.editeur.properties;
 
 import net.eclipse.why.editeur.IConstants;
-import net.eclipse.why.editeur.actions.TraceDisplay;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -88,7 +88,7 @@ public class WhyPropertyPage extends PropertyPage {
 			overflow.setSelection(sopt.substring(2,3).equals("1"));
 			fastWP.setSelection(sopt.substring(3).equals("1"));
 		} catch (Exception e) {
-			TraceDisplay.print(MessageType.ERROR, "Error reading properties : " + e);
+			TraceView.print(MessageType.ERROR, "Error reading properties : " + e);
 		}
 		
 		return composite;
@@ -120,7 +120,7 @@ public class WhyPropertyPage extends PropertyPage {
 			IResource resource = (IResource)adaptable.getAdapter(IResource.class);
 			resource.setPersistentProperty(new QualifiedName("", IConstants.PROP_WHYOPT), sopt);
 		} catch (CoreException e) {
-			TraceDisplay.print(MessageType.ERROR, "Error saving properties : " + e);
+			TraceView.print(MessageType.ERROR, "Error saving properties : " + e);
 			return false;
 		}
 		return true;

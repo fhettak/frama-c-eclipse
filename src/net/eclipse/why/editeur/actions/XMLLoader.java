@@ -15,8 +15,9 @@ import net.eclipse.why.editeur.Goal;
 import net.eclipse.why.editeur.IConstants;
 import net.eclipse.why.editeur.PO;
 import net.eclipse.why.editeur.WhyElement;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
 import net.eclipse.why.editeur.views.ProverView;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -98,11 +99,11 @@ public class XMLLoader extends DefaultHandler {
 			SAXParser parser = factory.newSAXParser();
 			parser.parse(file, this);
 		} catch (ParserConfigurationException e) {
-			TraceDisplay.print(MessageType.ERROR, "XMLLoader.parse(), ParserConfigurationException : " + e);
+			TraceView.print(MessageType.ERROR, "XMLLoader.parse(), ParserConfigurationException : " + e);
 		} catch (SAXException e) {
-			TraceDisplay.print(MessageType.ERROR, "XMLLoader.parse(), SAXException : " + e);
+			TraceView.print(MessageType.ERROR, "XMLLoader.parse(), SAXException : " + e);
 		} catch (IOException e) {
-			TraceDisplay.print(MessageType.ERROR, "XMLLoader.parse(), IOException : " + e);
+			TraceView.print(MessageType.ERROR, "XMLLoader.parse(), IOException : " + e);
 		}
 		//make Prover View elements after loading...
 		FileInfos.initColumns();
@@ -165,7 +166,6 @@ public class XMLLoader extends DefaultHandler {
 			func = new Function();
 			m++;
 			o = 1;
-			func.setFirst_po(n);
 			for(int q=0; q<attrs.getLength(); q++) {
 				if(attrs.getQName(q).equals("name")) {
 					func.setName(attrs.getValue(q));
@@ -177,7 +177,6 @@ public class XMLLoader extends DefaultHandler {
 			func.putToLemma();
 			m++;
 			o = 1;
-			func.setFirst_po(n);
 			for(int q=0; q<attrs.getLength(); q++) {
 				if(attrs.getQName(q).equals("name")) {
 					func.setName(attrs.getValue(q));
@@ -225,7 +224,7 @@ public class XMLLoader extends DefaultHandler {
 				po.setNum_in_f(o);
 				po.setName("" + o);
 				po.initStates();
-				func.increase_po();
+				func.addPO(po);
 				n++;
 				o++;
 			}

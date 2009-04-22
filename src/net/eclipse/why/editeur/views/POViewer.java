@@ -4,21 +4,16 @@ import java.io.IOException;
 import java.util.Vector;
 
 import net.eclipse.why.editeur.Context;
-import net.eclipse.why.editeur.EditeurWHY;
 import net.eclipse.why.editeur.Goal;
 import net.eclipse.why.editeur.IConstants;
-import net.eclipse.why.editeur.actions.TraceDisplay;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
@@ -96,7 +91,7 @@ public class POViewer extends ViewPart {
 				try {
 					inputCTX(); //prompt the context
 				} catch (IOException e) {
-					TraceDisplay.print(MessageType.ERROR, "POViewer, can't display the CTX file : " + e);
+					TraceView.print(MessageType.ERROR, "POViewer, can't display the CTX file : " + e);
 				}
 			}
 		};
@@ -110,7 +105,7 @@ public class POViewer extends ViewPart {
 				try {
 					inputPO(); //prompt the selected goal
 				} catch (IOException e) {
-					TraceDisplay.print(MessageType.ERROR, "POViewer, can't display the PO file : " + e);
+					TraceView.print(MessageType.ERROR, "POViewer, can't display the PO file : " + e);
 				}
 			}
 		};
@@ -237,7 +232,7 @@ public class POViewer extends ViewPart {
 				inputCTX();
 			}
 		} catch(IOException io) {
-			TraceDisplay.print(MessageType.ERROR, "POViewer.update() : " + io);
+			TraceView.print(MessageType.ERROR, "POViewer.update() : " + io);
 		}
 	}
 }

@@ -2,8 +2,8 @@ package net.eclipse.why.editeur.editors;
 
 import java.io.IOException;
 
-import net.eclipse.why.editeur.actions.TraceDisplay;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -142,7 +142,7 @@ public class CharPairMatcher implements ICharacterPairMatcher {
 					c = reader.read();
 				}
 			} catch (IOException e) {
-				TraceDisplay.print(MessageType.ERROR,
+				TraceView.print(MessageType.ERROR,
 					"Failed to find matching closing peer for '" + //$NON-NLS-1$
 					openingPeer + '\'' + " : " +  e);
 			}
@@ -169,7 +169,7 @@ public class CharPairMatcher implements ICharacterPairMatcher {
 					c = reader.read();
 				}
 			} catch (IOException e) {
-				TraceDisplay.print(MessageType.ERROR,
+				TraceView.print(MessageType.ERROR,
 					"Failed to find matching opening peer for '" + //$NON-NLS-1$
 					closingPeer + '\'' + " : " + e);
 			}

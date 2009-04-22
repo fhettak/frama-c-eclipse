@@ -11,7 +11,8 @@ import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.Function;
 import net.eclipse.why.editeur.IConstants;
 import net.eclipse.why.editeur.PO;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -244,7 +245,7 @@ public class XMLSaver {
 			indent3();
 			for(int f=0; f<FileInfos.functions.size(); f++) {
 				Function function = (Function)FileInfos.functions.get(f);
-				boolean lemma = function.is_lemma();
+				boolean lemma = function.isLemma();
 				if(lemma)
 					writer.write("\n" + wspace + "<lemma ");
 				else
@@ -259,15 +260,12 @@ public class XMLSaver {
 				writer.write("\n" + wspace + "end=\"" + function.getLoc(2) + "\"");
 				unindent6();
 				writer.write("\n" + wspace + "/>\n");
-				int fpo = function.getFirst_po();
-				int lpo = fpo + function.getPo() -1;
 				if(!lemma) {
 					writer.write(wspace + "<behavior name=\"");
 					writer.write(function.getBehavior() + "\">\n");
 					indent3();
 				}
-				for(int g=fpo; g<=lpo; g++) {
-					PO po = (PO)FileInfos.goals.get(g-1);
+				for(PO po : function.getPOList()) {
 					writeGoal(po);
 					if(po.getNbSubGoals() > 0) {
 						for(int i=1; i<=po.getNbSubGoals(); i++) {
@@ -297,7 +295,7 @@ public class XMLSaver {
 			writer.close();
 			
 		} catch (IOException e) {
-			TraceDisplay.print(MessageType.ERROR, "XMLSaver.makeFile() : " + e);
+			TraceView.print(MessageType.ERROR, "XMLSaver.makeFile() : " + e);
 		}	
 	}
 	

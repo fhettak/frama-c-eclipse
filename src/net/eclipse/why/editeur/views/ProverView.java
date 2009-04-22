@@ -12,15 +12,13 @@ import net.eclipse.why.editeur.IConstants;
 import net.eclipse.why.editeur.PO;
 import net.eclipse.why.editeur.actions.Highlightor;
 import net.eclipse.why.editeur.actions.ProverThread;
-import net.eclipse.why.editeur.actions.ProverViewUpdator;
+import net.eclipse.why.editeur.actions.ProverViewUpdater;
 import net.eclipse.why.editeur.actions.Splitter;
-import net.eclipse.why.editeur.actions.TraceDisplay;
 import net.eclipse.why.editeur.actions.XMLLoader;
 import net.eclipse.why.editeur.actions.XMLSaver;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
 import net.eclipse.why.editeur.lexer.GoalDisplayModifier;
 import net.eclipse.why.editeur.lexer.ast.Pointer;
-import net.eclipse.why.editeur.menu.BtnMenu;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -95,11 +93,10 @@ public class ProverView extends ViewPart {
 	// Others
 	private int proversNumber;
 	private boolean showAllLines;
-	public int CURSOR = 0;
 	private Vector<ProverThread> threads = new Vector<ProverThread>();
 	private ArrayList<int[]> goalsInView = new ArrayList<int[]>();
 	private ArrayList<int[]> functionsInView = new ArrayList<int[]>();
-	private int columnSize = 150;
+	private int columnSize = 220;
 
 	/**
 	 * Tree getter
@@ -208,7 +205,7 @@ public class ProverView extends ViewPart {
 				makeStats(prover);
 
 			} catch (Exception exception) {
-				TraceDisplay.print(MessageType.ERROR,
+				TraceView.print(MessageType.ERROR,
 						"ProverView.MenuItemSelectionListener.widgetSelected() :\n"
 								+ exception);
 			}
@@ -244,11 +241,11 @@ public class ProverView extends ViewPart {
 					// the first goal is ok
 					// we've just to increment the last goal number
 					lgoal = fgoal;
-					lgoal += f.getPo();
+					lgoal += f.getPOList().size();
 					lgoal--;
 					break;
 				} else { // if it's a previous function
-					fgoal += f.getPo(); // we increment the first goal number to
+					fgoal += f.getPOList().size(); // we increment the first goal number to
 										// prove
 				}
 			}
@@ -326,10 +323,9 @@ public class ProverView extends ViewPart {
 					int aprim = ((int[]) tprim[y].getData("goal"))[0];
 					((PO) FileInfos.goals.get(aprim - 1)).collapse();
 				}
-				// a possible update of the slider if we don't
-				// have to show all goals
 				if (!showAllLines)
-					updateSlider(true);
+					countLines();
+				updateView();
 			} else if (t.getData("goal") != null) { // goal tree item
 				int a = ((int[]) t.getData("goal"))[0];
 				((PO) FileInfos.goals.get(a - 1)).collapse();
@@ -351,7 +347,8 @@ public class ProverView extends ViewPart {
 				// a possible update of the slider if we don't
 				// have to show all goals
 				if (!showAllLines)
-					updateSlider(true);
+					countLines();
+				updateView();
 			} else if (t.getData("goal") != null) { // goal tree item
 				int a = ((int[]) t.getData("goal"))[0];
 				((PO) FileInfos.goals.get(a - 1)).expand();
@@ -498,46 +495,45 @@ public class ProverView extends ViewPart {
 		// displays a warning message if the number of lines
 		// to show in the view is higher than a maximum number
 		// fixed to 150
-		warn();
+		checkLinesAndWarn();
 
 		// gets if all goals will be displayed and adjust the slider
 		IPreferenceStore store = EditeurWHY.getDefault().getPreferenceStore();
 		showAllLines = store.getBoolean(IConstants.PREF_SHOW_ALL_LINES);
 		if (!showAllLines) {
 			nb_lines_to_show = store.getInt(IConstants.PREF_SHOW_NB_LINES);
-			updateSlider(false);
+			countLines();
 		} else {
 			nb_lines_to_show = FileInfos.functions.size()
 					+ FileInfos.whyFileNumber + 1;
-			CURSOR = 0;
 		}
 
-		int goal_of_reference = getCursorGoal(); // first goal of the view
+		int goal_of_reference = 1;
 
 		// gets all goals and functions which have to be created in the view
 		// and save them in array lists goalsInView and functionsInView
 		getGoals(goal_of_reference, nb_lines_to_show - 1);
 
 		// gets here the number of subgoals to create
-		int NUMBER_OF_GOALS = goalsInView.size();
-		int NUMBER_OF_FUNCTIONS = functionsInView.size();
-		int NUMBER_OF_SUBGOALS = 0;
+		int numberOfGoals = goalsInView.size();
+		int nubmerOfFunctions = functionsInView.size();
+		int numberOfSubgoals = 0;
 		for (int b = 0; b < goalsInView.size(); b++) {
 			int a = ((int[]) goalsInView.get(b))[0] - 1;
 			PO poa = (PO) FileInfos.goals.get(a);
 			if (FileInfos.showOnlyUnprovedGoals)
-				NUMBER_OF_SUBGOALS += poa.getNbUnprovedSubGoals();
+				numberOfSubgoals += poa.getNbUnprovedSubGoals();
 			else
-				NUMBER_OF_SUBGOALS += poa.getNbSubGoals();
+				numberOfSubgoals += poa.getNbSubGoals();
 		}
 
 		// initializes buttons boards
-		goalsButton = new Button[NUMBER_OF_GOALS][proversNumber];
-		TreeEditor[][] goalsEditor = new TreeEditor[NUMBER_OF_GOALS][proversNumber];
-		functionsButton = new Button[NUMBER_OF_FUNCTIONS][proversNumber];
-		TreeEditor[][] functionsEditor = new TreeEditor[NUMBER_OF_FUNCTIONS][proversNumber];
-		subGoalsButton = new Button[NUMBER_OF_SUBGOALS][proversNumber];
-		TreeEditor[][] subGoalsEditor = new TreeEditor[NUMBER_OF_SUBGOALS][proversNumber];
+		goalsButton = new Button[numberOfGoals][proversNumber];
+		TreeEditor[][] goalsEditor = new TreeEditor[numberOfGoals][proversNumber];
+		functionsButton = new Button[nubmerOfFunctions][proversNumber];
+		TreeEditor[][] functionsEditor = new TreeEditor[nubmerOfFunctions][proversNumber];
+		subGoalsButton = new Button[numberOfSubgoals][proversNumber];
+		TreeEditor[][] subGoalsEditor = new TreeEditor[numberOfSubgoals][proversNumber];
 
 		int m = 0; /* function number */
 		int n = 0; /* goal number */
@@ -554,7 +550,7 @@ public class ProverView extends ViewPart {
 		TreeItem func = null;
 
 		// for all goals
-		for (int i = 0; i < NUMBER_OF_GOALS; i++) {
+		for (int i = 0; i < numberOfGoals; i++) {
 
 			int g = ((int[]) goalsInView.get(n))[0] - 1;
 			int l = 0;
@@ -589,14 +585,11 @@ public class ProverView extends ViewPart {
 						b_assistant = true;
 					}
 
-					int x = f.getPo(); // number of PO
-					int y = f.getFirst_po() - 1; // number of the first PO
 					boolean proved = true; // is the function proved?
 					boolean zero = true; // is the function reset?
 
 					// for all PO in the function
-					for (int c = 0; c < x; c++) {
-						PO potmp = (PO) FileInfos.goals.get(y + c);
+					for (PO potmp : f.getPOList()) {
 						int a = potmp.getState(j);
 						if (a != 0) { // proved or unproved, not null
 							zero = false;
@@ -832,7 +825,7 @@ public class ProverView extends ViewPart {
 
 		// Expands items
 		if (viewer.getItemCount() > 0) {
-			for (int r = 0; r < NUMBER_OF_FUNCTIONS; r++) {
+			for (int r = 0; r < nubmerOfFunctions; r++) {
 				int a = ((int[]) functionsInView.get(r))[0];
 				Function fct = (Function) FileInfos.functions.get(a - 1);
 				if (fct.isItem_expanded()) {
@@ -854,21 +847,21 @@ public class ProverView extends ViewPart {
 		// layout() for button's view update
 		viewer.getParent().layout();
 
-		for (int x = 0; x < NUMBER_OF_FUNCTIONS; x++) {
+		for (int x = 0; x < nubmerOfFunctions; x++) {
 			for (int y = 0; y < proversNumber; y++) {
 				functionsEditor[x][y].layout();
 				functionsButton[x][y].getParent().layout();
 			}
 		}
 
-		for (int x = 0; x < NUMBER_OF_GOALS; x++) {
+		for (int x = 0; x < numberOfGoals; x++) {
 			for (int y = 0; y < proversNumber; y++) {
 				goalsEditor[x][y].layout();
 				goalsButton[x][y].getParent().layout();
 			}
 		}
 
-		for (int x = 0; x < NUMBER_OF_SUBGOALS; x++) {
+		for (int x = 0; x < numberOfSubgoals; x++) {
 			for (int y = 0; y < proversNumber; y++) {
 				subGoalsEditor[x][y].layout();
 				subGoalsButton[x][y].getParent().layout();
@@ -1018,11 +1011,9 @@ public class ProverView extends ViewPart {
 				if (!FileInfos.showOnlyUnprovedGoals) {
 					FileInfos.showOnlyUnprovedGoals = true;
 					if (!showAllLines) {
-						CURSOR = 0;
-						updateSlider(true);
-					} else {
-						updateView();
+						countLines();
 					}
+					updateView();
 				}
 				showAllGoals.setChecked(false);
 				setChecked(true);
@@ -1038,11 +1029,9 @@ public class ProverView extends ViewPart {
 				if (FileInfos.showOnlyUnprovedGoals) {
 					FileInfos.showOnlyUnprovedGoals = false;
 					if (!showAllLines) {
-						CURSOR = 0;
-						updateSlider(true);
-					} else {
-						updateView();
-					}
+						countLines();
+					} 
+					updateView();
 				}
 				showOnlyUnprovedGoals.setChecked(false);
 				setChecked(true);
@@ -1063,9 +1052,8 @@ public class ProverView extends ViewPart {
 					((Function) FileInfos.functions.get(p)).collapse();
 				}
 				if (!showAllLines)
-					updateSlider(true);
-				else
-					updateView();
+					countLines();
+				updateView();
 			}
 		};
 		foldTree.setImageDescriptor(ImageDescriptor
@@ -1084,9 +1072,8 @@ public class ProverView extends ViewPart {
 					((Function) FileInfos.functions.get(p)).expand();
 				}
 				if (!showAllLines)
-					updateSlider(true);
-				else
-					updateView();
+					countLines();
+				updateView();
 			}
 		};
 		unfoldTree.setImageDescriptor(ImageDescriptor
@@ -1148,18 +1135,18 @@ public class ProverView extends ViewPart {
 	 */
 	public void updateView() {
 
-		int lignes, colonnes;
+		int lines, columns;
 
-		lignes = subGoalsButton.length;
+		lines = subGoalsButton.length;
 		try {
-			colonnes = subGoalsButton[0].length;
+			columns = subGoalsButton[0].length;
 		} catch (Exception e) {
-			colonnes = 0;
+			columns = 0;
 		}
 
 		// All buttons dispose :
-		for (int p = 0; p < lignes; p++) {
-			for (int q = 0; q < colonnes; q++) {
+		for (int p = 0; p < lines; p++) {
+			for (int q = 0; q < columns; q++) {
 				try {
 					subGoalsButton[p][q].dispose();
 				} catch (Exception e) {
@@ -1167,16 +1154,16 @@ public class ProverView extends ViewPart {
 			}
 		}
 
-		lignes = goalsButton.length;
+		lines = goalsButton.length;
 		try {
-			colonnes = goalsButton[0].length;
+			columns = goalsButton[0].length;
 		} catch (Exception e) {
-			colonnes = 0;
+			columns = 0;
 		}
 
 		// All buttons dispose :
-		for (int p = 0; p < lignes; p++) {
-			for (int q = 0; q < colonnes; q++) {
+		for (int p = 0; p < lines; p++) {
+			for (int q = 0; q < columns; q++) {
 				try {
 					goalsButton[p][q].dispose();
 				} catch (Exception e) {
@@ -1185,15 +1172,15 @@ public class ProverView extends ViewPart {
 		}
 
 		// item with the third board of buttons
-		lignes = functionsButton.length;
+		lines = functionsButton.length;
 		try {
-			colonnes = functionsButton[0].length;
+			columns = functionsButton[0].length;
 		} catch (Exception e) {
-			colonnes = 0;
+			columns = 0;
 		}
 
-		for (int p = 0; p < lignes; p++) {
-			for (int q = 0; q < colonnes; q++) {
+		for (int p = 0; p < lines; p++) {
+			for (int q = 0; q < columns; q++) {
 				try {
 					functionsButton[p][q].dispose();
 				} catch (Exception e) {
@@ -1540,7 +1527,7 @@ public class ProverView extends ViewPart {
 			}
 			firstGoal++;
 			if (firstGoal < 1) {
-				TraceDisplay.print(MessageType.WARNING,
+				TraceView.print(MessageType.WARNING,
 						"ProverView.updateButtons() : goal " + goalNumber
 								+ " unknown for function '" + fc.getName()
 								+ "'");
@@ -1595,23 +1582,23 @@ public class ProverView extends ViewPart {
 	 */
 	public synchronized void working(int goalNum, int subgoal, int proverNum) {
 
-		int colonne = proverNum;
-		int ligne = getSubGoalRow(goalNum, subgoal);
-		if (ligne >= 0) {
-			Button b = subGoalsButton[ligne][colonne];
-			setButtonWorking(b, true, true);
+		int column = proverNum;
+		int line = getSubGoalRow(goalNum, subgoal);
+		if (line >= 0) {
+			Button b = subGoalsButton[line][column];
+			setButtonWorking(b);
 		}
 
-		ligne = getGoalRow(goalNum);
-		if (ligne >= 0) {
-			Button b = goalsButton[ligne][colonne];
-			setButtonWorking(b, true, false);
+		line = getGoalRow(goalNum);
+		if (line >= 0) {
+			Button b = goalsButton[line][column];
+			setButtonWorking(b);
 		}
 
-		ligne = getFunctionRow(goalNum);
-		if (ligne >= 0) {
-			Button b = functionsButton[ligne][colonne];
-			setButtonWorking(b, false, false);
+		line = getFunctionRow(goalNum);
+		if (line >= 0) {
+			Button b = functionsButton[line][column];
+			setButtonWorking(b);
 		}
 
 		viewer.getColumn(proverNum + 2).setToolTipText(
@@ -1676,7 +1663,7 @@ public class ProverView extends ViewPart {
 		frow = po.getFnum();
 
 		if (frow == 0) {
-			TraceDisplay.print(MessageType.WARNING,
+			TraceView.print(MessageType.WARNING,
 					"WhyView.getFunctionRow() : function '" + po.getFname()
 							+ "' unknown...");
 			return -1;
@@ -1749,6 +1736,7 @@ public class ProverView extends ViewPart {
 		int goalNum = 0;
 		int goalNumPrim = 0;
 		int funcNum = 0;
+		int fnNum = 0;
 		// String kind = "";
 		String message;
 		Image image;
@@ -1756,32 +1744,39 @@ public class ProverView extends ViewPart {
 
 		try {
 			m = viewer.getSelection()[0]; // gets the selected item
-			goalNum = ((int[]) m.getData("goal"))[0]; // goal num
-			goalNumPrim = ((int[]) m.getData("goal"))[1]; // subgoalnum
+			goalNum = ((int[]) m.getData("goal"))[0]; // goal number
+			goalNumPrim = ((int[]) m.getData("goal"))[1]; // sub goal number
+			fnNum = FileInfos.goals.get(goalNum - 1).getNum_in_f();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (goalNum > 0) {
 			String file;
 			if (goalNumPrim > 0) {
 				// this is a subgoal
-				file = FileInfos.getName() + "_po" + (goalNum) + "-"
+				file = FileInfos.goals.get(goalNum - 1).getFname() + "_po_" + fnNum + "-"
 						+ (goalNumPrim) + ".why";
 			} else {
 				// this is a goal
-				file = FileInfos.getName() + "_po" + (goalNum) + ".why";
+				file = FileInfos.goals.get(goalNum - 1).getFname() + "_po_" + fnNum + ".why";
 			}
+			
+			String sourceFile;
+			sourceFile = FileInfos.getRoot() + "why" + File.separator +  
+			FileInfos.goals.get(goalNum - 1).getFname() + "_po_" + fnNum + ".xpl";
+						
 			Highlightor.setGoal(goalNum);
 			// gets fields from the .xpl file
-			// kind = Highlightor.selectFromXPL();
-			afficheGV(goalNum, file); // sets the pretty printed goal in the PO
-										// Viewer
+			Highlightor.selectFromXPL(sourceFile);
+			showGoalInViewer(goalNum, file); // sets the pretty printed goal in the PO
+											 // Viewer
 			message = ((PO) FileInfos.goals.get(goalNum - 1)).getTitle();
 			image = IConstants.IMAGE_PO;
 			split.setEnabled(true);
 		} else {
 			// this is a function
-			afficheGV(-1, null); // clean the PO Viewer
+			showGoalInViewer(-1, null); // clean the PO Viewer
 			funcNum = ((int[]) m.getData("function"))[0];
 			message = ((Function) FileInfos.functions.get(funcNum))
 					.getBehavior();
@@ -1821,7 +1816,7 @@ public class ProverView extends ViewPart {
 	 * 
 	 */
 	private void prove(ArrayList<String[]> a, int proverNumber, boolean all) {
-		ProverViewUpdator uvw = new ProverViewUpdator((ProverView) this);
+		ProverViewUpdater uvw = new ProverViewUpdater((ProverView) this);
 		ProverThread m = new ProverThread(a, proverNumber, all, uvw);
 		threads.add(m);
 	}
@@ -1840,8 +1835,8 @@ public class ProverView extends ViewPart {
 	private void proveAll(int prover, boolean begin_first, boolean notall) {
 
 		int first = 1;
-		int ntot = FileInfos.whyFileNumber;
-		if (ntot == 0) { // empty set
+		int last = FileInfos.whyFileNumber;
+		if (last == 0) { // empty set
 			return;
 		}
 
@@ -1862,20 +1857,20 @@ public class ProverView extends ViewPart {
 			// simple : a set with all goals
 			goalsSet = new String[2];
 			goalsSet[0] = "" + first;
-			goalsSet[1] = "" + ntot;
+			goalsSet[1] = "" + last;
 			array.add(goalsSet);
 		} else {
 			// less simple : only unproved goals!
 			boolean inASet = false;
 			int nSet = 0; // nb of goals in the current set
 			int w;
-			for (w = first - 1; w < ntot; w++) {
+			for (w = first - 1; w < last; w++) {
 				inASet = false;
 				if (!((PO) FileInfos.goals.get(w)).isProved()) { // the goal
-																	// isn't
-																	// proved :
-																	// begin a
-																	// set!
+																// isn't
+																// proved :
+																// begin a
+																// set!
 					inASet = true;
 					nSet++;
 				}
@@ -1917,7 +1912,7 @@ public class ProverView extends ViewPart {
 				is_function_item = true;
 				function = (int[]) items[0].getData("function");
 				if (function == null) {
-					TraceDisplay
+					TraceView
 							.print(MessageType.ERROR,
 									"ProverView.mark() : selected item represents neither a goal nor a function !");
 					return;
@@ -2035,7 +2030,7 @@ public class ProverView extends ViewPart {
 	 * @param whyFileName
 	 *            the .why file name to print in the view
 	 */
-	private void afficheGV(int gnum, String whyFileName) {
+	private void showGoalInViewer(int gnum, String whyFileName) {
 
 		try {
 			String file = null;
@@ -2054,10 +2049,10 @@ public class ProverView extends ViewPart {
 			v.inputPO();
 
 		} catch (PartInitException e) {
-			TraceDisplay.print(MessageType.ERROR, "ProverView.afficheGV() : "
+			TraceView.print(MessageType.ERROR, "ProverView.afficheGV() : "
 					+ e);
 		} catch (IOException e) {
-			TraceDisplay.print(MessageType.ERROR, "ProverView.afficheGV() : "
+			TraceView.print(MessageType.ERROR, "ProverView.afficheGV() : "
 					+ e);
 		}
 	}
@@ -2065,15 +2060,10 @@ public class ProverView extends ViewPart {
 	/**
 	 * Changes the slider draw in the view. It depends on items to show in the
 	 * tree viewer (goals, expanded or not functions) and on the cursor.
-	 * 
-	 * @param updateView
-	 *            do we have to call the <code>updateView()</code> function
-	 *            after having executed this one
 	 */
-	public void updateSlider(boolean updateView) {
+	public void countLines() {
 
 		int display;
-		int maxima = 1;
 		boolean pursuit = true;
 
 		IPreferenceStore store = EditeurWHY.getDefault().getPreferenceStore();
@@ -2099,7 +2089,7 @@ public class ProverView extends ViewPart {
 						if (FileInfos.showOnlyUnprovedGoals)
 							res += fctn.getPo_unproved();
 						else
-							res += fctn.getPo();
+							res += fctn.getPOList().size();
 						res++;
 					} else {
 						res++;
@@ -2136,79 +2126,21 @@ public class ProverView extends ViewPart {
 						if (FileInfos.showOnlyUnprovedGoals)
 							pp += fctn.getPo_unproved();
 						else
-							pp += fctn.getPo();
+							pp += fctn.getPOList().size();
 						pp++;
 					} else {
 						pp++;
 					}
 				}
 			}
-			maxima = pp - ne;
 		}
-
-		// updates view if necessary
-		if (updateView)
-			updateView();
 	}
 
 	/**
-	 * This function calculates the number of the first goal included in the
-	 * view (even if this goal is hidden because its function's item is
-	 * collapsed)
-	 * 
-	 * @return int the first goal number
-	 */
-	private int getCursorGoal() {
-
-		int g;
-		int cursor = 1;
-
-		if (FileInfos.goals.size() == 0) {
-			return 1;
-		}
-
-		// we search the first goal
-		g = 1;
-		if (FileInfos.showOnlyUnprovedGoals) {
-			// in this case, the goal mustn't be proved
-			while (((PO) FileInfos.goals.get(g - 1)).isProved()) {
-				g++;
-			}
-		}
-
-		// while we haven't joined up with the main cursor
-		while (cursor <= CURSOR) {
-
-			g++;
-
-			PO po = (PO) FileInfos.goals.get(g - 1);
-
-			while (!isObjectInView((Function) FileInfos.functions.get(po
-					.getFnum() - 1))) {
-				// the first goal of the next function
-				g = ((Function) FileInfos.functions.get(po.getFnum()))
-						.getFirst_po();
-				po = (PO) FileInfos.goals.get(g - 1);
-			}
-
-			while (!isObjectInView(po)) {
-				g++;
-				po = (PO) FileInfos.goals.get(g - 1);
-			}
-
-			cursor++;
-		}
-
-		return g;
-	}
-
-	/**
-	 * <p>
 	 * Sets the ArrayList <code>goalsInView</code> and
-	 * <code>functionsInView</code> datas. These object must contain
-	 * respectively the numbers of all goals shown in the view and all functions
-	 * items appearing in the tree viewer.
-	 * </p>
+	 * <code>functionsInView</code>. These object must contain respectively the
+	 * numbers of all goals shown in the view and all functions items appearing
+	 * in the tree viewer.
 	 * 
 	 * @param startGoal
 	 *            the first goal (hidden or not) which belongs to the view
@@ -2288,80 +2220,6 @@ public class ProverView extends ViewPart {
 	}
 
 	/**
-	 * Returns true if a PO or Function objectshould appear in the Prover View
-	 * 
-	 * @param obj
-	 *            a PO or Function object
-	 * @return boolean true if it appears in the view, false otherwise
-	 */
-	private boolean isObjectInView(Object obj) {
-
-		if (obj instanceof Function) { // for a Function
-			Function f = (Function) obj;
-			if (FileInfos.showOnlyUnprovedGoals) { // only unproved functions
-				if (f.isProved()) {
-					return false;
-				} else {
-					return true;
-				}
-			} else { // all functions
-				return true;
-			}
-		} else if (obj instanceof PO) { // for a PO
-			PO p = (PO) obj;
-			Function f = (Function) FileInfos.functions.get(p.getFnum() - 1);
-			if (FileInfos.showOnlyUnprovedGoals) {
-				// proved POs are rejected
-				if (p.isProved()) {
-					return false;
-				} else {
-					// for unproved POs :
-					if (f.isItem_expanded()) {
-						// if the function's item is expanded, the PO is shown
-						return true;
-					} else {
-						// but if the function's item is collapsed
-						int a = f.getFirst_po();
-						int z = a + f.getPo() - 1;
-						int e;
-						// we search the first goal which should appear
-						for (e = a; e < z; e++) {
-							if (e > p.getNum()) {
-								break;
-							}
-							PO q = (PO) FileInfos.goals.get(e - 1);
-							// thus, the first unproved goal
-							if (!q.isProved()) {
-								break;
-							}
-						}
-						if (e == p.getNum()) { // if it's our goal : OK
-							return true;
-						} else { // else, too bad
-							return false;
-						}
-					}
-				}
-			} else { // proved and unproved POs are accepted
-				if (f.isItem_expanded()) {
-					// if the function's item is expanded, the PO is shown
-					return true;
-				} else {
-					// but if the item is expanded
-					if (p.getNum() == f.getFirst_po()) {
-						// our goal must be the first into the function
-						return true;
-					} else {
-						return false;
-					}
-				}
-			}
-		} else {
-			return false;
-		}
-	}
-
-	/**
 	 * Makes prover's statistics
 	 * 
 	 * @param proverNum
@@ -2420,7 +2278,7 @@ public class ProverView extends ViewPart {
 	 * Displays a warning message if the number of lines to show in the view is
 	 * higher than a maximum number fixed to 150
 	 */
-	public void warn() {
+	public void checkLinesAndWarn() {
 
 		IPreferenceStore store = EditeurWHY.getDefault().getPreferenceStore();
 		boolean all = store.getBoolean(IConstants.PREF_SHOW_ALL_LINES);
@@ -2432,7 +2290,7 @@ public class ProverView extends ViewPart {
 			lines = FileInfos.functions.size() + FileInfos.whyFileNumber + 1;
 			if (lines > max) {
 				MessageDialog.openWarning(new Shell(), "Overflow",
-						"Beware, the number of goals and functions that will be displayed,\n"
+							"Beware, the number of goals and functions that will be displayed,\n"
 								+ "estimated to " + lines
 								+ ", exceeds the automatic line limitation\n"
 								+ "of the proving view which is fixed to "
@@ -2536,7 +2394,7 @@ public class ProverView extends ViewPart {
 	 * @param is_subGoal
 	 *            is it a subgoal button
 	 */
-	private void setButtonWorking(Button b, boolean is_goal, boolean is_subGoal) {
+	private void setButtonWorking(Button b) {
 			b.setImage(IConstants.IMAGE_WORKING);
 	}
 }

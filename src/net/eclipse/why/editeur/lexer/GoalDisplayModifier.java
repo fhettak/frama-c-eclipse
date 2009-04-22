@@ -5,10 +5,10 @@ import java.io.FileReader;
 import java_cup.runtime.Scanner;
 import net.eclipse.why.editeur.Goal;
 import net.eclipse.why.editeur.WhyElement;
-import net.eclipse.why.editeur.actions.TraceDisplay;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
 import net.eclipse.why.editeur.lexer.ast.Pointer;
 import net.eclipse.why.editeur.lexer.ast.PrintVisitor;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 
 /**
@@ -77,10 +77,10 @@ public class GoalDisplayModifier {
 			//Splitter.setPartII(o);
 			
 		} catch (Exception e) {
-			TraceDisplay.print(MessageType.ERROR, "GoalDisplayModifier.whyToView() : " + e);
+			TraceView.print(MessageType.ERROR, "GoalDisplayModifier.whyToView() : " + e);
 		}
 		catch (Throwable t) {
-			TraceDisplay.print(MessageType.ERROR, "GoalDisplayModifier.whyToView() : " + t);
+			TraceView.print(MessageType.ERROR, "GoalDisplayModifier.whyToView() : " + t);
 		}   
 	}
 }

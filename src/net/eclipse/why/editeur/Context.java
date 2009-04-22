@@ -6,11 +6,11 @@ import java.util.Vector;
 
 import org.eclipse.swt.custom.StyleRange;
 
-import net.eclipse.why.editeur.actions.TraceDisplay;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
 import net.eclipse.why.editeur.lexer.parser;
 import net.eclipse.why.editeur.lexer.whyLexer;
 import net.eclipse.why.editeur.lexer.ast.PrintVisitor;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 /**
  * Make and Store the context file (text + style ranges)
@@ -48,7 +48,7 @@ public class Context {
 			PrintVisitor visitor = new PrintVisitor();
 			visitor.visit(o);
 		} catch (Exception e) {
-			TraceDisplay.print(MessageType.ERROR, "Context.make() : " + e);
+			TraceView.print(MessageType.ERROR, "Context.make() : " + e);
 		}
 	}
 

@@ -5,7 +5,8 @@ import java.util.ArrayList;
 
 import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.PO;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
@@ -21,7 +22,7 @@ public class ProverThread extends Thread implements Runnable {
 	private Thread thread;						// The thread
 	private long identity;						// Single id for the thread
 	private ArrayList<String[]> goalsSet;		// {goals}
-	private ProverViewUpdator uwv;  			// View updater object
+	private ProverViewUpdater uwv;  			// View updater object
 	private int prover, proverTmp;				// Prover number
 	private boolean all;
 	private int goal;							// Goal number
@@ -38,7 +39,7 @@ public class ProverThread extends Thread implements Runnable {
 	 * @param proveall is the thread going to prove all goals
 	 * @param u the update object with update methods
 	 */
-	public ProverThread(ArrayList<String[]> goals, int prover, boolean proveall, ProverViewUpdator u) {
+	public ProverThread(ArrayList<String[]> goals, int prover, boolean proveall, ProverViewUpdater u) {
 		thread = new Thread(this);
 		this.identity = thread.getId();
 		this.goalsSet = goals;
@@ -90,13 +91,13 @@ public class ProverThread extends Thread implements Runnable {
 				try {
 					uwv.activateKillProcessButton(true);
 				} catch(PartInitException e) {
-					TraceDisplay.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.activateKillProcessButton(true) : " + e);
+					TraceView.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.activateKillProcessButton(true) : " + e);
 				}
 			}
 		});
 		
 		
-		while(goalsSet.size() > 0) { //while there are goals
+		while (goalsSet.size() > 0) { //while there are goals
 			
 			//If stop button has clicked, thread stop
 			if(!carryOn) break;
@@ -186,13 +187,13 @@ public class ProverThread extends Thread implements Runnable {
 						try {
 							uwv.color(goal, subgoal, proverTmp);
 						} catch (PartInitException e) {
-							TraceDisplay.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.color() : " + e);
+							TraceView.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.color() : " + e);
 						}
 					}
 				});
 			
 				//Prover execution
-				ExecProver ex = new ExecProver();
+				ProverExecutor ex = new ProverExecutor();
 				result = ex.prove(goal, subgoal, proverTmp);
 			
 				//updates
@@ -201,7 +202,7 @@ public class ProverThread extends Thread implements Runnable {
 						try {
 							uwv.update(goal, subgoal, proverTmp);
 						} catch (PartInitException e) {
-							TraceDisplay.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.updateElementAt() : " + e);
+							TraceView.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.updateElementAt() : " + e);
 						}
 					}
 				});
@@ -261,7 +262,7 @@ public class ProverThread extends Thread implements Runnable {
 					uwv.removeThread(identity);
 					uwv.activateKillProcessButton(false);
 				} catch(PartInitException e) {
-					TraceDisplay.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.activateKillProcessButton(false) : " + e);
+					TraceView.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.activateKillProcessButton(false) : " + e);
 				}
 			}
 		});
@@ -280,7 +281,7 @@ public class ProverThread extends Thread implements Runnable {
 						}
 					}
 				} catch(PartInitException e) {
-					TraceDisplay.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.stats() : " + e);
+					TraceView.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.stats() : " + e);
 				}
 			}
 		});

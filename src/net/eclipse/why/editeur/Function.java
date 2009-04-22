@@ -1,9 +1,11 @@
 package net.eclipse.why.editeur;
 
+import java.util.ArrayList;
+
 /**
  * This class represents a function object
  * 
- * @author oudot
+ * @author A. Oudot
  */
 public class Function {
 	
@@ -12,14 +14,11 @@ public class Function {
 	private String behavior; //a description of behavior
 	private String file; //the source file
 	private int[] loc; //the location in source file of corresponding code
-	private int first_po; //number of the first PO
-	private int po; //nb of PO
-	private int po_proved; //nb of proved PO
-	//private int po_checked; //nb of checked PO
-	//private boolean is_checked; //is this function checked?
+	private int po_proved; //number of proved PO
 	private boolean item_expanded; //is the corresponding item in Prover View expanded?
-	
 
+	private ArrayList<PO> poList;
+	
 	/**
 	 * Class Constructor
 	 */
@@ -29,12 +28,9 @@ public class Function {
 		behavior = "";
 		file = "";
 		loc = new int[]{0,0,0};
-		first_po = 0;
-		po = 0;
 		po_proved = 0;
-		//po_checked = 0;
-		//is_checked = false;
 		item_expanded = false;
+		poList = new ArrayList<PO>();
 	}
 	
 	/**
@@ -122,7 +118,7 @@ public class Function {
 	 * 
 	 * @return true if this function is a lemma
 	 */
-	public boolean is_lemma() {
+	public boolean isLemma() {
 		return lemma;
 	}
 	
@@ -155,34 +151,7 @@ public class Function {
 	public void collapse() {
 		this.item_expanded = false;
 	}
-
-	/**
-	 * Gets the number of PO of this function
-	 * 
-	 * @return the number of PO of this function
-	 */
-	public int getPo() {
-		return po;
-	}
-
-	/**
-	 * Sets the number of PO of this function
-	 * 
-	 * @param po the number of PO of this function
-	 */
-	public void setPo(int po) {
-		this.po = po;
-	}
 	
-	/**
-	 * Gets the number of unproved PO of this function
-	 * 
-	 * @return the number of unproved PO of this function
-	 */
-	public int getPo_unproved() {
-		return (po-po_proved);
-	}
-
 	/**
 	 * Gets the number of proved PO of this function
 	 * 
@@ -200,148 +169,14 @@ public class Function {
 	public void setPo_proved(int po_proved) {
 		this.po_proved = po_proved;
 	}
-	
-	/*
-	 * @return the nb of po unchecked
-	 *
-	public int getPo_unchecked() {
-		return (po-po_checked);
-	}/**/
-	
-	/*
-	 * @return the po_checked
-	 *
-	public int getPo_checked() {
-		return po_checked;
-	}/**/
-
-	/*
-	 * @param po_proved the po_proved to set
-	 *
-	public void setPo_checked(int po_checked) {
-		this.po_checked = po_checked;
-	}/**/
-	
-	/**
-	 * (Number of PO)++
-	 */
-	public void increase_po() {
-		this.po ++;
-	}
-	
-	/**
-	 * (Number of PO)--
-	 */
-	public void decrease_po() {
-		if(po > 0) this.po --;
-	}
-	
-	/**
-	 * (Number of proved PO)++
-	 */
-	public void increase_po_proved() {
-		if(po_proved < po) this.po_proved ++;
-	}
-	
-	/**
-	 * (Number of proved PO)--
-	 */
-	public void decrease_po_proved() {
-		if(po_proved > 0) this.po_proved --;
-	}
-	
-	/*
-	 * 
-	 *
-	public void increase_po_checked() {
-		if(po_checked < po) {
-			this.po_checked ++;
-		}
-	}/**/
-	
-	/*
-	 * 
-	 *
-	public void decrease_po_checked() {
-		if(po_checked > 0) {
-			this.po_checked --;
-		}
-	}/**/
-	
-	/*
-	 * 
-	 *
-	public void gCheck() {
 		
-		if(isChecked()) { //sécurité
-			return;
-		}
-		
-		this.po_checked = po;
-		
-		int w = first_po;
-		for(int v=0; v<po; v++) {
-			PO po = (PO)FileInfos.goals.get(w-1);
-			po.check();
-			int e = po.getNbSubGoals();
-			for(int u=1; u<=e; u++) {
-				po.getSubGoal(u).check();
-			}
-			w++;
-		}
-	}/**/
-	
-	/*
-	 * 
-	 *
-	public void gUncheck() {
-		
-		this.po_checked = 0;
-		
-		int w = first_po;
-		for(int v=0; v<po; v++) {
-			PO po = (PO)FileInfos.goals.get(w-1);
-			po.uncheck();
-			int e = po.getNbSubGoals();
-			for(int u=1; u<=e; u++) {
-				po.getSubGoal(u).uncheck();
-			}
-			w++;
-		}
-	}/**/
-	
-	/*
-	 * 
-	 *
-	public boolean isChecked() {
-		return (po_checked == po);
-	}/**/
-	
 	/**
 	 * Is this function proved?
 	 * 
 	 * @return true if all goals of function are proved
 	 */
 	public boolean isProved() {
-		return (po_proved == po);
-	}
-
-	/**
-	 * Gets the number of the first PO
-	 * 
-	 * @return the number of the first PO
-	 */
-	public int getFirst_po() {
-		return first_po;
-	}
-
-	/**
-	 * Sets the number of the first PO
-	 * 
-	 * @param first_po the number of the first PO
-	 */
-	public void setFirst_po(int first_po) {
-		this.first_po = first_po;
+		return (po_proved == poList.size());
 	}
 	
 	/**
@@ -349,6 +184,24 @@ public class Function {
 	 */
 	public void init() {
 		po_proved = 0;
-		//po_checked = 0;
+	}
+	
+	public void addPO (PO po) {
+		poList.add(po);
+	}
+	
+	public ArrayList<PO> getPOList () {
+		return poList;
+	}
+
+	public void increase_po_proved() {
+		po_proved++;	
+	}
+
+	public void decrease_po_proved() {
+		po_proved--;	
+	}
+	public int getPo_unproved() {
+		return poList.size() - po_proved;
 	}
 }

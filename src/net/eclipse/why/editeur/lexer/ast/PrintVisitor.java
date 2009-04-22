@@ -4,571 +4,571 @@ import java.lang.reflect.Method;
 
 import net.eclipse.why.editeur.WhyCode;
 import net.eclipse.why.editeur.WhyElement;
-import net.eclipse.why.editeur.actions.TraceDisplay;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 public class PrintVisitor implements ReflectiveVisitor {
 
 	private boolean print = false;
 	
 	public void visitAssert(Assert x) {
-	    if(print) TraceDisplay.print(MessageType.WARNING, "Assert");
+	    if(print) TraceView.print(MessageType.WARNING, "Assert");
 	}
 
 	public void visitBinder(Binder x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "Binder");
+		if(print) TraceView.print(MessageType.WARNING, "Binder");
 	}
 
 	public void visitBrAssert(BrAssert x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "BrAssert");
+		if(print) TraceView.print(MessageType.WARNING, "BrAssert");
 	}
 
 	public void visitCondition(Condition x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "Condition");
+		if(print) TraceView.print(MessageType.WARNING, "Condition");
 	}
 
 	public void visitDAxiom(DAxiom x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DAxiom");
+		if(print) TraceView.print(MessageType.WARNING, "DAxiom");
 	}
 
 	public void visitDExcept(DExcept x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DExcept");
+		if(print) TraceView.print(MessageType.WARNING, "DExcept");
 	}
 
 	public void visitDExceptOf(DExceptOf x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DExceptOf");
+		if(print) TraceView.print(MessageType.WARNING, "DExceptOf");
 	}
 
 	public void visitDFunc(DFunc x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DFunc");
+		if(print) TraceView.print(MessageType.WARNING, "DFunc");
 	}
 
 	public void visitDGoal(DGoal x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DGoal");
+		if(print) TraceView.print(MessageType.WARNING, "DGoal");
 	}
 
 	public void visitDLetEq2(DLetEq2 x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DLetEq2");
+		if(print) TraceView.print(MessageType.WARNING, "DLetEq2");
 	}
 
 	public void visitDLetEq(DLetEq x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DLetEq");
+		if(print) TraceView.print(MessageType.WARNING, "DLetEq");
 	}
 
 	public void visitDLetRec(DLetRec x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DLetRec");
+		if(print) TraceView.print(MessageType.WARNING, "DLetRec");
 	}
 
 	public void visitDLogic(DLogic x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DLogic");
+		if(print) TraceView.print(MessageType.WARNING, "DLogic");
 	}
 
 	public void visitDParam(DParam x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DParam");
+		if(print) TraceView.print(MessageType.WARNING, "DParam");
 	}
 
 	public void visitDPred(DPred x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DPred");
+		if(print) TraceView.print(MessageType.WARNING, "DPred");
 	}
 
 	public void visitDType2(DType2 x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DType2");
+		if(print) TraceView.print(MessageType.WARNING, "DType2");
 	}
 
 	public void visitDType3(DType3 x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DType3");
+		if(print) TraceView.print(MessageType.WARNING, "DType3");
 	}
 
 	public void visitDType(DType x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "DType");
+		if(print) TraceView.print(MessageType.WARNING, "DType");
 	}
 
 	public void visitEffects(Effects x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "Effects");
+		if(print) TraceView.print(MessageType.WARNING, "Effects");
 	}
 
 	public void visitExprAbsurd(ExprAbsurd x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprAbsurd");
+		if(print) TraceView.print(MessageType.WARNING, "ExprAbsurd");
 	}
 
 	public void visitExprAmpAmp(ExprAmpAmp x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprAmpAmp");
+		if(print) TraceView.print(MessageType.WARNING, "ExprAmpAmp");
 	}
 
 	public void visitExprAssert(ExprAssert x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprAssert");
+		if(print) TraceView.print(MessageType.WARNING, "ExprAssert");
 	}
 
 	public void visitExprBang(ExprBang x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprBang");
+		if(print) TraceView.print(MessageType.WARNING, "ExprBang");
 	}
 
 	public void visitExprBarBar(ExprBarBar x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprBarBar");
+		if(print) TraceView.print(MessageType.WARNING, "ExprBarBar");
 	}
 
 	public void visitExprBegin(ExprBegin x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprBegin");
+		if(print) TraceView.print(MessageType.WARNING, "ExprBegin");
 	}
 
 	public void visitExprBoolean(ExprBoolean x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprBoolean");
+		if(print) TraceView.print(MessageType.WARNING, "ExprBoolean");
 	}
 
 	public void visitExprColon(ExprColon x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprColon");
+		if(print) TraceView.print(MessageType.WARNING, "ExprColon");
 	}
 
 	public void visitExprExprPar(ExprExprPar x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprExprPar");
+		if(print) TraceView.print(MessageType.WARNING, "ExprExprPar");
 	}
 
 	public void visitExprExprSQ(ExprExprSQ x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprExprSQ");
+		if(print) TraceView.print(MessageType.WARNING, "ExprExprSQ");
 	}
 
 	public void visitExprFloat(ExprFloat x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprFloat");
+		if(print) TraceView.print(MessageType.WARNING, "ExprFloat");
 	}
 
 	public void visitExprFun(ExprFun x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprFun");
+		if(print) TraceView.print(MessageType.WARNING, "ExprFun");
 	}
 
 	public void visitExprIdentifier(ExprIdentifier x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprIdentifier");
+		if(print) TraceView.print(MessageType.WARNING, "ExprIdentifier");
 	}
 
 	public void visitExprIdent(ExprIdent x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprIdent");
+		if(print) TraceView.print(MessageType.WARNING, "ExprIdent");
 	}
 
 	public void visitExprIdExprExpr(ExprIdExprExpr x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprIdExprExpr");
+		if(print) TraceView.print(MessageType.WARNING, "ExprIdExprExpr");
 	}
 
 	public void visitExprIdExpr(ExprIdExpr x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprIdExpr");
+		if(print) TraceView.print(MessageType.WARNING, "ExprIdExpr");
 	}
 
 	public void visitExprIfThenElse(ExprIfThenElse x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprIfThenElse");
+		if(print) TraceView.print(MessageType.WARNING, "ExprIfThenElse");
 	}
 
 	public void visitExprInt(ExprInt x) {
-		if(print) TraceDisplay.print(MessageType.WARNING, "ExprInt");
+		if(print) TraceView.print(MessageType.WARNING, "ExprInt");
 	}
 
 	public void visitExprLess(ExprLess x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprLess");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprLess");
 	}
 
 	public void visitExprLetEq(ExprLetEq x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprLetEq");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprLetEq");
 	}
 
 	public void visitExprLetIn(ExprLetIn x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprLetIn");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprLetIn");
 	}
 
 	public void visitExprLetRecIn(ExprLetRecIn x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprLetRecIn");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprLetRecIn");
 	}
 
 	public void visitExprLetRec(ExprLetRec x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprLetRec");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprLetRec");
 	}
 
 	public void visitExprLetRefIn(ExprLetRefIn x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprLetRefIn");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprLetRefIn");
 	}
 
 	public void visitExprMinus(ExprMinus x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprMinus");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprMinus");
 	}
 
 	public void visitExprNot(ExprNot x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprNot");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprNot");
 	}
 
 	public void visitExprPCond2(ExprPCond2 x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprPCond2");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprPCond2");
 	}
 
 	public void visitExprPCond(ExprPCond x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprPCond");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprPCond");
 	}
 
 	public void visitExprPercent(ExprPercent x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprPercent");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprPercent");
 	}
 
 	public void visitExprPlus(ExprPlus x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprPlus");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprPlus");
 	}
 
 	public void visitExprRaise2(ExprRaise2 x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprRaise2");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprRaise2");
 	}
 
 	public void visitExprRaise(ExprRaise x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprRaise");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprRaise");
 	}
 
 	public void visitExprRel(ExprRel x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprRel");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprRel");
 	}
 
 	public void visitExprSExpr(ExprSExpr x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprSExpr");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprSExpr");
 	}
 
 	public void visitExprSlash(ExprSlash x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprSlash");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprSlash");
 	}
 
 	public void visitExprTimes(ExprTimes x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprTimes");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprTimes");
 	}
 
 	public void visitExprTry(ExprTry x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprTry");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprTry");
 	}
 
 	public void visitExprTypeSQ(ExprTypeSQ x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprTypeSQ");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprTypeSQ");
 	}
 
 	public void visitExprVoid(ExprVoid x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprVoid");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprVoid");
 	}
 
 	public void visitExprWhile(ExprWhile x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ExprWhile");
+		if(print) TraceView.print(MessageType.MESSAGE, "ExprWhile");
 	}
 
 	public void visitExternal(External x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "External");
+		if(print) TraceView.print(MessageType.MESSAGE, "External");
 	}
 
 	public void visitHandler(Handler x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Handler");
+		if(print) TraceView.print(MessageType.MESSAGE, "Handler");
 	}
 
 	public void visitIdent(Ident x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Ident");
+		if(print) TraceView.print(MessageType.MESSAGE, "Ident");
 	}
 
 	public void visitInvVar(InvVar x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "InvVar");
+		if(print) TraceView.print(MessageType.MESSAGE, "InvVar");
 	}
 
 	public void visitLExprAnd(LExprAnd x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprAnd");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprAnd");
 	}
 
 	public void visitLExprArrow(LExprArrow x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprArrow");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprArrow");
 	}
 
 	public void visitLExprBool(LExprBool x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprBool");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprBool");
 	}
 
 	public void visitLExprExists(LExprExists x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprExists");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprExists");
 	}
 
 	public void visitLExprFloat(LExprFloat x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprFloat");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprFloat");
 	}
 
 	public void visitLExprForall(LExprForall x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprForall");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprForall");
 	}
 
 	public void visitLExprFpi(LExprFpi x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprFpi");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprFpi");
 	}
 
 	public void visitLExprIdentExpr(LExprIdentExpr x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprIdentExpr");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprIdentExpr");
 	}
 
 	public void visitLExprIdentList(LExprIdentList x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprIdentList");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprIdentList");
 	}
 
 	public void visitLExprIdStr(LExprIdStr x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprIdStr");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprIdStr");
 	}
 
 	public void visitLExprIf(LExprIf x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprIf");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprIf");
 	}
 
 	public void visitLExprInteger(LExprInteger x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprInteger");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprInteger");
 	}
 
 	public void visitLExprLess(LExprLess x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprLess");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprLess");
 	}
 
 	public void visitLExprLRArrow(LExprLRArrow x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprLRArrow");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprLRArrow");
 	}
 
 	public void visitLExprMinus(LExprMinus x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprMinus");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprMinus");
 	}
 
 	public void visitLExprNot(LExprNot x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprNot");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprNot");
 	}
 
 	public void visitLExprOr(LExprOr x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprOr");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprOr");
 	}
 
 	public void visitLExprPar(LExprPar x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprPar");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprPar");
 	}
 
 	public void visitLExprPercent(LExprPercent x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprPercent");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprPercent");
 	}
 
 	public void visitLExprPlus(LExprPlus x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprPlus");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprPlus");
 	}
 
 	public void visitLExprQIdent(LExprQIdent x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprQIdent");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprQIdent");
 	}
 
 	public void visitLExprRel(LExprRel x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprRel");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprRel");
 	}
 
 	public void visitLExprSlash(LExprSlash x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprSlash");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprSlash");
 	}
 
 	public void visitLExprTimes(LExprTimes x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprTimes");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprTimes");
 	}
 
 	public void visitLExprVoid(LExprVoid x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LExprVoid");
+		if(print) TraceView.print(MessageType.MESSAGE, "LExprVoid");
 	}
 
 	public void visitList0BrAssert(List0BrAssert x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "List0BrAssert");
+		if(print) TraceView.print(MessageType.MESSAGE, "List0BrAssert");
 	}
 
 	public void visitList1BrAssert(List1BrAssert x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "List1BrAssert");
+		if(print) TraceView.print(MessageType.MESSAGE, "List1BrAssert");
 	}
 
 	public void visitList1Decl(List1Decl x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "List1Decl");
+		if(print) TraceView.print(MessageType.MESSAGE, "List1Decl");
 	}
 
 	public void visitList1IdentSep(List1IdentSep x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "List1IdentSep");
+		if(print) TraceView.print(MessageType.MESSAGE, "List1IdentSep");
 	}
 
 	public void visitList1LExpr(List1LExpr x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "List1LExpr");
+		if(print) TraceView.print(MessageType.MESSAGE, "List1LExpr");
 	}
 
 	public void visitList1PType(List1PType x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "List1PType");
+		if(print) TraceView.print(MessageType.MESSAGE, "List1PType");
 	}
 
 	public void visitList1TypeVar(List1TypeVar x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "List1TypeVar");
+		if(print) TraceView.print(MessageType.MESSAGE, "List1TypeVar");
 	}
 
 	public void visitListBinder(ListBinder x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ListBinder");
+		if(print) TraceView.print(MessageType.MESSAGE, "ListBinder");
 	}
 
 	public void visitListCondition(ListCondition x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ListCondition");
+		if(print) TraceView.print(MessageType.MESSAGE, "ListCondition");
 	}
 
 	public void visitListHandler(ListHandler x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ListHandler");
+		if(print) TraceView.print(MessageType.MESSAGE, "ListHandler");
 	}
 
 	public void visitListLBinder(ListLBinder x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ListLBinder");
+		if(print) TraceView.print(MessageType.MESSAGE, "ListLBinder");
 	}
 
 	public void visitListSimpleExpr(ListSimpleExpr x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ListSimpleExpr");
+		if(print) TraceView.print(MessageType.MESSAGE, "ListSimpleExpr");
 	}
 
 	public void visitListTrigger(ListTrigger x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "ListTrigger");
+		if(print) TraceView.print(MessageType.MESSAGE, "ListTrigger");
 	}
 
 	public void visitLoc(Loc x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Loc");
+		if(print) TraceView.print(MessageType.MESSAGE, "Loc");
 	}
 
 	public void visitLogicBinder1(LogicBinder1 x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LogicBinder1");
+		if(print) TraceView.print(MessageType.MESSAGE, "LogicBinder1");
 	}
 
 	public void visitLogicBinder2(LogicBinder2 x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LogicBinder2");
+		if(print) TraceView.print(MessageType.MESSAGE, "LogicBinder2");
 	}
 
 	public void visitLogicType1(LogicType1 x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LogicType1");
+		if(print) TraceView.print(MessageType.MESSAGE, "LogicType1");
 	}
 
 	public void visitLogicType2(LogicType2 x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LogicType2");
+		if(print) TraceView.print(MessageType.MESSAGE, "LogicType2");
 	}
 
 	public void visitLogicType3(LogicType3 x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LogicType3");
+		if(print) TraceView.print(MessageType.MESSAGE, "LogicType3");
 	}
 
 	public void visitLogicType4(LogicType4 x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "LogicType4");
+		if(print) TraceView.print(MessageType.MESSAGE, "LogicType4");
 	}
 
 	public void visitOptAssert(OptAssert x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "OptAssert");
+		if(print) TraceView.print(MessageType.MESSAGE, "OptAssert");
 	}
 
 	public void visitOptCast(OptCast x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "OptCast");
+		if(print) TraceView.print(MessageType.MESSAGE, "OptCast");
 	}
 
 	public void visitOptInv(OptInv x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "OptInv");
+		if(print) TraceView.print(MessageType.MESSAGE, "OptInv");
 	}
 
 	public void visitOptRaises(OptRaises x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "OptRaises");
+		if(print) TraceView.print(MessageType.MESSAGE, "OptRaises");
 	}
 
 	public void visitOptReads(OptReads x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "OptReads");
+		if(print) TraceView.print(MessageType.MESSAGE, "OptReads");
 	}
 
 	public void visitOptVar(OptVar x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "OptVar");
+		if(print) TraceView.print(MessageType.MESSAGE, "OptVar");
 	}
 
 	public void visitOptWrites(OptWrites x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "OptWrites");
+		if(print) TraceView.print(MessageType.MESSAGE, "OptWrites");
 	}
 
 	public void visitPostCond(PostCond x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PostCond");
+		if(print) TraceView.print(MessageType.MESSAGE, "PostCond");
 	}
 
 	public void visitPTypeBool(PTypeBool x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PTypeBool");
+		if(print) TraceView.print(MessageType.MESSAGE, "PTypeBool");
 	}
 
 	public void visitPTypeId(PTypeId x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PTypeId");
+		if(print) TraceView.print(MessageType.MESSAGE, "PTypeId");
 	}
 
 	public void visitPTypeInt(PTypeInt x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PTypeInt");
+		if(print) TraceView.print(MessageType.MESSAGE, "PTypeInt");
 	}
 
 	public void visitPTypePrim(PTypePrim x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PTypePrim");
+		if(print) TraceView.print(MessageType.MESSAGE, "PTypePrim");
 	}
 
 	public void visitPTypePrims(PTypePrims x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PTypePrims");
+		if(print) TraceView.print(MessageType.MESSAGE, "PTypePrims");
 	}
 
 	public void visitPTypeReal(PTypeReal x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PTypeReal");
+		if(print) TraceView.print(MessageType.MESSAGE, "PTypeReal");
 	}
 
 	public void visitPTypeUnit(PTypeUnit x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PTypeUnit");
+		if(print) TraceView.print(MessageType.MESSAGE, "PTypeUnit");
 	}
 
 	public void visitPTypeVar(PTypeVar x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "PTypeVar");
+		if(print) TraceView.print(MessageType.MESSAGE, "PTypeVar");
 	}
 
 	public void visitQIdentAt(QIdentAt x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "QIdentAt");
+		if(print) TraceView.print(MessageType.MESSAGE, "QIdentAt");
 	}
 
 	public void visitQIdentId(QIdentId x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "QIdentId");
+		if(print) TraceView.print(MessageType.MESSAGE, "QIdentId");
 	}
 
 	public void visitRecfun(Recfun x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Recfun");
+		if(print) TraceView.print(MessageType.MESSAGE, "Recfun");
 	}
 
 	public void visitRelation(Relation x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Relation");
+		if(print) TraceView.print(MessageType.MESSAGE, "Relation");
 	}
 
 	public void visitResult(Result x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Result");
+		if(print) TraceView.print(MessageType.MESSAGE, "Result");
 	}
 
 	public void visitSTypeArr(STypeArr x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "STypeArr");
+		if(print) TraceView.print(MessageType.MESSAGE, "STypeArr");
 	}
 
 	public void visitSTypePar(STypePar x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "STypePar");
+		if(print) TraceView.print(MessageType.MESSAGE, "STypePar");
 	}
 
 	public void visitSTypePType(STypePType x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "STypePType");
+		if(print) TraceView.print(MessageType.MESSAGE, "STypePType");
 	}
 
 	public void visitSTypeRef(STypeRef x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "STypeRef");
+		if(print) TraceView.print(MessageType.MESSAGE, "STypeRef");
 	}
 
 	public void visitTriggers(Triggers x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Triggers");
+		if(print) TraceView.print(MessageType.MESSAGE, "Triggers");
 	}
 
 	public void visitTypeC(TypeC x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "TypeC");
+		if(print) TraceView.print(MessageType.MESSAGE, "TypeC");
 	}
 
 	public void visitTypeVar(TypeVar x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "TypeVar");
+		if(print) TraceView.print(MessageType.MESSAGE, "TypeVar");
 	}
 
 	public void visitTypeV(TypeV x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "TypeV");
+		if(print) TraceView.print(MessageType.MESSAGE, "TypeV");
 	}
 
 	public void visitVariant(Variant x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Variant");
+		if(print) TraceView.print(MessageType.MESSAGE, "Variant");
 	}
 
 	public void visitWhyFile(WhyFile x) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "WhyFile");
+		if(print) TraceView.print(MessageType.MESSAGE, "WhyFile");
 	}
 
 	public void visitObject(Object o) {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "Object : " + o.toString());
+		if(print) TraceView.print(MessageType.MESSAGE, "Object : " + o.toString());
 		WhyElement.add(o.toString());
 	}
 	
@@ -577,7 +577,7 @@ public class PrintVisitor implements ReflectiveVisitor {
 	}
 	
 	public void visitNull() {
-		if(print) TraceDisplay.print(MessageType.MESSAGE, "NULL");
+		if(print) TraceView.print(MessageType.MESSAGE, "NULL");
 	}
 	
 	public void visit(Object o) {
@@ -592,7 +592,7 @@ public class PrintVisitor implements ReflectiveVisitor {
 				callAccept((Visitable)o);
 			}
 		} catch (Exception e) {
-			TraceDisplay.print(MessageType.ERROR, "PrintVisitor.visit() : " + e);
+			TraceView.print(MessageType.ERROR, "PrintVisitor.visit() : " + e);
 		}
 	}
 	
@@ -608,7 +608,7 @@ public class PrintVisitor implements ReflectiveVisitor {
 				callSAccept((Visitable)o);
 			}
 		} catch (Exception e) {
-			TraceDisplay.print(MessageType.ERROR, "PrintVisitor.svisit() : " + e);
+			TraceView.print(MessageType.ERROR, "PrintVisitor.svisit() : " + e);
 		}
 	}
 	
@@ -647,7 +647,7 @@ public class PrintVisitor implements ReflectiveVisitor {
 				m = this.getClass().getMethod("visitObject", new Class[] {Object.class});
 			} catch (Exception e) {
 				// Can't happen
-				TraceDisplay.print(MessageType.ERROR, "PrintVisitor.getMethod() : " + e);
+				TraceView.print(MessageType.ERROR, "PrintVisitor.getMethod() : " + e);
 			}
 		}
 		return m;
@@ -684,7 +684,7 @@ public class PrintVisitor implements ReflectiveVisitor {
 				m = this.getClass().getMethod("svisitObject", new Class[] {Object.class});
 			} catch (Exception e) {
 				// Can't happen
-				TraceDisplay.print(MessageType.ERROR, "PrintVisitor.getSMethod() : " + e);
+				TraceView.print(MessageType.ERROR, "PrintVisitor.getSMethod() : " + e);
 			}
 		}
 		return m;

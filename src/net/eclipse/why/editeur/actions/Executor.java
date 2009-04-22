@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import net.eclipse.why.editeur.FileInfos;
-import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
+import net.eclipse.why.editeur.views.TraceView;
+import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 /**
  * This class contains functions which execute concretely given commands.
@@ -14,6 +15,9 @@ import net.eclipse.why.editeur.actions.TraceDisplay.MessageType;
  * @author A. Oudot
  */
 public class Executor {
+
+	private String message;
+	private String error;
 
 	/**
 	 * Execute given commands
@@ -26,11 +30,11 @@ public class Executor {
 	 *            waiting for the end of command execution
 	 * @return the result, the message and the error
 	 */
-	public static String[] run(File dir, Object o, boolean waitfor) {
+	public boolean run(File dir, Object o, boolean waitfor) {
 
+		TraceView.init();
+		
 		String[] objects = null;
-		String MESSAGE = "";
-		String ERROR = "";
 
 		// we get commands, which can be given in a String object,
 		// in a String[] object or in an ArrayList<String>, in a
@@ -46,25 +50,23 @@ public class Executor {
 				objects[e] = (String) arrayList.get(e);
 			}
 		} else {
-			return new String[] { "X", null, null };
+			return false;
 		}
 
-		Runtime rtttime = Runtime.getRuntime();
-		boolean succeeds = true;
+		Runtime runtime = Runtime.getRuntime();
+		boolean success = true;
 		int z = 0;
 
 		try {
 			// while there are commands to execute and no error occurs
-			while (succeeds && z < objects.length) {
+			while (success && z < objects.length) {
 
-				TraceDisplay.print(MessageType.MESSAGE, objects[z]); // print
+				TraceView.print(MessageType.MESSAGE, objects[z]); // print
 																		// command
-				Process princess = rtttime.exec(objects[z], null, dir); // and
-																		// execute
-																		// it
-
-				PrintStream istream = new PrintStream(princess.getInputStream());
-				PrintStream estream = new PrintStream(princess.getErrorStream());
+				Process princess = runtime.exec(objects[z], null, dir); // and
+																		// execute it
+				StreamReader istream = new StreamReader(princess.getInputStream());
+				StreamReader estream = new StreamReader(princess.getErrorStream());
 				istream.start();
 				estream.start();
 
@@ -79,45 +81,37 @@ public class Executor {
 					while (estream.isAlive())
 						;
 					// we get messages
-					MESSAGE = istream.getRecString();
-					ERROR = estream.getRecString();
+					message = istream.getResult();
+					error = estream.getResult();
 
-					boolean error = !(wwf == 0); // wwf!=0 => error during
+					boolean result = !(wwf == 0); // wwf!=0 => error during
 													// execution
 
-					if (error) { // an error number was returned
-						succeeds = false;
-						if (MESSAGE.length() > 0) { // here is a message
-							if (ERROR.length() > 0) { // if the error message
-														// exists too
-								TraceDisplay
-										.print(MessageType.WARNING, MESSAGE); // the
-																				// first
-																				// message
-																				// is
-																				// probably
-																				// a
-																				// warning
+					if (result) { // an error number was returned
+						success = false;
+						if (message.length() > 0) { // here is a message
+							// if the error message exists too
+							if (error.length() > 0) { 
+								// the first message is probably a warning
+								TraceView.print(MessageType.WARNING, message); 
 							} else { // else it's likely an error
-								TraceDisplay.print(MessageType.ERROR, MESSAGE
+								TraceView.print(MessageType.ERROR, message
 										+ "\n");
 							}
 						}
-						if (ERROR.length() > 0) { // in all cases, the error
+						if (error.length() > 0) { // in all cases, the error
 													// message is always
 													// considered as an error
-							TraceDisplay.print(MessageType.ERROR, ERROR + "\n");
+							TraceView.print(MessageType.ERROR, error + "\n");
 						}
-						// Toolkit.getDefaultToolkit().beep();
-
 					} else { // if the returned value is normal
-						if (ERROR.length() > 0) { // an error message would be,
+						if (error.length() > 0) { // an error message would be,
 													// in all likelihood, a
 													// warning
-							TraceDisplay.print(MessageType.WARNING, ERROR);
+							TraceView.print(MessageType.WARNING, error);
 						}
-						if (MESSAGE.length() > 0) {
-							TraceDisplay.print(MessageType.MESSAGE, MESSAGE
+						if (message.length() > 0) {
+							TraceView.print(MessageType.MESSAGE, message
 									+ "\n"); // an the main message, a
 												// congratulation !
 						}
@@ -126,18 +120,14 @@ public class Executor {
 				z++;
 			}
 		} catch (InterruptedException i) {
-			TraceDisplay.print(MessageType.WARNING, "VCG Thread stopped...");
-			succeeds = false;
+			TraceView.print(MessageType.WARNING, "VCG Thread stopped...");
+			success = false;
 		} catch (IOException e) {
-			TraceDisplay.print(MessageType.ERROR, "Executor.run() : " + e);
-			succeeds = false;
+			TraceView.print(MessageType.ERROR, "Executor.run() : " + e);
+			success = false;
 		}
-
-		if (succeeds) {
-			return new String[] { "O", MESSAGE, ERROR };
-		} else {
-			return new String[] { "X", MESSAGE, ERROR };
-		}
+		
+		return success;
 	}
 
 	/**
@@ -145,11 +135,13 @@ public class Executor {
 	 * 
 	 * @return the result of the execution of this command
 	 */
-	public static boolean rm() {
+	public static boolean clean() {
 
-		boolean sncf_glandeurs;
-		sncf_glandeurs = true; // this variable is tactless enough to be true,
-								// all over the time!
+		TraceView.init();
+
+		boolean success;
+		success = true; // this variable is tactless enough to be true,
+							   // all over the time!
 
 		File why = new File(FileInfos.getRoot() + "why");
 
@@ -158,7 +150,7 @@ public class Executor {
 				+ "_po*.xpl " + "why" + File.separator + FileInfos.getName()
 				+ "_ctx.why " + "why" + File.separator + FileInfos.getName()
 				+ ".why" + " files...";
-		TraceDisplay.print(MessageType.MESSAGE, s);
+		TraceView.print(MessageType.MESSAGE, s);
 
 		// DELETE FILES :
 		// - why/filename_po*.why
@@ -181,13 +173,30 @@ public class Executor {
 		if (files != null) {
 			for (int f = 0; f < files.length; f++) {
 				if (!files[f].delete() /* delete this file */) {
-					TraceDisplay.print(MessageType.ERROR, "File "
+					TraceView.print(MessageType.ERROR, "File "
 							+ files[f].getName() + " cannot be deleted!");
-					sncf_glandeurs = false;
+					success = false;
 				}
 			}
 		}
 
-		return sncf_glandeurs; /* return true */
+		return success;
+	}
+	/**
+	 * Gets the returned message
+	 * 
+	 * @return the message
+	 */
+	public String getMessage() {
+		return message;
+	}
+	
+	/**
+	 * Gets the returned error message
+	 * 
+	 * @return the error message
+	 */
+	public String getError() {
+		return error;
 	}
 }
