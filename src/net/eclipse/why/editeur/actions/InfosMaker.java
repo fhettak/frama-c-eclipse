@@ -6,6 +6,9 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.Function;
@@ -42,7 +45,9 @@ public class InfosMaker {
 	    };		
 		
 		int m = 1;		
-		for (File f : root.listFiles(xplFilter)) {
+		File[] list = root.listFiles(xplFilter);
+		Arrays.sort(list);
+		for (File f : list) {
 			addNewPO(f.getPath(), m);
 			m++;
 		}

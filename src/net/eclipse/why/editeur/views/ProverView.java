@@ -107,8 +107,8 @@ public class ProverView extends ViewPart {
 
 	/**
 	 * Prover SelectionListener : defines the action which is executed when the
-	 * user clicks on a column button. The corresponding prover is executed on all
-	 * goals. It gets the column and the prover number and if goal is marked
+	 * user clicks on a column button. The corresponding prover is executed on
+	 * all goals. It gets the column and the prover number and if goal is marked
 	 * it prove all goals beginning with this marked goal. If no goal is marked,
 	 * all goals from the first one will be proved.
 	 */
@@ -117,7 +117,7 @@ public class ProverView extends ViewPart {
 		public void widgetSelected(SelectionEvent e) {
 			TreeColumn t = (TreeColumn) e.getSource();
 			int pNum = ((int[]) t.getData())[0];
-			if (FileInfos.markedGoal > 0) { 
+			if (FileInfos.markedGoal > 0) {
 				proveAll(pNum, false, FileInfos.showOnlyUnprovedGoals);
 			} else if (FileInfos.markedGoal == 0) { // if no goal is marked
 				proveAll(pNum, true, FileInfos.showOnlyUnprovedGoals);
@@ -188,7 +188,7 @@ public class ProverView extends ViewPart {
 		public void widgetSelected(SelectionEvent e) {
 
 			try {
-				
+
 				MenuItem o = (MenuItem) e.widget;
 				int a = ((Integer) o.getData("admit")).intValue();
 				Button p = (Button) o.getParent().getData();
@@ -212,7 +212,7 @@ public class ProverView extends ViewPart {
 		}
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			
+
 		}
 	}
 
@@ -245,8 +245,9 @@ public class ProverView extends ViewPart {
 					lgoal--;
 					break;
 				} else { // if it's a previous function
-					fgoal += f.getPOList().size(); // we increment the first goal number to
-										// prove
+					fgoal += f.getPOList().size(); // we increment the first
+													// goal number to
+					// prove
 				}
 			}
 
@@ -421,7 +422,7 @@ public class ProverView extends ViewPart {
 		this.viewer.addListener(SWT.Expand, new ExpandListener());
 		this.viewer.addListener(SWT.Selection, new CheckListener());
 		this.viewer.addKeyListener(new PressListener());
-		
+
 		FileInfos.initColumns();
 		makeColumns();
 		initView();
@@ -964,7 +965,7 @@ public class ProverView extends ViewPart {
 				mark();
 			}
 		};
-		
+
 		mark.setToolTipText("Create/Delete a start mark");
 		mark.setText("Mark/Unmark PO");
 		mark.setImageDescriptor(ImageDescriptor
@@ -1030,7 +1031,7 @@ public class ProverView extends ViewPart {
 					FileInfos.showOnlyUnprovedGoals = false;
 					if (!showAllLines) {
 						countLines();
-					} 
+					}
 					updateView();
 				}
 				showOnlyUnprovedGoals.setChecked(false);
@@ -1385,7 +1386,7 @@ public class ProverView extends ViewPart {
 				}
 			}
 			if (!stop) { // if we didn't stop, it means that the goal is
-							// unproved
+				// unproved
 				if (gitem != null) {
 					if (!is_proved)
 						gitem.setImage(1, IConstants.IMAGE_BALL_RED);
@@ -1440,9 +1441,9 @@ public class ProverView extends ViewPart {
 			}
 		} else { // if the subgoal hasn't been proved
 			bouclefor: for (int b = 0; b < FileInfos.provers.length; b++) { // for
-																			// all
-																			// other
-																			// provers
+				// all
+				// other
+				// provers
 				int etat = ((PO) FileInfos.goals.get(goalNumber - 1))
 						.getSubGoal(sgoalNumber).getState(b);
 				if (etat == 1) { // if the subgoal is proved
@@ -1482,9 +1483,9 @@ public class ProverView extends ViewPart {
 
 		if (!proved) { // if the goal hasn't been proved
 			bouclefor: for (int b = 0; b < FileInfos.provers.length; b++) { // for
-																			// all
-																			// other
-																			// provers
+				// all
+				// other
+				// provers
 				int etat = ((PO) FileInfos.goals.get(goalNumber - 1))
 						.getState(b);
 				if (etat == 1) { // if goal is proved
@@ -1744,8 +1745,14 @@ public class ProverView extends ViewPart {
 
 		try {
 			m = viewer.getSelection()[0]; // gets the selected item
-			goalNum = ((int[]) m.getData("goal"))[0]; // goal number
-			goalNumPrim = ((int[]) m.getData("goal"))[1]; // sub goal number
+			Object data = m.getData("goal");
+			if (data == null) {
+				getViewSite().getActionBars().getStatusLineManager()
+						.setMessage(null);
+				return;
+			}
+			goalNum = ((int[])data)[0]; // goal number
+			goalNumPrim = ((int[])data)[1]; // sub goal number
 			fnNum = FileInfos.goals.get(goalNum - 1).getNum_in_f();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1755,22 +1762,25 @@ public class ProverView extends ViewPart {
 			String file;
 			if (goalNumPrim > 0) {
 				// this is a subgoal
-				file = FileInfos.goals.get(goalNum - 1).getFname() + "_po_" + fnNum + "-"
-						+ (goalNumPrim) + ".why";
+				file = FileInfos.goals.get(goalNum - 1).getFname() + "_po_"
+						+ fnNum + "-" + (goalNumPrim) + ".why";
 			} else {
 				// this is a goal
-				file = FileInfos.goals.get(goalNum - 1).getFname() + "_po_" + fnNum + ".why";
+				file = FileInfos.goals.get(goalNum - 1).getFname() + "_po_"
+						+ fnNum + ".why";
 			}
-			
+
 			String sourceFile;
-			sourceFile = FileInfos.getRoot() + "why" + File.separator +  
-			FileInfos.goals.get(goalNum - 1).getFname() + "_po_" + fnNum + ".xpl";
-						
+			sourceFile = FileInfos.getRoot() + "why" + File.separator
+					+ FileInfos.goals.get(goalNum - 1).getFname() + "_po_"
+					+ fnNum + ".xpl";
+
 			Highlightor.setGoal(goalNum);
 			// gets fields from the .xpl file
 			Highlightor.selectFromXPL(sourceFile);
-			showGoalInViewer(goalNum, file); // sets the pretty printed goal in the PO
-											 // Viewer
+			showGoalInViewer(goalNum, file); // sets the pretty printed goal in
+												// the PO
+			// Viewer
 			message = ((PO) FileInfos.goals.get(goalNum - 1)).getTitle();
 			image = IConstants.IMAGE_PO;
 			split.setEnabled(true);
@@ -1849,9 +1859,9 @@ public class ProverView extends ViewPart {
 
 		// Build the set of goals to prove
 		ArrayList<String[]> array = new ArrayList<String[]>(); // the list of
-																// goals sets
+		// goals sets
 		String[] goalsSet = new String[2]; // goals set : the first and the last
-											// of a set of consecutive goals
+		// of a set of consecutive goals
 
 		if (!notall) {
 			// simple : a set with all goals
@@ -1867,10 +1877,10 @@ public class ProverView extends ViewPart {
 			for (w = first - 1; w < last; w++) {
 				inASet = false;
 				if (!((PO) FileInfos.goals.get(w)).isProved()) { // the goal
-																// isn't
-																// proved :
-																// begin a
-																// set!
+					// isn't
+					// proved :
+					// begin a
+					// set!
 					inASet = true;
 					nSet++;
 				}
@@ -2049,11 +2059,9 @@ public class ProverView extends ViewPart {
 			v.inputPO();
 
 		} catch (PartInitException e) {
-			TraceView.print(MessageType.ERROR, "ProverView.afficheGV() : "
-					+ e);
+			TraceView.print(MessageType.ERROR, "ProverView.afficheGV() : " + e);
 		} catch (IOException e) {
-			TraceView.print(MessageType.ERROR, "ProverView.afficheGV() : "
-					+ e);
+			TraceView.print(MessageType.ERROR, "ProverView.afficheGV() : " + e);
 		}
 	}
 
@@ -2083,8 +2091,10 @@ public class ProverView extends ViewPart {
 			bouclefor: while (i >= 0) {
 				Function fctn = (Function) FileInfos.functions.get(i);
 				if (!FileInfos.showOnlyUnprovedGoals
-						|| (FileInfos.showOnlyUnprovedGoals && !fctn
-								.isProved() /* isChecked() */)) {
+						|| (FileInfos.showOnlyUnprovedGoals && !fctn.isProved() /*
+																				 * isChecked(
+																				 * )
+																				 */)) {
 					if (fctn.isItem_expanded()) {
 						if (FileInfos.showOnlyUnprovedGoals)
 							res += fctn.getPo_unproved();
@@ -2106,8 +2116,10 @@ public class ProverView extends ViewPart {
 			for (int y = 0; y < i; y++) {
 				Function fctn = (Function) FileInfos.functions.get(y);
 				if (!FileInfos.showOnlyUnprovedGoals
-						|| (FileInfos.showOnlyUnprovedGoals && !fctn
-								.isProved() /* isChecked() */)) {
+						|| (FileInfos.showOnlyUnprovedGoals && !fctn.isProved() /*
+																				 * isChecked(
+																				 * )
+																				 */)) {
 					if (fctn.isItem_expanded()) {
 						ne++;
 					}
@@ -2120,8 +2132,10 @@ public class ProverView extends ViewPart {
 			for (int a = 0; a < e; a++) {
 				Function fctn = (Function) FileInfos.functions.get(a);
 				if (!FileInfos.showOnlyUnprovedGoals
-						|| (FileInfos.showOnlyUnprovedGoals && !fctn
-								.isProved() /* isChecked() */)) {
+						|| (FileInfos.showOnlyUnprovedGoals && !fctn.isProved() /*
+																				 * isChecked(
+																				 * )
+																				 */)) {
 					if (fctn.isItem_expanded()) {
 						if (FileInfos.showOnlyUnprovedGoals)
 							pp += fctn.getPo_unproved();
@@ -2290,7 +2304,7 @@ public class ProverView extends ViewPart {
 			lines = FileInfos.functions.size() + FileInfos.whyFileNumber + 1;
 			if (lines > max) {
 				MessageDialog.openWarning(new Shell(), "Overflow",
-							"Beware, the number of goals and functions that will be displayed,\n"
+						"Beware, the number of goals and functions that will be displayed,\n"
 								+ "estimated to " + lines
 								+ ", exceeds the automatic line limitation\n"
 								+ "of the proving view which is fixed to "
@@ -2320,7 +2334,7 @@ public class ProverView extends ViewPart {
 	private void setButtonStart(Button b, boolean is_goal, boolean is_subGoal,
 			boolean is_prover) {
 		if (is_prover) {
-				b.setImage(IConstants.IMAGE_START);
+			b.setImage(IConstants.IMAGE_START);
 		} else {
 			b.setImage(null);
 			if (is_goal) {
@@ -2346,7 +2360,7 @@ public class ProverView extends ViewPart {
 	 *            is it a subgoal button
 	 */
 	private void setButtonProved(Button b, boolean is_goal, boolean is_subGoal) {
-			b.setImage(IConstants.IMAGE_VALID);
+		b.setImage(IConstants.IMAGE_VALID);
 	}
 
 	/**
@@ -2364,23 +2378,23 @@ public class ProverView extends ViewPart {
 	 */
 	private void setButtonUnproved(Button b, boolean is_goal,
 			boolean is_subGoal, int errno) {
-			switch (errno) {
-			case 2:
-				b.setImage(IConstants.IMAGE_INVALID);
-				break;
-			case 3:
-				b.setImage(IConstants.IMAGE_UNKNOWN);
-				break;
-			case 4:
-				b.setImage(IConstants.IMAGE_TIME_OUT);
-				break;
-			case 5:
-				b.setImage(IConstants.IMAGE_FAILURE);
-				break;
-			default:
-				b.setImage(IConstants.IMAGE_UNPROVED);
-				break;
-			}
+		switch (errno) {
+		case 2:
+			b.setImage(IConstants.IMAGE_INVALID);
+			break;
+		case 3:
+			b.setImage(IConstants.IMAGE_UNKNOWN);
+			break;
+		case 4:
+			b.setImage(IConstants.IMAGE_TIME_OUT);
+			break;
+		case 5:
+			b.setImage(IConstants.IMAGE_FAILURE);
+			break;
+		default:
+			b.setImage(IConstants.IMAGE_UNPROVED);
+			break;
+		}
 	}
 
 	/**
@@ -2395,6 +2409,6 @@ public class ProverView extends ViewPart {
 	 *            is it a subgoal button
 	 */
 	private void setButtonWorking(Button b) {
-			b.setImage(IConstants.IMAGE_WORKING);
+		b.setImage(IConstants.IMAGE_WORKING);
 	}
 }

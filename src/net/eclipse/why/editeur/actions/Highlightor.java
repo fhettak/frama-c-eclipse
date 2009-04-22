@@ -3,7 +3,6 @@ package net.eclipse.why.editeur.actions;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.regex.Matcher;
 
 import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.IConstants;
@@ -11,9 +10,7 @@ import net.eclipse.why.editeur.editors.GeneralEditor;
 import net.eclipse.why.editeur.views.TraceView;
 import net.eclipse.why.editeur.views.TraceView.MessageType;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -47,7 +44,6 @@ import org.eclipse.cdt.internal.ui.editor.CEditor;
 public class Highlightor {
 	
 	
-	private static int goalNum;			// Goal number
 	private static int line;			// Line number
 	private static int char1;			// First character number
 	private static int char2;			// Last character number
@@ -116,7 +112,6 @@ public class Highlightor {
 	 * @param goal the goal number
 	 */
 	public static void setGoal(int goal) {
-		goalNum = goal;
 		kind = "";
 		motif = "";
 	}
@@ -139,6 +134,9 @@ public class Highlightor {
 			int ch = 0;
 			int i = 1;
 			
+			if (!new File(file).exists()) {
+					return;
+			}
 			//Open the source file
 			IEditorPart editor = null;
 			try {
@@ -152,8 +150,7 @@ public class Highlightor {
 				TraceView.print(MessageType.WARNING, "File is unknown: " + file);
 				e.printStackTrace();
 				return;
-			}
-			
+			}			
 				
 			if(line > 0) {
 				

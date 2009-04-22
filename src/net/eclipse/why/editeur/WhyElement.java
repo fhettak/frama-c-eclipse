@@ -27,7 +27,7 @@ public class WhyElement {
 	
 	
 	/**
-	 * Initialisation function
+	 * Initialization function
 	 */
 	public static void clean() {
 		content = "";

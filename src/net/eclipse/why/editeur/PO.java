@@ -508,7 +508,7 @@ public class PO {
 	}
 	
 	/**
-	 * Initialisation of proof states
+	 * Initialization of proof states
 	 */
 	public void initStates() {
 		etat.removeAllElements();
