@@ -2,6 +2,17 @@ package net.eclipse.why.editeur.actions;
 
 import java.io.File;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
+
 import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.PO;
 
@@ -37,24 +48,22 @@ public class ProverExecutor {
 
 		Executor executor = new Executor();
 
-		String c = null;
-		if (assistant) {
-			if (cmd != null && cmd.length > 0) {
-				String[] cmds = new String[cmd.length - 1];
-				c = cmd[cmd.length - 1]; // the last command
-				for (int h = 0; h < (cmd.length - 1); h++) {
-					cmds[h] = cmd[h];
-				}
-				cmd = cmds; // the others
-			}
-		}
-
 		if (!executor.run(new File(FileInfos.getRoot()), cmd, true))
 			return -1;
 
 		if (assistant) {
-			if (!executor.run(new File(FileInfos.getRoot()), c, false))
-				return -1;
+
+			try {
+				String file = FileInfos.getRoot() + "coq/" + FileInfos.getName() + "_why.v";
+				IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+				IFile ifile = root.getFileForLocation(new Path(file));
+				ifile.refreshLocal(IResource.DEPTH_ZERO, null);
+				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				IWorkbenchPage page = window.getActivePage();
+				IDE.openEditor(page, ifile, true);
+			} catch (Exception e) {
+				result = -1;
+			}
 			result = 0;
 		} else {
 			result = interpret(executor.getMessage());

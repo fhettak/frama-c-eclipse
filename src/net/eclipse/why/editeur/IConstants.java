@@ -13,7 +13,6 @@ import org.eclipse.swt.graphics.RGB;
  * @author A.Oudot
  */
 public interface IConstants {
-
 	
 	//Plugin and views IDs
 	public final static String PO_VIEW_ID			=	"net.eclipse.why.editeur.views.POViewer";
@@ -153,8 +152,7 @@ public interface IConstants {
 																					LINE_SEPARATOR +
 		"assistant"																	+ ELEMENT_SEPARATOR +
 		"CoqIDE"																	+ ELEMENT_SEPARATOR +
-		"make -f %s.makefile coq/%s_why.v"										+ ELEMENT_SEPARATOR	+
-		"coqide -I coq coq/%s_why.v"											+ ELEMENT_SEPARATOR	+ LINE_SEPARATOR
+		"make -f %s.makefile coq/%s_why.v"										+ ELEMENT_SEPARATOR	+ LINE_SEPARATOR
 	;
 	
 	//of verification tools commands
@@ -186,12 +184,12 @@ public interface IConstants {
 	public static final RGB		PREF_MARKED_GOAL_TEXT_COLOR_DEFAULT_VALUE				=	new RGB(255, 118, 0);
 	public static final RGB		PREF_MARKED_FUNC_TEXT_COLOR_DEFAULT_VALUE				=	new RGB(237, 0, 38);
 	
-	//Parameter for nb lines to show
+	//Parameter for number lines to show
 	public static final int     PREF_SHOW_NB_LINES_DEFAULT_VALUE            			=   25;
 	public static final int     PREF_SHOW_NB_LINES_MAX			           				=   150;
 	public static final boolean PREF_SHOW_ALL_LINES_DEFAULT_VALUE           			=   true;
 	
-	//dtd file location for load and save functions
+	// DTD file location for load and save functions
 	public static final boolean PREF_DTD_USING_FILE_DEFAULT_VALUE						=	true;
 	public static final String  PREF_DTD_FILE_LOCATION_DEFAULT_VALUE					=	"/usr/local/lib/why/why.dtd";
 	

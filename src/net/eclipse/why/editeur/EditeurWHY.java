@@ -70,11 +70,8 @@ public class EditeurWHY extends AbstractUIPlugin {
 		store.setDefault(IConstants.PREF_LIST_OF_RECOGNIZED_FILES, IConstants.PREF_LIST_OF_RECOGNIZED_FILES_DEFAULT_VALUE);
 		
 		//Files cleaning option
-		store.setDefault(IConstants.PREF_CLEAN_FILES1, IConstants.PREF_CLEAN_FILES1_DEFAULT_VALUE);
-		
-		//run commands
-		store.setDefault(IConstants.PREF_RUN_OPTIONS, IConstants.PREF_RUN_OPTIONS_NORMAL_MODE);
-				
+		store.setDefault(IConstants.PREF_CLEAN_FILES1, IConstants.PREF_CLEAN_FILES1_DEFAULT_VALUE);			
+
 		//options concerning .dtd file
 		store.setDefault(IConstants.PREF_DTD_USING_FILE, IConstants.PREF_DTD_USING_FILE_DEFAULT_VALUE);
 		store.setDefault(IConstants.PREF_DTD_FILE_LOCATION, IConstants.PREF_DTD_FILE_LOCATION_DEFAULT_VALUE);

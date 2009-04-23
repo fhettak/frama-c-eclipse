@@ -33,14 +33,7 @@ public class Commands {
 
 		boolean boo = true;
 
-		String mode = EditeurWHY.getDefault().getPreferenceStore().getString(
-				IConstants.PREF_RUN_OPTIONS);
-
-		if (mode.equals(IConstants.PREF_RUN_OPTIONS_NORMAL_MODE)) {
-			boo = make1();
-		} else {
-			boo = make2();
-		}
+		boo = make1();
 
 		return boo;
 	}
@@ -108,55 +101,6 @@ public class Commands {
 		} catch (Exception e) {
 			TraceView.print(MessageType.ERROR, "Commands.make1() : " + e);
 			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Make commands from the Verification Tools Preferences Page.
-	 * 
-	 * @return boolean
-	 */
-	private boolean make2() {
-
-		// We get commands
-		String[] d2r2 = new String[0];
-		String command = "";
-		d2r2 = EditeurWHY.getDefault().getPreferenceStore().getString(
-				IConstants.PREF_LIST_OF_COMMANDS).split(
-				IConstants.LINE_SEPARATOR);
-		if (d2r2 == null) {
-			TraceView.print(MessageType.WARNING, "No command to execute!");
-			return false;
-		}
-
-		// we search the first command which corresponds with the selected file
-		// type
-		int b = 0;
-		while (b < d2r2.length && !d2r2[b].equals(resource.getFileExtension())) {
-			b++;
-		}
-		b++;
-
-		while (b < d2r2.length
-				&& d2r2[b].endsWith(IConstants.ELEMENT_SEPARATOR)) {
-
-			String[] doggy = d2r2[b].split(IConstants.ELEMENT_SEPARATOR)[0]
-					.split(IConstants.DIR_DEMONSTRATOR);
-			command = doggy[0];
-			for (int d = 1; d < doggy.length; d++) {
-
-				command += FileInfos.getRoot() + doggy[d];
-			}
-			doggy = command.split(IConstants.FILE_DEMONSTRATOR);
-			command = doggy[0];
-			for (int d = 1; d < doggy.length; d++) {
-				command += FileInfos.getName() + doggy[d];
-			}
-			command = command.trim();
-			commands.add(command);
-			b++;
 		}
 
 		return true;
