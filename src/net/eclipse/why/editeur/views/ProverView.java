@@ -11,13 +11,12 @@ import net.eclipse.why.editeur.Function;
 import net.eclipse.why.editeur.IConstants;
 import net.eclipse.why.editeur.PO;
 import net.eclipse.why.editeur.actions.Highlightor;
+import net.eclipse.why.editeur.actions.ProverExecutor;
 import net.eclipse.why.editeur.actions.ProverThread;
 import net.eclipse.why.editeur.actions.ProverViewUpdater;
-import net.eclipse.why.editeur.actions.Splitter;
 import net.eclipse.why.editeur.actions.XMLLoader;
 import net.eclipse.why.editeur.actions.XMLSaver;
 import net.eclipse.why.editeur.lexer.GoalDisplayModifier;
-import net.eclipse.why.editeur.lexer.ast.Pointer;
 import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.action.Action;
@@ -1091,21 +1090,13 @@ public class ProverView extends ViewPart {
 		// splits a goal
 		split = new Action() {
 			public void run() {
-				int spl = split();
-				if (spl > 1) {
-					int gnum = Splitter.getNumG();
-					PO popo = (PO) FileInfos.goals.get(gnum - 1);
-					popo.cleanSubGoals();
-					for (int l = 1; l <= spl; l++) {
-						popo.addSubGoal();
-					}
+					proveManully();
 					updateView();
-				}
 			}
 		};
 		split.setImageDescriptor(ImageDescriptor
 				.createFromURL(IConstants.URL_SPLIT_BTN));
-		split.setToolTipText("Split the selected po");
+		split.setToolTipText("Prove manually");
 		split.setEnabled(false);
 
 		// saves the results into a XML file
@@ -1889,7 +1880,7 @@ public class ProverView extends ViewPart {
 				}
 			}
 
-			// if the function was ever marked, wew can consider that the
+			// if the function was ever marked, we can consider that the
 			// selected
 			// goal is the marked goal => we remove the marks of the goal and of
 			// the function
@@ -1961,17 +1952,15 @@ public class ProverView extends ViewPart {
 	 * @return the number of sub-po which have just been created, -1 if
 	 *         impossible to create them
 	 */
-	private int split() {
+	private int proveManully() {
 		TreeItem[] items = viewer.getSelection();
 		if (items != null && items.length == 1) {
+
 			int num = ((int[]) items[0].getData("goal"))[0];
 			int snum = ((int[]) items[0].getData("goal"))[1];
-			if (snum == 0) {
-				Splitter.reset();
-				Splitter.setNumG(num);
-				Pointer.breakUp();
-				return Splitter.split();
-			}
+			ProverExecutor ex = new ProverExecutor();
+			ex.prove(num, snum, 1);
+
 		}
 		return -1;
 	}
