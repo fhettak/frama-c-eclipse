@@ -58,35 +58,6 @@
       </page>
    </extension>
    <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            nameFilter="*.java"
-            name="Why options"
-            class="net.eclipse.why.editeur.properties.WhyPropertyPage"
-            id="net.eclipse.why.editeur.properties.WhyPropertyPage3">
-      </page>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-   	  <page
-   	  		id="net.eclipse.why.editeur.preferences.MainPreferencesPage"
-   	  		name="Why"
-   	  		class="net.eclipse.why.editeur.preferences.MainPreferencesPage">
-   	  </page>
-   	  <page
-   	  		id="net.eclipse.why.editeur.preferences.VerificationToolsPreferencesPage"
-   	  		name="Verification Tools"
-   	  		class="net.eclipse.why.editeur.preferences.VerificationToolsPreferencesPage"
-   	  		category="net.eclipse.why.editeur.preferences.MainPreferencesPage">
-   	  </page>
-   	  <page
-   	  		id="net.eclipse.why.editeur.preferences.ProversPreferencesPage"
-   	  		name="Provers"
-   	  		class="net.eclipse.why.editeur.preferences.ProversPreferencesPage"
-   	  		category="net.eclipse.why.editeur.preferences.MainPreferencesPage">
-   	  </page>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <category
             name="Why"
