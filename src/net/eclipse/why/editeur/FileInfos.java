@@ -25,7 +25,7 @@ public class FileInfos {
 	public static ArrayList<int[]> doubleCharsInCFile = new ArrayList<int[]>(); //location of '\r\n' in the source file
 	public static ArrayList<PO> goals = new ArrayList<PO>(); //POs
 	public static ArrayList<Function> functions = new ArrayList<Function>(); //Functions
-	volatile public static int whyFileNumber = 0; //Nb of generated .why files
+	volatile public static int numberOfGoals = 0; //Nb of generated .why files
 	volatile public static int endHighlightChar = 0; //character number where cursor is in main editor
 	public static String[] provers = new String[]{("")}; //Prover names
 	public static String[] status = new String[]{("")}; //Status of provers (assistant or prover)
@@ -44,7 +44,7 @@ public class FileInfos {
 		goals.clear();
 		rootDir = "";
 		commonFileName = "";
-		whyFileNumber = 0;
+		numberOfGoals = 0;
 		endHighlightChar = 0;
 		showOnlyUnprovedGoals = false;
 		markedGoal = 0;
@@ -204,7 +204,7 @@ public class FileInfos {
 				for(int o=0; o<l1; o++) {
 					//if the prover was defined, we get all corresponding states fields
 					if(provers[o].equals(newProvers[r])) {
-						for(int v=0; v<whyFileNumber; v++) {
+						for(int v=0; v<numberOfGoals; v++) {
 							permutations_tab[r] = o;
 						}
 						newProverStats[r] = proverStats[o];

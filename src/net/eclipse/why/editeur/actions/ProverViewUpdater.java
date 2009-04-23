@@ -30,16 +30,15 @@ public class ProverViewUpdater {
 	/**
 	 * Function which call the function of ProverView which
 	 * changes the image and the color of a given button
-	 * (line=goal/subgoal ; column=prover)
+	 * (line=goal; column=prover)
 	 * 
 	 * @param goal the goal number
-	 * @param sgoal the subgoal number, 0 if undefined
 	 * @param prover the prover number
 	 * @throws PartInitException
 	 */
-	public synchronized void update(int goal, int sgoal, int prover) throws PartInitException {
+	public synchronized void update(int goal, int prover) throws PartInitException {
 		try {
-			view.updateElementAt(goal, sgoal, prover);
+			view.updateElementAt(goal, prover);
 		} catch(SWTException swt) {
 			TraceView.print(MessageType.ERROR, "ProverView.updateElementAt(" + goal + "," + prover + ") : " + swt);
 		}
@@ -51,12 +50,11 @@ public class ProverViewUpdater {
 	 * that a prover is working on it.
 	 * 
 	 * @param goal the goal number
-	 * @param sgoal the subgoal number, 0 if none
 	 * @param prover the prover number
 	 * @throws PartInitException
 	 */
-	public synchronized void color(int goal, int sgoal, int prover) throws PartInitException {
-		view.working(goal, sgoal, prover);
+	public synchronized void color(int goal, int prover) throws PartInitException {
+		view.working(goal, prover);
 	}
 	
 	/**

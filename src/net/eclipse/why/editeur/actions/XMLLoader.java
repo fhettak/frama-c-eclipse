@@ -55,13 +55,7 @@ public class XMLLoader extends DefaultHandler {
 	
 	private boolean inFunction = false;
 	private boolean inLemma = false;
-	//private boolean inBehavior = false;
 	private boolean inGoal = false;
-	private boolean inSubGoal = false;
-	//private boolean inLocation = false;
-	//private boolean inExplain = false;
-	//private boolean inProof = false;
-	//private boolean inTag = false;
 	
 	private Function func;
 	private PO po;
@@ -135,7 +129,7 @@ public class XMLLoader extends DefaultHandler {
 	 */
 	public void endDocument ()
 	throws SAXException {
-		FileInfos.whyFileNumber = FileInfos.goals.size();
+		FileInfos.numberOfGoals = FileInfos.goals.size();
 		Context.make();
 		WhyElement.saveAsContext();
 	}
@@ -212,11 +206,7 @@ public class XMLLoader extends DefaultHandler {
 				}
 			}
 		} else if(qualifiedName.equals("goal")) { //					<goal ...>
-			if(inGoal) { //a goal in a goal => a subgoal
-				inSubGoal = true;
-				po.addSubGoal();
-			}
-			else { //a simple goal
+			if(!inGoal) {
 				inGoal = true;
 				po = new PO();
 				po.setFnum(m);
@@ -327,24 +317,11 @@ public class XMLLoader extends DefaultHandler {
 			FileInfos.functions.add(func);
 			inLemma = false;
 		} else if(qualifiedName.equals("goal")) { //		</goal>
-			if(inSubGoal) {
-				inSubGoal = false;
-			} else if(inGoal){
+			if(inGoal){
 				FileInfos.goals.add(po);
 				inGoal = false;
 			}
 		} 
-//		else if(qualifiedName.equals("location")) { //	</location>
-//			//inLocation = false;
-//		} else if(qualifiedName.equals("behavior")) { //	</behavior>
-//			//inBehavior = false;
-//		} else if(qualifiedName.equals("explain")) { //		</explain>
-//			//inExplain = false;
-//		} else if(qualifiedName.equals("proof")) { //		</proof>
-//			//inProof = false;
-//		} else if(qualifiedName.equals("tag")) { //			</tag>
-//			//inTag = false;
-//		}
 	}
 	
 	/**
@@ -392,8 +369,7 @@ public class XMLLoader extends DefaultHandler {
 	 * @return the PO
 	 */
 	private PO getPO() {
-		if(inSubGoal) return po.getSubGoal(po.getNbSubGoals());
-		else if(inGoal) return po;
+		if(inGoal) return po;
 		else return null;
 	}
 	

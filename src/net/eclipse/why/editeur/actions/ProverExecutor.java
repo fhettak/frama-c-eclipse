@@ -18,22 +18,16 @@ public class ProverExecutor {
 	 * 
 	 * @param goalNumber
 	 *            the goal number
-	 * @param subGoalNumber
-	 *            the subgoal number
 	 * @param proverNumber
 	 *            the prover number
 	 * @return 2 for an unproved result, 1 for a proved one, -1 for an error
 	 *         case
 	 */
-	public int prove(int goalNumber, int subGoalNumber, int proverNumber) {
+	public int prove(int goalNumber, int proverNumber) {
 
 		int result = 0;
 		boolean assistant = (FileInfos.status[proverNumber].equals("assistant")) ? true
 				: false;
-		String num = "" + goalNumber;
-		if (subGoalNumber > 0)
-			num += ("-" + subGoalNumber);
-
 		String why = FileInfos.commands[proverNumber];
 		why = replaceBy(why, "%s", FileInfos.getName());
 		why = replaceBy(why, "%r", FileInfos.getRoot());
@@ -68,8 +62,6 @@ public class ProverExecutor {
 
 		if (result > 0) {
 			PO op = (PO) FileInfos.goals.get(goalNumber - 1);
-			if (subGoalNumber > 0)
-				op = op.getSubGoal(subGoalNumber);
 			op.setState(proverNumber, result);
 		}
 

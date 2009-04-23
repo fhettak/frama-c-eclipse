@@ -6,9 +6,7 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.Function;
@@ -51,7 +49,7 @@ public class InfosMaker {
 			addNewPO(f.getPath(), m);
 			m++;
 		}
-		FileInfos.whyFileNumber = m - 1;
+		FileInfos.numberOfGoals = m - 1;
 
 		return true;
 	}

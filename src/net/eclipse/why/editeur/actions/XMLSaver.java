@@ -267,14 +267,6 @@ public class XMLSaver {
 				}
 				for(PO po : function.getPOList()) {
 					writeGoal(po);
-					if(po.getNbSubGoals() > 0) {
-						for(int i=1; i<=po.getNbSubGoals(); i++) {
-							PO op = (PO)po.getSubGoal(i);
-							writeGoal(op);
-							unindent3();
-							writer.write(wspace + "</goal>\n");
-						}
-					}
 					unindent3();
 					writer.write(wspace + "</goal>\n");
 				}
@@ -308,9 +300,6 @@ public class XMLSaver {
 	private static void writeGoal(PO goal) throws IOException {
 		
 		String name = ""+goal.getNum();
-		int x;
-		if((x = goal.getSubNum())>0) name += ("-"+x);
-		
 		writer.write(wspace + "<goal ");
 		writer.write("why_file=\"");
 		writer.write(FileInfos.getRoot() + "why" + File.separator + FileInfos.getName() + "_po" + name + ".why\">");

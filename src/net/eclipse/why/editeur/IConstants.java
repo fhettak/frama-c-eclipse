@@ -181,33 +181,7 @@ public interface IConstants {
 	
 	
 	// 	II] PREFERENCES DEFAULT VALUES : PROVER VIEW
-	
-	
-	//prover column : goal, subgoal and function buttons color
-	public static final RGB     PREF_GOALS_BUTTON_BG_COLOR_DEFAULT_VALUE          		=   new RGB(180, 180, 180) /*new RGB(0, 0, 179)*/;
-	public static final RGB     PREF_SUBGOALS_BUTTON_BG_COLOR_DEFAULT_VALUE          	=   new RGB(255, 255, 255) /*new RGB(46, 152, 212)*/;
-	public static final RGB     PREF_FUNCS_BUTTON_BG_COLOR_DEFAULT_VALUE   		  		=   new RGB(25, 25, 25) /*new RGB(0, 0, 98)*/;
-	
-	//proved, unproved and working colors for subgoals buttons
-	public static final RGB		PREF_SUBGOALS_BUTTON_PROVED_COLOR_DEFAULT_VALUE      	=   new RGB(194, 246, 72);
-	public static final RGB		PREF_SUBGOALS_BUTTON_WORKING_COLOR_DEFAULT_VALUE     	=   new RGB(255, 228, 0);
-	public static final RGB		PREF_SUBGOALS_BUTTON_UNPROVED_COLOR_DEFAULT_VALUE    	=   new RGB(255, 85, 85);
-	
-	//proved, unproved and working colors for goals buttons
-	public static final RGB		PREF_GOALS_BUTTON_PROVED_COLOR_DEFAULT_VALUE      		=   new RGB( 0, 215, 65 );
-	public static final RGB		PREF_GOALS_BUTTON_WORKING_COLOR_DEFAULT_VALUE     		=   new RGB( 255, 177, 0 );
-	public static final RGB		PREF_GOALS_BUTTON_UNPROVED_COLOR_DEFAULT_VALUE    		=   new RGB(211, 0, 38);
-	
-	//proved, unproved and working colors for function buttons
-	public static final RGB		PREF_FUNCS_BUTTON_PROVED_COLOR_DEFAULT_VALUE      		=   new RGB(0, 145, 25);
-	public static final RGB		PREF_FUNCS_BUTTON_WORKING_COLOR_DEFAULT_VALUE 			=   new RGB(212, 112, 0);
-	public static final RGB		PREF_FUNCS_BUTTON_UNPROVED_COLOR_DEFAULT_VALUE    		=   new RGB(150, 0, 0);
-	
-	//assistant column : goal, subgoal and function buttons color
-	public static final RGB		PREF_GOALS_ASSISTANT_BUTTON_BG_COLOR_DEFAULT_VALUE 		=   new RGB(180, 180, 180) /*new RGB(77, 77, 77)*/;
-	public static final RGB		PREF_SUBGOALS_ASSISTANT_BUTTON_BG_COLOR_DEFAULT_VALUE 	=   new RGB(255, 255, 255) /*new RGB(255, 255, 255)*/;
-	public static final RGB		PREF_FUNCS_ASSISTANT_BUTTON_BG_COLOR_DEFAULT_VALUE		=   new RGB(25, 25, 25) /*new RGB(0, 0, 0)*/;
-	
+		
 	//marked goal and function text color 
 	public static final RGB		PREF_MARKED_GOAL_TEXT_COLOR_DEFAULT_VALUE				=	new RGB(255, 118, 0);
 	public static final RGB		PREF_MARKED_FUNC_TEXT_COLOR_DEFAULT_VALUE				=	new RGB(237, 0, 38);
