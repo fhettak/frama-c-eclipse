@@ -543,7 +543,8 @@ public class ProverView extends ViewPart {
 			menu.getItem(f).addSelectionListener(
 					new ButtonMenuSelectionListener());
 		}
-
+		viewer.setMenu(menu);
+		
 		String currentFunction;
 		int current, current_M = 0;
 		TreeItem func = null;

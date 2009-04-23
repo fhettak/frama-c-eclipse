@@ -10,6 +10,7 @@ import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -17,7 +18,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
-
 
 /**
  * The viewer of .why file : goals and context pretty print
@@ -58,6 +58,8 @@ public class POViewer extends ViewPart {
 	
 	public void createPartControl(Composite parent) {
 		text = new StyledText(parent, SWT.H_SCROLL | SWT.V_SCROLL);		
+		text.setFont(JFaceResources.getFont(JFaceResources.TEXT_FONT));
+		
 		makeActions();
 		contributeToActionBars();
 	}
