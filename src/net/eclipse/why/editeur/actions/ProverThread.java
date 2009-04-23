@@ -23,13 +23,13 @@ public class ProverThread extends Thread implements Runnable {
 	private long identity;						// Single id for the thread
 	private ArrayList<String[]> goalsSet;		// {goals}
 	private ProverViewUpdater uwv;  			// View updater object
-	private int prover, proverTmp;				// Prover number
 	private boolean all;
 	private int goal;							// Goal number
 	private int subgoal;
 	private Composite parent;
 	private boolean carryOn;
 	private int result;
+	private int proverTmp;
 	
 	/**
 	 * Class constructor
@@ -39,12 +39,11 @@ public class ProverThread extends Thread implements Runnable {
 	 * @param proveall is the thread going to prove all goals
 	 * @param u the update object with update methods
 	 */
-	public ProverThread(ArrayList<String[]> goals, int prover, boolean proveall, ProverViewUpdater u) {
+	public ProverThread(ArrayList<String[]> goals, boolean proveall, ProverViewUpdater u) {
 		thread = new Thread(this);
 		this.identity = thread.getId();
 		this.goalsSet = goals;
 		this.uwv = u;
-		this.prover = prover;
 		this.goal = 1;
 		this.subgoal = 0;
 		this.all = proveall;
@@ -78,13 +77,8 @@ public class ProverThread extends Thread implements Runnable {
 		//if the prover variable is equals to -1, it means
 		//that all provers must be used to prove the goal.
 
-		if(prover == -1) {
-			proverTmp = 0;
-		} else {
-			proverTmp = prover;
-		}
-		
-		
+		proverTmp = 0;
+
 		//Stop button enabled
 		parent.getDisplay().asyncExec(new Runnable() {
 			public void run() {
@@ -182,7 +176,7 @@ public class ProverThread extends Thread implements Runnable {
 				po.workOn(); //the prover works on this po now
 				
 				//We put orange color or orange balls in goal and function buttons
-				parent.getDisplay().syncExec(new Runnable() {
+					parent.getDisplay().syncExec(new Runnable() {
 					public void run() {
 						try {
 							uwv.color(goal, subgoal, proverTmp);
@@ -208,7 +202,7 @@ public class ProverThread extends Thread implements Runnable {
 				});
 			
 				//we change the prover (or not)
-				if( prover != -1 || (prover == -1 && proverTmp == (FileInfos.provers.length -1)) ) {
+				if (proverTmp == (FileInfos.provers.length -1)) {
 					//we used all provers we could => stop
 					remove = true;
 				} else {
@@ -250,7 +244,7 @@ public class ProverThread extends Thread implements Runnable {
 					newSet[1] = "" + fgoal;
 					goalsSet.add(0, newSet);
 				}
-				if(prover == -1) proverTmp = 0;
+				proverTmp = 0;
 			}
 		}
 		
@@ -271,14 +265,10 @@ public class ProverThread extends Thread implements Runnable {
 		parent.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				try {
-					if(prover != -1) {
-						uwv.stats(proverTmp);
-					} else {
-						for(int i=0; i<FileInfos.provers.length; i++) {
+					for(int i=0; i<FileInfos.provers.length; i++) {
 							if(FileInfos.status[i].equals("prover")) {
 								uwv.stats(i);
 							}
-						}
 					}
 				} catch(PartInitException e) {
 					TraceView.print(MessageType.ERROR, "ProverThread ~> UpdateWhyView.stats() : " + e);

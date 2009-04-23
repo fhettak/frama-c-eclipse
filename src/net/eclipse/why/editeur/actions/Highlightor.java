@@ -134,7 +134,8 @@ public class Highlightor {
 			int ch = 0;
 			int i = 1;
 			
-			if (!new File(file).exists()) {
+			File test = new File(file);
+			if (!test.exists() || test.isDirectory()) {
 					return;
 			}
 			//Open the source file

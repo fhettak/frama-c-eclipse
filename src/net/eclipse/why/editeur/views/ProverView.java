@@ -86,8 +86,7 @@ public class ProverView extends ViewPart {
 	private Color goalBtColor;
 	private Color subGoalBtColor;
 	private Color funcBtColor;
-	private Color assistantGoalBgColor, assistantSubGoalBgColor,
-			assistantFuncBgColor;
+	private Color assistantGoalBgColor, assistantSubGoalBgColor,assistantFuncBgColor;
 	private Color markedGoalColor, markedFuncColor;
 
 	// Others
@@ -115,12 +114,10 @@ public class ProverView extends ViewPart {
 	private class ProverSelectionListener implements SelectionListener {
 
 		public void widgetSelected(SelectionEvent e) {
-			TreeColumn t = (TreeColumn) e.getSource();
-			int pNum = ((int[]) t.getData())[0];
 			if (FileInfos.markedGoal > 0) {
-				proveAll(pNum, false, FileInfos.showOnlyUnprovedGoals);
+				proveAll(false, FileInfos.showOnlyUnprovedGoals);
 			} else if (FileInfos.markedGoal == 0) { // if no goal is marked
-				proveAll(pNum, true, FileInfos.showOnlyUnprovedGoals);
+				proveAll(true, FileInfos.showOnlyUnprovedGoals);
 			}
 		}
 
@@ -161,7 +158,7 @@ public class ProverView extends ViewPart {
 					goal[1] = line + "-" + subline;
 					array.add(goal);
 				}
-				prove(array, column, !FileInfos.showOnlyUnprovedGoals);
+				prove(array, !FileInfos.showOnlyUnprovedGoals);
 			}
 
 			if (e.button == 3) { // right click
@@ -298,7 +295,7 @@ public class ProverView extends ViewPart {
 			}
 
 			// prove now the set of sets of goals
-			prove(array, prover, !FileInfos.showOnlyUnprovedGoals);
+			prove(array, !FileInfos.showOnlyUnprovedGoals);
 
 		}
 
@@ -467,10 +464,11 @@ public class ProverView extends ViewPart {
 		TreeColumn square = new TreeColumn(viewer, SWT.CENTER);
 		square.setWidth(IConstants.IMAGE_BALL_RED.getImageData().width + 6);
 		square.setResizable(false); // can't resize this column
+		square.addSelectionListener(new ProverSelectionListener());
 
-		TreeColumn column;
+		/* TreeColumn column;
 		// for all provers
-		for (int i = 0; i < proversNumber; i++) {
+		/* for (int i = 0; i < proversNumber; i++) {
 			int[] pNum = new int[1];
 			pNum[0] = i;
 			column = new TreeColumn(viewer, SWT.CENTER);
@@ -482,7 +480,7 @@ public class ProverView extends ViewPart {
 			if (FileInfos.status[i].equals("prover"))
 				column.addSelectionListener(new ProverSelectionListener());
 			column.pack();
-		}
+		} */
 	}
 
 	/**
@@ -517,7 +515,7 @@ public class ProverView extends ViewPart {
 
 		// gets here the number of subgoals to create
 		int numberOfGoals = goalsInView.size();
-		int nubmerOfFunctions = functionsInView.size();
+		int numberOfFunctions = functionsInView.size();
 		int numberOfSubgoals = 0;
 		for (int b = 0; b < goalsInView.size(); b++) {
 			int a = ((int[]) goalsInView.get(b))[0] - 1;
@@ -531,8 +529,8 @@ public class ProverView extends ViewPart {
 		// initializes buttons boards
 		goalsButton = new Button[numberOfGoals][proversNumber];
 		TreeEditor[][] goalsEditor = new TreeEditor[numberOfGoals][proversNumber];
-		functionsButton = new Button[nubmerOfFunctions][proversNumber];
-		TreeEditor[][] functionsEditor = new TreeEditor[nubmerOfFunctions][proversNumber];
+		functionsButton = new Button[numberOfFunctions][proversNumber];
+		TreeEditor[][] functionsEditor = new TreeEditor[numberOfFunctions][proversNumber];
 		subGoalsButton = new Button[numberOfSubgoals][proversNumber];
 		TreeEditor[][] subGoalsEditor = new TreeEditor[numberOfSubgoals][proversNumber];
 
@@ -570,7 +568,7 @@ public class ProverView extends ViewPart {
 
 				Function f = (Function) FileInfos.functions.get(l);
 				// for all provers
-				for (int j = 0; j < proversNumber; j++) {
+				/* for (int j = 0; j < proversNumber; j++) {
 
 					boolean b_assistant;
 					// create new editors and new functions
@@ -635,7 +633,7 @@ public class ProverView extends ViewPart {
 
 					functionsButton[m][j].setRedraw(true);
 
-				}
+				} */
 
 				if (f.isProved()) {
 					func.setImage(1, IConstants.IMAGE_BALL_GREEN);
@@ -651,7 +649,7 @@ public class ProverView extends ViewPart {
 			TreeItem item = new TreeItem(func, SWT.NONE);
 			PO po = (PO) FileInfos.goals.get(g);
 			item.setForeground(IConstants.COLOR_GREY);
-			item.setText(0, po.getName());
+			item.setText(0, po.getTitle());
 			item.setImage(1, IConstants.IMAGE_BALL_RED);
 
 			for (int y = 0; y < proversNumber; y++) {
@@ -668,7 +666,7 @@ public class ProverView extends ViewPart {
 				item.getParentItem().setForeground(0, markedFuncColor);
 			}
 
-			for (int j = 0; j < proversNumber; j++) {
+/*			for (int j = 0; j < proversNumber; j++) {
 
 				boolean b_prover;
 
@@ -820,13 +818,13 @@ public class ProverView extends ViewPart {
 					}
 					p++;
 				}
-			}
+			} */
 			n++;
 		}
 
 		// Expands items
 		if (viewer.getItemCount() > 0) {
-			for (int r = 0; r < nubmerOfFunctions; r++) {
+			for (int r = 0; r < numberOfFunctions; r++) {
 				int a = ((int[]) functionsInView.get(r))[0];
 				Function fct = (Function) FileInfos.functions.get(a - 1);
 				if (fct.isItem_expanded()) {
@@ -848,7 +846,7 @@ public class ProverView extends ViewPart {
 		// layout() for button's view update
 		viewer.getParent().layout();
 
-		for (int x = 0; x < nubmerOfFunctions; x++) {
+		for (int x = 0; x < numberOfFunctions; x++) {
 			for (int y = 0; y < proversNumber; y++) {
 				functionsEditor[x][y].layout();
 				functionsButton[x][y].getParent().layout();
@@ -976,9 +974,9 @@ public class ProverView extends ViewPart {
 		runAllProvers = new Action() {
 			public void run() {
 				if (FileInfos.markedGoal > 0) {
-					proveAll(-1, false, true);
+					proveAll(false, true);
 				} else if (FileInfos.markedGoal == 0) {
-					proveAll(-1, true, true);
+					proveAll(true, true);
 				}
 			}
 		};
@@ -1210,24 +1208,29 @@ public class ProverView extends ViewPart {
 	 */
 	public synchronized void updateElementAt(int goalNum, int sgoalNum,
 			int proverNum) throws SWTException {
+		updateButtons (goalNum);
 
-		viewer.getColumn(proverNum + 2).setToolTipText("");
+		
+		int state = ((PO) FileInfos.goals.get(goalNum - 1)).getState(0);
+
+		
+		/*		viewer.getColumn(proverNum + 2).setToolTipText("");
 
 		boolean subGoal = sgoalNum > 0;
 		boolean p = FileInfos.status[proverNum].equals("prover");
 
-		int colonne = proverNum;
-		int ligne = -1;
+		int column = proverNum;
+		int line = -1;
 		int state = 0;
 		Button b;
 
 		if (subGoal) {
-			ligne = getSubGoalRow(goalNum, sgoalNum);
-			if (ligne >= 0) {
+			line = getSubGoalRow(goalNum, sgoalNum);
+			if (line >= 0) {
 				state = ((PO) FileInfos.goals.get(goalNum - 1)).getSubGoal(
 						sgoalNum).getState(proverNum);
 
-				b = subGoalsButton[ligne][colonne];
+				b = subGoalsButton[line][column];
 
 				switch (state) {
 				case 0:
@@ -1265,12 +1268,10 @@ public class ProverView extends ViewPart {
 			}
 		}
 
-		state = ((PO) FileInfos.goals.get(goalNum - 1)).getState(proverNum);
+		line = getGoalRow(goalNum);
+		if (line >= 0) {
 
-		ligne = getGoalRow(goalNum);
-		if (ligne >= 0) {
-
-			b = goalsButton[ligne][colonne];
+			b = goalsButton[line][column];
 
 			switch (state) {
 			case 0:
@@ -1307,34 +1308,33 @@ public class ProverView extends ViewPart {
 				break;
 			}
 		}
-
+*/
 		switch (state) {
 		case 0:
-			updateFButton(goalNum, proverNum, false);
+			updateFButton(goalNum, false);
 			break;
 		case 1:
-			updateFButton(goalNum, proverNum, true);
+			updateFButton(goalNum, true);
 			break;
 		case 2:
-			updateFButton(goalNum, proverNum, false);
+			updateFButton(goalNum, false);
 			break;
 		case 3:
-			updateFButton(goalNum, proverNum, false);
+			updateFButton(goalNum, false);
 			break;
 		case 4:
-			updateFButton(goalNum, proverNum, false);
+			updateFButton(goalNum, false);
 			break;
 		case 5:
-			updateFButton(goalNum, proverNum, false);
+			updateFButton(goalNum, false);
 			break;
 		default:
 			break;
 		}
-
 	}
 
 	/**
-	 * Modifies the goals items in the proving view (proved/unproved) and
+	 * Modifies the goals items in the view (proved/unproved) and
 	 * updates the colors and images of buttons.
 	 * 
 	 * @param goalNumber
@@ -1343,7 +1343,7 @@ public class ProverView extends ViewPart {
 	 *            the prover number
 	 * @throws SWTException
 	 */
-	private void updateButtons(int goalNumber, int proverNumber)
+	private void updateButtons(int goalNumber)
 			throws SWTException {
 
 		boolean stop = false;
@@ -1351,14 +1351,14 @@ public class ProverView extends ViewPart {
 		TreeItem gitem = null;
 		// we get the goal item
 		TreeItem[] content = viewer.getItems();
-		forone: for (int u = 0; u < content.length; u++) {
+		for (int u = 0; u < content.length; u++) {
 			if (content[u].getExpanded()
 					|| (!content[u].getExpanded() && showAllLines)) {
 				TreeItem[] underContent = content[u].getItems();
 				for (int o = 0; o < underContent.length; o++) {
 					if (((int[]) underContent[o].getData("goal"))[0] == goalNumber) {
 						gitem = underContent[o];
-						break forone;
+						break;
 					}
 				}
 			}
@@ -1376,85 +1376,20 @@ public class ProverView extends ViewPart {
 
 		if (!is_proved) { // if the goal hasn't been proved
 			// for all other provers
-			bouclefor: for (int b = 0; b < FileInfos.provers.length; b++) {
+			for (int b = 0; b < FileInfos.provers.length; b++) {
 				int etat = ((PO) FileInfos.goals.get(goalNumber - 1))
 						.getState(b);
 				if (etat == 1) { // if the goal is proved
-					// we can stop, the goal is proved
+								 // we can stop, the goal is proved
 					stop = true;
-					break bouclefor;
+					break;
 				}
 			}
 			if (!stop) { // if we didn't stop, it means that the goal is
-				// unproved
+						 // unproved
 				if (gitem != null) {
 					if (!is_proved)
 						gitem.setImage(1, IConstants.IMAGE_BALL_RED);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Modifies the subgoals items in the proving view (proved/unproved) and
-	 * updates the colors and images of buttons.
-	 * 
-	 * @param goalNumber
-	 *            the goal number
-	 * @param sgoalNumber
-	 *            the subgoal number
-	 * @param proverNumber
-	 *            the prover number
-	 * @throws SWTException
-	 */
-	private void updateSubButtons(int goalNumber, int sgoalNumber,
-			int proverNumber) throws SWTException {
-
-		boolean stop = false;
-
-		TreeItem gitem = null;
-
-		// we gets the item
-		TreeItem[] content = viewer.getItems();
-		forone: for (int u = 0; u < content.length; u++) {
-			TreeItem[] underContent = content[u].getItems();
-			for (int o = 0; o < underContent.length; o++) {
-				if (((int[]) underContent[o].getData("goal"))[0] == goalNumber) {
-					TreeItem[] underUnderContent = underContent[o].getItems();
-					for (int d = 0; d < underUnderContent.length; d++) {
-						if (((int[]) underUnderContent[d].getData("goal"))[1] == sgoalNumber) {
-							gitem = underUnderContent[d];
-							break forone;
-						}
-					}
-				}
-			}
-		}
-
-		// is the subgoal proved?
-		boolean is_proved = ((PO) FileInfos.goals.get(goalNumber - 1))
-				.getSubGoal(sgoalNumber).isProved();
-
-		if (is_proved) { // if the subgoal has been proved
-			if (gitem != null) {
-				gitem.setImage(1, IConstants.IMAGE_BALL_GREEN);
-			}
-		} else { // if the subgoal hasn't been proved
-			bouclefor: for (int b = 0; b < FileInfos.provers.length; b++) { // for
-				// all
-				// other
-				// provers
-				int etat = ((PO) FileInfos.goals.get(goalNumber - 1))
-						.getSubGoal(sgoalNumber).getState(b);
-				if (etat == 1) { // if the subgoal is proved
-					stop = true;
-					break bouclefor; // stop
-				}
-			}
-			if (!stop) { // if stop is true, the subgoal is unproved
-				if (gitem != null) {
-					gitem.setImage(1, IConstants.IMAGE_BALL_RED);
-					gitem.setChecked(false);
 				}
 			}
 		}
@@ -1473,14 +1408,14 @@ public class ProverView extends ViewPart {
 	 *            otherwise.
 	 * @throws SWTException
 	 */
-	private void updateFButton(int goalNumber, int proverNumber, boolean proved)
+	private void updateFButton(int goalNumber, boolean proved)
 			throws SWTException {
 
 		boolean stop = false;
 		PO po = (PO) FileInfos.goals.get(goalNumber - 1);
 		int fnum = po.getFnum();
 		Function fc = (Function) FileInfos.functions.get(fnum - 1);
-
+		
 		if (!proved) { // if the goal hasn't been proved
 			bouclefor: for (int b = 0; b < FileInfos.provers.length; b++) { // for
 				// all
@@ -1503,9 +1438,19 @@ public class ProverView extends ViewPart {
 			if (!stop) { // the goal is unproved
 				TreeItem fitem = null;
 				if (g >= 0) {
-					fitem = viewer
-							.getItem(((int[]) functionsButton[g][proverNumber]
-									.getData("item"))[0]);
+					TreeItem[] content = viewer.getItems();
+					for (int u = 0; u < content.length; u++) {
+						if (content[u].getExpanded()
+								|| (!content[u].getExpanded() && showAllLines)) {
+							TreeItem[] underContent = content[u].getItems();
+							for (int o = 0; o < underContent.length; o++) {
+								if (((int[]) underContent[o].getData("goal"))[0] == goalNumber) {
+									fitem = content[u];
+									break;
+								}
+							}
+						}
+					}
 				}
 
 				if (fitem != null) {
@@ -1517,10 +1462,7 @@ public class ProverView extends ViewPart {
 				}
 			}
 
-			int firstGoal = goalNumber;
-			boolean functionProvedForProver = true;
-			boolean start = true;
-
+/*			int firstGoal = goalNumber;
 			// gets the first goal of the function
 			while (firstGoal > 0
 					&& ((PO) FileInfos.goals.get(firstGoal - 1)).getFnum() == fnum) {
@@ -1536,7 +1478,7 @@ public class ProverView extends ViewPart {
 			}
 
 			// for all goals of the function
-			while ((firstGoal <= FileInfos.whyFileNumber)
+   		    while ((firstGoal <= FileInfos.whyFileNumber)
 					&& (((PO) FileInfos.goals.get(firstGoal - 1)).getFnum() == fnum)) {
 				int state = ((PO) FileInfos.goals.get(firstGoal - 1))
 						.getState(proverNumber);
@@ -1567,6 +1509,7 @@ public class ProverView extends ViewPart {
 			else
 				setButtonUnproved(functionsButton[g][proverNumber], false,
 						false, 0);
+			*/
 		}
 	}
 
@@ -1602,8 +1545,8 @@ public class ProverView extends ViewPart {
 			setButtonWorking(b);
 		}
 
-		viewer.getColumn(proverNum + 2).setToolTipText(
-				"Running on goal " + goalNum + "...");
+		// TODO: viewer.getColumn(proverNum + 2).setToolTipText(
+		//		"Running on goal " + goalNum + "...");
 	}
 
 	/**
@@ -1825,9 +1768,9 @@ public class ProverView extends ViewPart {
 	 *            false to prove unproved goals only, true to prove all goals
 	 * 
 	 */
-	private void prove(ArrayList<String[]> a, int proverNumber, boolean all) {
+	private void prove(ArrayList<String[]> a, boolean all) {
 		ProverViewUpdater uvw = new ProverViewUpdater((ProverView) this);
-		ProverThread m = new ProverThread(a, proverNumber, all, uvw);
+		ProverThread m = new ProverThread(a, all, uvw);
 		threads.add(m);
 	}
 
@@ -1842,7 +1785,7 @@ public class ProverView extends ViewPart {
 	 * @param notall
 	 *            true to prove unproved goals only, false to prove all goals
 	 */
-	private void proveAll(int prover, boolean begin_first, boolean notall) {
+	private void proveAll(boolean begin_first, boolean notall) {
 
 		int first = 1;
 		int last = FileInfos.whyFileNumber;
@@ -1900,7 +1843,7 @@ public class ProverView extends ViewPart {
 			}
 		}
 
-		prove(array, prover, !notall); // prove all the goals we've selected
+		prove(array, !notall); // prove all the goals we've selected
 	}
 
 	/**
@@ -2333,7 +2276,7 @@ public class ProverView extends ViewPart {
 	 */
 	private void setButtonStart(Button b, boolean is_goal, boolean is_subGoal,
 			boolean is_prover) {
-		if (is_prover) {
+	/*	TODO: if (is_prover) {
 			b.setImage(IConstants.IMAGE_START);
 		} else {
 			b.setImage(null);
@@ -2345,7 +2288,7 @@ public class ProverView extends ViewPart {
 			} else {
 				b.setBackground(assistantFuncBgColor);
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -2360,7 +2303,7 @@ public class ProverView extends ViewPart {
 	 *            is it a subgoal button
 	 */
 	private void setButtonProved(Button b, boolean is_goal, boolean is_subGoal) {
-		b.setImage(IConstants.IMAGE_VALID);
+	//	b.setImage(IConstants.IMAGE_VALID);
 	}
 
 	/**
@@ -2378,7 +2321,7 @@ public class ProverView extends ViewPart {
 	 */
 	private void setButtonUnproved(Button b, boolean is_goal,
 			boolean is_subGoal, int errno) {
-		switch (errno) {
+/*		switch (errno) {
 		case 2:
 			b.setImage(IConstants.IMAGE_INVALID);
 			break;
@@ -2394,7 +2337,7 @@ public class ProverView extends ViewPart {
 		default:
 			b.setImage(IConstants.IMAGE_UNPROVED);
 			break;
-		}
+		}*/
 	}
 
 	/**
@@ -2409,6 +2352,6 @@ public class ProverView extends ViewPart {
 	 *            is it a subgoal button
 	 */
 	private void setButtonWorking(Button b) {
-		b.setImage(IConstants.IMAGE_WORKING);
+//			b.setImage(IConstants.IMAGE_WORKING);
 	}
 }
