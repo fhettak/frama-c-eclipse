@@ -68,14 +68,6 @@ public class GoalDisplayModifier {
 			
 			WhyElement.saveAsGoal();
 			Goal.make();
-			
-			//Splitter.reset();
-			//Splitter.setNumG(num);
-			//Pointer.breakUp();
-			//Splitter.setPartI(o);
-			//o = Pointer.get();
-			//Splitter.setPartII(o);
-			
 		} catch (Exception e) {
 			TraceView.print(MessageType.ERROR, "GoalDisplayModifier.whyToView() : " + e);
 		}

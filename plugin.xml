@@ -24,16 +24,6 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.editors">
-      <editor
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            name="Modeling Language Editor for C Programs"
-            icon="icons/c_file_obj.gif"
-            class="net.eclipse.why.editeur.editors.cml.CMLEditor"
-            id="net.eclipse.why.editeur.editors.cml.CMLEditor">
-      </editor>
-   </extension>
-   <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
             label="Verification Conditions Generator"

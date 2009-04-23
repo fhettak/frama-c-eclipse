@@ -32,7 +32,7 @@ public class Goal {
 		int index;
 		index = goal.lastIndexOf("h: ");
 		if(index!=-1) {
-			//split goal and result strings
+			// Split goal and result strings
 			result = goal.substring(index+3);
 			goal = goal.substring(0, index).trim();
 			

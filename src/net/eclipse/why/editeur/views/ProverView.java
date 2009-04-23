@@ -3,8 +3,6 @@ package net.eclipse.why.editeur.views;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Queue;
-import java.util.Set;
 import java.util.Vector;
 
 import net.eclipse.why.editeur.EditeurWHY;
@@ -78,7 +76,7 @@ public class ProverView extends ViewPart {
 	private Action unfoldTree;
 	private Action runAllProvers;
 	private Action mark;
-	private Action split;
+	private Action runAssistant;
 	private Action save;
 	private Action load;
 
@@ -498,73 +496,6 @@ public class ProverView extends ViewPart {
 				func.setData("function", new int[] { l });
 
 				Function f = (Function) FileInfos.functions.get(l);
-				// for all provers
-				/* for (int j = 0; j < proversNumber; j++) {
-
-					boolean b_assistant;
-					// create new editors and new functions
-					functionsEditor[m][j] = new TreeEditor(viewer);
-					functionsButton[m][j] = new Button(viewer, SWT.PUSH);
-
-					if (FileInfos.status[j].equals("prover")) {
-						functionsButton[m][j].setBackground(funcBtColor);
-						b_assistant = false;
-					} else {
-						functionsButton[m][j]
-								.setBackground(assistantFuncBgColor);
-						b_assistant = true;
-					}
-
-					boolean proved = true; // is the function proved?
-					boolean zero = true; // is the function reset?
-
-					// for all PO in the function
-					for (PO potmp : f.getPOList()) {
-						int a = potmp.getState(j);
-						if (a != 0) { // proved or unproved, not null
-							zero = false;
-							if (!proved)
-								break; // unproved
-						}
-						if (a != 1) { // not proved
-							proved = false;
-							if (!zero)
-								break; // unproved
-						}
-					}
-
-					if (proved)
-						setButtonProved(functionsButton[m][j], false, false);
-					else if (zero)
-						setButtonStart(functionsButton[m][j], false, false,
-								!b_assistant);
-					else
-						setButtonUnproved(functionsButton[m][j], false, false,
-								0);
-
-					functionsButton[m][j].computeSize(SWT.DEFAULT, viewer
-							.getItemHeight());
-					if (FileInfos.status[j].equals("prover"))
-						functionsButton[m][j]
-								.addSelectionListener(new FunctionSelectionListener());
-
-					functionsEditor[m][j].grabHorizontal = true;
-					functionsEditor[m][j].minimumHeight = functionsButton[m][j]
-							.getSize().y;
-					functionsEditor[m][j].minimumWidth = functionsButton[m][j]
-							.getSize().x;
-					functionsEditor[m][j].setEditor(functionsButton[m][j],
-							func, j + 2);
-
-					// sets function's name, prover number and item number in
-					// button's data
-					functionsButton[m][j].setData("function", currentFunction);
-					functionsButton[m][j].setData("prover", new Integer(j));
-					functionsButton[m][j].setData("item", new int[] { m });
-
-					functionsButton[m][j].setRedraw(true);
-
-				} */
 
 				if (f.isProved()) {
 					func.setImage(1, IConstants.IMAGE_BALL_GREEN);
@@ -684,7 +615,7 @@ public class ProverView extends ViewPart {
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		manager.add(mark);
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		manager.add(split);
+		manager.add(runAssistant);
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 		manager.add(load);
 		manager.add(save);
@@ -701,7 +632,6 @@ public class ProverView extends ViewPart {
 				FileInfos.initColumns();
 				makeColumns();
 				updateView();
-				split.setEnabled(false);
 			}
 		};
 		update.setText("Update");
@@ -857,17 +787,15 @@ public class ProverView extends ViewPart {
 			}
 		};
 
-		// splits a goal
-		split = new Action() {
+		runAssistant = new Action() {
 			public void run() {
 					proveManully();
 					updateView();
 			}
 		};
-		split.setImageDescriptor(ImageDescriptor
-				.createFromURL(IConstants.URL_SPLIT_BTN));
-		split.setToolTipText("Prove manually");
-		split.setEnabled(false);
+		runAssistant.setImageDescriptor(ImageDescriptor
+				.createFromURL(IConstants.URL_ASSISTANT_BTN));
+		runAssistant.setToolTipText("Prove manually");
 
 		// saves the results into a XML file
 		save = new Action() {
@@ -1319,7 +1247,6 @@ public class ProverView extends ViewPart {
 			// Viewer
 			message = ((PO) FileInfos.goals.get(goalNum - 1)).getTitle();
 			image = IConstants.IMAGE_PO;
-			split.setEnabled(true);
 		} else {
 			// this is a function
 			showGoalInViewer(-1, null); // clean the PO Viewer
@@ -1327,7 +1254,6 @@ public class ProverView extends ViewPart {
 			message = ((Function) FileInfos.functions.get(funcNum))
 					.getBehavior();
 			image = IConstants.IMAGE_FUNC;
-			split.setEnabled(false);
 		}
 
 		if (message != null && !message.trim().equals("")) {

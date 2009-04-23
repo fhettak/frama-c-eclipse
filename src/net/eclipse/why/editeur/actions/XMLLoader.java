@@ -325,45 +325,6 @@ public class XMLLoader extends DefaultHandler {
 	}
 	
 	/**
-	 * Function called when the parser parses a String between
-	 * a XML start marker and the corresponding XML end marker.
-	 */
-	public void characters (char buf [], int offset, int len)
-    throws SAXException {
-		/*
-		String s = (new String(buf, offset, len)).trim();
-		if(s != null && !s.trim().equals("")) {
-			if(inView && !inFile && !inProvers) {
-				String r = s.substring(s.indexOf("\"") +1);
-				r = r.substring(0, r.lastIndexOf("\""));
-				if(!r.equals("all")) {
-					int v = Integer.parseInt(r);
-					store.setValue(IConstants.PREF_SHOW_ALL_LINES, false);
-					store.setValue(IConstants.PREF_SHOW_NB_LINES, v);
-				} else {
-					store.setValue(IConstants.PREF_SHOW_ALL_LINES, true);
-				}
-			} else if(inFile) {
-				FileInfos.setFile(s);
-				FileInfos.complete();
-			} else if(inProvers) {
-				store.setValue(IConstants.PREF_LIST_OF_PROOF_COMMANDS, s);
-			} else if(newStates) {
-				try {
-					String[] u = s.split("/");
-					for(int w=0; w<u.length; w++) {
-						vector.add(new Integer(Integer.parseInt(u[w])));
-					}
-				} catch(Exception e) {
-					TraceDisplay.printErr("XMLLoader.characters(), Error checking goal states : " + e);
-				}
-			}
-		}
-		/**/
-	}
-	
-	
-	/**
 	 * Current PO getter
 	 * 
 	 * @return the PO

@@ -99,7 +99,7 @@ public interface IConstants {
 	// URLs of images for Prover View functions
 	final static URL URL_RUN_ALL_PROVERS			=   EditeurWHY.getDefault().getBundle().getEntry("icons/run.gif");
 	final static URL URL_MARK_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/bookmark_obj.gif");
-	final static URL URL_SPLIT_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/split.gif");
+	final static URL URL_ASSISTANT_BTN				=   EditeurWHY.getDefault().getBundle().getEntry("icons/read_obj.gif");
 	final static URL URL_KILL_BUTTON				=   EditeurWHY.getDefault().getBundle().getEntry("icons/nav_stop.gif");
 	final static URL URL_COLLAPSE_BTN				=   EditeurWHY.getDefault().getBundle().getEntry("icons/collapseall.gif");
 	final static URL URL_EXPAND_BTN					=   EditeurWHY.getDefault().getBundle().getEntry("icons/expandall.gif");

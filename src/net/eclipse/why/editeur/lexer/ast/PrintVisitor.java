@@ -612,10 +612,6 @@ public class PrintVisitor implements ReflectiveVisitor {
 		}
 	}
 	
-	
-	
-	
-	
 	protected Method getMethod(Class c) {
 		Class newc = c;
 		Method m = null;
