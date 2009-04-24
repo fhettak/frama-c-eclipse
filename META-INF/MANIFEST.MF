@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.search,
  org.eclipse.cdt.ui,
  org.eclipse.jface.text,
- coq.editor;
+ coq.editor
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/java-cup-11a.jar,
  .
