@@ -351,7 +351,7 @@ public class PO {
 		etat.removeAllElements();
 		int l = FileInfos.provers.length;
 		for (int m = 0; m < l; m++) {
-			etat.add(new Integer(0));
+			etat.add(Integer.valueOf(0));
 		}
 	}
 
@@ -372,7 +372,7 @@ public class PO {
 	 *            the state's value
 	 */
 	public void addState(int v) {
-		etat.add(new Integer(v));
+		etat.add(Integer.valueOf(v));
 	}
 
 	/**
@@ -385,7 +385,7 @@ public class PO {
 	 */
 	public void changeStateValue(int r, int v) {
 		etat.remove(r);
-		etat.add(r, new Integer(v));
+		etat.add(r, Integer.valueOf(v));
 	}
 
 	/**
@@ -448,9 +448,9 @@ public class PO {
 		for (int i = 0; i < ptab.length; i++) {
 			if (ptab[i] >= 0) {
 				int v = ((Integer) etat.get(ptab[i])).intValue();
-				e.add(new Integer(v));
+				e.add(Integer.valueOf(v));
 			} else {
-				e.add(new Integer(0));
+				e.add(Integer.valueOf(0));
 			}
 		}
 		etat = e;

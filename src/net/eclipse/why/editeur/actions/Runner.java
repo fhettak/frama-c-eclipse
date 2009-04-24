@@ -7,6 +7,7 @@ import net.eclipse.why.editeur.views.ProverView;
 import net.eclipse.why.editeur.views.TraceView;
 import net.eclipse.why.editeur.views.TraceView.MessageType;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.jface.action.IAction;
@@ -26,7 +27,7 @@ public class Runner implements IWorkbenchWindowActionDelegate {
 
 	private IWorkbenchWindow window;
 
-	private class MyJobListener implements IJobChangeListener {
+	private static class MyJobListener implements IJobChangeListener {
 		ProverView a;
 		POViewer b;
 		Composite parent;
@@ -68,6 +69,7 @@ public class Runner implements IWorkbenchWindowActionDelegate {
 	}
 
 	public void run(IAction action) {
+		TraceView.init((IResource)window.getActivePage().getActiveEditor().getEditorInput().getAdapter(IResource.class));
 
 		final VerificationToolExecutor cmd = new VerificationToolExecutor();
 		// check the source file we're going to work on

@@ -26,12 +26,12 @@ public class BtnMenu extends Menu {
 		MenuItem item1 = new MenuItem(this, SWT.NONE);
 		item1.setText("Validate");
 		item1.setImage(IConstants.IMAGE_BALL_GREEN);
-		item1.setData("admit", new Integer(1));
+		item1.setData("admit", Integer.valueOf(1));
 		
 		MenuItem item2 = new MenuItem(this, SWT.NONE);
 		item2.setText("Invalidate");
 		item2.setImage(IConstants.IMAGE_BALL_RED);
-		item2.setData("admit", new Integer(2));
+		item2.setData("admit", Integer.valueOf(2));
 		
 		//new Separator(IWorkbenchActionConstants.MB_ADDITIONS);
 		new MenuItem(this, SWT.SEPARATOR);
@@ -39,7 +39,7 @@ public class BtnMenu extends Menu {
 		MenuItem item3 = new MenuItem(this, SWT.NONE);
 		item3.setText("Reset");
 		item3.setImage(IConstants.IMAGE_BALL_WHITE);
-		item3.setData("admit", new Integer(0));
+		item3.setData("admit", Integer.valueOf(0));
 	}
 	
 	

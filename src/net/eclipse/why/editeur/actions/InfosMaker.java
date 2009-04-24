@@ -197,6 +197,10 @@ public class InfosMaker {
 
 			// first line of the file => function's name
 			l = in.readLine();
+			if (l == null) {
+				TraceView.print(MessageType.ERROR, "File is empty: " + path);				
+				return false;
+			}
 			int l1 = l.lastIndexOf("_po_");
 			// we get the function's name between '[' and ']'
 			if (l1 >= 0) {

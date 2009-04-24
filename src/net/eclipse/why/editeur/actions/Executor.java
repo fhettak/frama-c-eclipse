@@ -31,8 +31,6 @@ public class Executor {
 	 * @return the result, the message and the error
 	 */
 	public boolean run(File dir, Object o, boolean waitfor) {
-
-		TraceView.init();
 		
 		String[] objects = null;
 
@@ -136,8 +134,6 @@ public class Executor {
 	 * @return the result of the execution of this command
 	 */
 	public static boolean clean() {
-
-		TraceView.init();
 
 		boolean success;
 		success = true; // this variable is tactless enough to be true,

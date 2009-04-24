@@ -60,8 +60,10 @@ public class VerificationToolExecutor {
 		}
 		File rootFolder = new File(FileInfos.getRoot());
 		
-		if (!rootFolder.exists())
-			rootFolder.mkdir();
+		if (!rootFolder.exists()) {
+			if (!rootFolder.mkdir())
+					return false;
+		}	
 		
 		//and try to execute it
 		if(!executor.run(rootFolder, array, true)) {

@@ -2,7 +2,9 @@ package net.eclipse.why.editeur.actions;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 
 import net.eclipse.why.editeur.FileInfos;
 import net.eclipse.why.editeur.IConstants;
@@ -327,7 +329,11 @@ public class Highlightor {
 			fr.close();
 			in.close();
 			
-		} catch(Exception e) {
+		} catch(FileNotFoundException e) {
+			line = 0;
+			char1 = 0;
+			char2 = 0;
+		} catch (IOException e) {
 			line = 0;
 			char1 = 0;
 			char2 = 0;

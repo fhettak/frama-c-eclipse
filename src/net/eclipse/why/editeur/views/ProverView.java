@@ -523,10 +523,6 @@ public class ProverView extends ViewPart {
 			}
 
 			item.setData("goal", new int[] { g + 1, 0 });
-			if ((g + 1) == FileInfos.markedGoal) {
-				item.setForeground(0, markedGoalColor);
-				item.getParentItem().setForeground(0, markedFuncColor);
-			}
 			n++;
 		}
 

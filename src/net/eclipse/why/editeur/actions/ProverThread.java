@@ -21,7 +21,7 @@ public class ProverThread extends Thread implements Runnable {
 
 	private Thread thread;						// The thread
 	private long identity;						// Single id for the thread
-	private ArrayList<Integer> goals;		// {goals}
+	private ArrayList<Integer> goals;			// {goals}
 	private ProverViewUpdater uwv;  			// View updater object
 	private boolean all;
 	private int goal;							// Goal number
@@ -71,7 +71,7 @@ public class ProverThread extends Thread implements Runnable {
 	 * Thread runner
 	 */
 	public void run() {
-		
+
 		//if the prover variable is equals to -1, it means
 		//that all provers must be used to prove the goal.
 
