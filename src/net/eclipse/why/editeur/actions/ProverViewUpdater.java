@@ -54,7 +54,7 @@ public class ProverViewUpdater {
 	 * @throws PartInitException
 	 */
 	public synchronized void color(int goal, int prover) throws PartInitException {
-		view.working(goal, prover);
+		view.working(goal);
 	}
 	
 	/**

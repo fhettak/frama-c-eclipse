@@ -40,24 +40,6 @@
       </actionSet>
    </extension>
    <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            nameFilter="*.c"
-            name="Why options"
-            class="net.eclipse.why.editeur.properties.WhyPropertyPage"
-            id="net.eclipse.why.editeur.properties.WhyPropertyPage1">
-      </page>
-   </extension>
-   <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            nameFilter="*.jc"
-            name="Why options"
-            class="net.eclipse.why.editeur.properties.WhyPropertyPage"
-            id="net.eclipse.why.editeur.properties.WhyPropertyPage2">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <category
             name="Why"

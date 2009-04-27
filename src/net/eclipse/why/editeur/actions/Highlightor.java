@@ -402,7 +402,7 @@ public class Highlightor {
 	
 	/**
 	 * Call the highlight() method searching the .xpl file
-	 * which checks whith the concerned Proof Obligation.
+	 * which checks which the concerned Proof Obligation.
 	 * 
 	 * @return the 'kind' attribute of the PO
 	 */
@@ -411,7 +411,7 @@ public class Highlightor {
 		if(exists(file)) {
 			highLight(file,true);
 		} else {
-			TraceView.print(MessageType.WARNING, "No source file found in .xpl file for this goal");
+			TraceView.print(MessageType.WARNING, "Failed to find XPL file, path '" + xplFile + "' doesn't exist.");
 		}
 		return kind;
 	}

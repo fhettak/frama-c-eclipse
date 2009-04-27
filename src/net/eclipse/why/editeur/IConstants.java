@@ -147,8 +147,8 @@ public interface IConstants {
 	public static final String PREF_LIST_OF_PROOF_COMMANDS_DEFAULT_VALUE				=
 		"prover"																	+ ELEMENT_SEPARATOR +
 		"Alt-Ergo"																	+ ELEMENT_SEPARATOR +
-		"why --why -dir ergo -no-prelude why/%s_ctx.why why/%g_po_%n.why"			+ ELEMENT_SEPARATOR	+
-		dp + " ergo/%g_po_%n_why.why"												+ ELEMENT_SEPARATOR +	
+		"why --why -dir ergo -no-prelude why/%s_ctx.why why/%g"						+ ELEMENT_SEPARATOR	+
+		dp + " ergo/%e"																+ ELEMENT_SEPARATOR +	
 																					LINE_SEPARATOR +
 		"assistant"																	+ ELEMENT_SEPARATOR +
 		"CoqIDE"																	+ ELEMENT_SEPARATOR +
@@ -159,6 +159,7 @@ public interface IConstants {
 	public static final String PREF_LIST_OF_COMMANDS_DEFAULT_VALUE						=
 		"c"																			+ LINE_SEPARATOR +
 		"frama-c -jessie-analysis -jessie-gen-goals -jc-opt -separation ../%s.c"	+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
+		
 		"jc"																		+ LINE_SEPARATOR +
 		"jessie -locs %s.jloc %s.jc"												+ ELEMENT_SEPARATOR + LINE_SEPARATOR +
 		"make -f %s.makefile goals"													+ ELEMENT_SEPARATOR + LINE_SEPARATOR

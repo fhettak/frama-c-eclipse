@@ -41,8 +41,8 @@ public class ProverExecutor {
 		String why = FileInfos.commands[proverNumber];
 		why = replaceBy(why, "%s", FileInfos.getName());
 		why = replaceBy(why, "%r", FileInfos.getRoot());
-		why = replaceBy(why, "%g", FileInfos.goals.get(goalNumber - 1).getFname());
-		why = replaceBy(why, "%n", Integer.toString(FileInfos.goals.get(goalNumber - 1).getNum_in_f()));
+		why = replaceBy(why, "%g", FileInfos.goals.get(goalNumber - 1).getWhyFile());
+		why = replaceBy(why, "%e", FileInfos.goals.get(goalNumber - 1).getErgoFile());
 		String[] cmd = why.split("\n");
 
 		Executor executor = new Executor();

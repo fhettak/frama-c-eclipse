@@ -27,7 +27,8 @@ public class GoalTitles {
 			/* 11 */ {"WfRel",			null,				"well-foundedness of relation"},
 			/* 12 */ {"VarDecr",		null,				"variant decrease"},
 			/* 13 */ {"LoopInvInit", 	" ",				"initialization"},
-			/* 14 */ {"LoopInvPreserv",	" ",				"preservation"}
+			/* 14 */ {"LoopInvPreserv",	" ",				"preservation"},
+			/* 15 */ {"Lemma",	        null,				"lemma"}
 	};
 	
 	

@@ -1,5 +1,7 @@
 package net.eclipse.why.editeur.views;
 
+import java.io.PrintStream;
+
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.ConsoleOutputStream;
 import org.eclipse.cdt.core.resources.IConsole;
@@ -43,9 +45,8 @@ public class TraceView {
 				stream = console.getErrorStream();
 			}
 			if (stream != null) {
-				stream.write(message.getBytes());
-				stream.write('\n');
-				stream.flush();
+				PrintStream out = new PrintStream(stream);
+				out.println(message);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,5 +1,6 @@
 package net.eclipse.why.editeur;
 
+import java.io.File;
 import java.util.Vector;
 
 /**
@@ -20,17 +21,16 @@ public class PO {
 	// private boolean is_checked; //is the goal checked?
 	private boolean is_proved; // is the goal proved
 	private boolean item_expanded; // is the item in Prover View expanded?
-	private boolean workinOn; // is a prover workin on?
+	private boolean workingOn; // is a prover working on?
 	private Vector<Integer> etat; // state of the goal for all provers
+	private String xplFile;
 
-	/**
-	 * Class constructor
-	 */
 	public PO() {
 		name = "";
 		kind = "";
 		text = "";
 		title = "";
+		xplFile = "";
 		num = 0;
 		num_in_f = 0;
 		fnum = 0;
@@ -39,7 +39,7 @@ public class PO {
 		// is_checked = false;
 		is_proved = false;
 		item_expanded = false;
-		workinOn = false;
+		workingOn = false;
 		etat = new Vector<Integer>();
 	}
 
@@ -72,21 +72,21 @@ public class PO {
 	 * return true if a prover is working on this goal
 	 */
 	public boolean isWorkinOn() {
-		return workinOn;
+		return workingOn;
 	}
 
 	/**
 	 * Puts the working boolean variable to true
 	 */
 	public void workOn() {
-		workinOn = true;
+		workingOn = true;
 	}
 
 	/**
 	 * Puts the working boolean variable to false
 	 */
 	public void loafAbout() {
-		workinOn = false;
+		workingOn = false;
 	}
 
 	/**
@@ -252,9 +252,9 @@ public class PO {
 	}
 
 	/**
-	 * Gets the number of this goaal
+	 * Gets the number of this goal
 	 * 
-	 * @return the number of this goaal
+	 * @return the number of this goal
 	 */
 	public int getNum() {
 		return num;
@@ -462,5 +462,22 @@ public class PO {
 	public void init() {
 		unprove();
 		initStates();
+	}
+	
+	public String getXplFile() {
+		return xplFile;
+	}
+	
+	public void setXplFile(String file) {
+		xplFile = file;
+	}
+	
+	public String getWhyFile () {
+		File loc = new File(xplFile);
+		return loc.getName().replaceAll(".xpl", ".why");
+	}
+	public String getErgoFile () {
+		File loc = new File(xplFile);
+		return loc.getName().replaceAll(".xpl", "_why.why");
 	}
 }

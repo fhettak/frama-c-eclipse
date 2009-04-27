@@ -277,6 +277,7 @@ public class InfosMaker {
 			po.setText(text);
 			po.makeTitle();
 			po.initStates();
+			po.setXplFile(path);
 			FileInfos.goals.add(po);
 			((Function) FileInfos.functions.get(FileInfos.functions.size() - 1)).addPO(po);
 
