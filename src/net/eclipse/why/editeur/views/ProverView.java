@@ -19,6 +19,7 @@ import net.eclipse.why.editeur.lexer.GoalDisplayModifier;
 import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -617,31 +618,27 @@ public class ProverView extends ViewPart {
 		kill.setAccelerator(SWT.F8);
 
 		// hide proved goals
-		showOnlyUnprovedGoals = new Action() {
+		showOnlyUnprovedGoals = new Action("Show Unproved", IAction.AS_RADIO_BUTTON) {
 			public void run() {
 				if (!FileInfos.showOnlyUnprovedGoals) {
 					FileInfos.showOnlyUnprovedGoals = true;
 					updateView();
 				}
-				setChecked(true);					
 			}
 		};
-		showOnlyUnprovedGoals.setChecked(false);
-		showOnlyUnprovedGoals.setText("Show Unproved");
 		showOnlyUnprovedGoals.setToolTipText("Show only unproved goals");
 		
 		// show proved goals
-		showAllGoals = new Action() {
+		showAllGoals = new Action("Show All", IAction.AS_RADIO_BUTTON) {
+			
 			public void run() {
 				if (FileInfos.showOnlyUnprovedGoals) {
 					FileInfos.showOnlyUnprovedGoals = false;
 					updateView();
 				}
-				setChecked(true);					
 			}
 		};
 		showAllGoals.setChecked(true);
-		showAllGoals.setText("Show All");
 		showAllGoals.setToolTipText("Show proved and unproved goals");
 
 		// fold the tree viewer
