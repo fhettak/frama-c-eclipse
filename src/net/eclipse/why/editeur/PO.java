@@ -188,7 +188,7 @@ public class PO {
 	 * @return the name of the function
 	 */
 	public String getFname() {
-		return ((Function) FileInfos.functions.get(fnum - 1)).getName();
+		return FileInfos.functions.get(fnum - 1).getName();
 	}
 
 	/**
@@ -300,7 +300,7 @@ public class PO {
 		}
 
 		this.is_proved = true; // the goal is proved
-		Function f = (Function) FileInfos.functions.get(fnum - 1);
+		Function f =  FileInfos.functions.get(fnum - 1);
 		
 		// one more PO proved in the function
 		f.increase_po_proved();
@@ -323,7 +323,7 @@ public class PO {
 		}
 
 		this.is_proved = false; // unproved!
-		Function f = (Function) FileInfos.functions.get(fnum - 1);
+		Function f = FileInfos.functions.get(fnum - 1);
 
 		f.decrease_po_proved(); // one less proved PO in the function
 	}

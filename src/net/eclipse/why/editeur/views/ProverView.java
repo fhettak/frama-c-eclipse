@@ -32,12 +32,9 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -110,45 +107,6 @@ public class ProverView extends ViewPart {
 	}
 
 	/**
-	 * The mouse listener. Defines the action which is executed when the user
-	 * clicks on a goal button.
-	 */
-	private class BtnListener implements MouseListener {
-
-		public void mouseDoubleClick(MouseEvent e) {
-			return;
-		}
-
-		public void mouseDown(MouseEvent e) {
-
-			if (e.button == 1) { // left click
-				Button b = (Button) e.widget; // the clicked button
-				int line = (Integer)b.getData("goal");
-				
-				// Creates the goals set to prove : here it's just the
-				// goal corresponding to the clicked button.
-				// So, the first and the last goals to prove are the same one:
-				ArrayList<Integer> array = new ArrayList<Integer>();
-				array.add(line);
-				
-				prove(array, !FileInfos.showOnlyUnprovedGoals);
-			}
-
-			if (e.button == 3) { // right click
-				// expand the menu which propose to modify manually
-				// the state of the goal
-				Button b = (Button) e.widget;
-				b.getMenu().setData(b);
-				b.getMenu().setVisible(true);
-			}
-		}
-
-		public void mouseUp(MouseEvent e) {
-			/* do nothing */
-		}
-	}
-
-	/**
 	 * Goal button menu SelectionListener. It gets the clicked value : 0=reset,
 	 * 1=admitted(proved), 2=unproved. Then it gets the menu's button and the
 	 * corresponding goal, and prover. Then PO is extracted and changed.
@@ -161,16 +119,16 @@ public class ProverView extends ViewPart {
 
 				MenuItem o = (MenuItem) e.widget;
 				int a = (Integer) o.getData("admit");
-				Button p = (Button) o.getParent().getData();
-				int goal = (Integer)p.getData("goal");
-				int prover = (Integer)p.getData("prover");
+				TreeItem p = viewer.getSelection()[0]; // gets the selected item
+				Integer goal = (Integer)p.getData("goal");
+				if (goal != null) {
 
-				PO op = (PO) FileInfos.goals.get(goal - 1);
-				op.setState(prover, a);
+					PO po = FileInfos.goals.get(goal - 1);
+					po.setState(0, a);
 
-				updateElementAt(goal, prover);
-				makeStats(prover);
-
+					updateElementAt(goal);
+					makeStats(0);
+				}
 			} catch (Exception exception) {
 				TraceView.print(MessageType.ERROR,
 						"ProverView.MenuItemSelectionListener.widgetSelected() :\n"
@@ -180,56 +138,6 @@ public class ProverView extends ViewPart {
 
 		public void widgetDefaultSelected(SelectionEvent e) {
 
-		}
-	}
-
-	/**
-	 * Function button's SelectionListener : defines the action which is
-	 * executed when the user clicks on a function's button. The prover of the
-	 * corresponding column is executed on all goals included into the function.
-	 */
-	private class FunctionSelectionListener implements SelectionListener {
-
-		public void widgetSelected(SelectionEvent e) {
-
-			// get the button and, the prover number and the function name
-			Button b = (Button) e.widget;
-			String function = (String) b.getData("function");
-
-			int fgoal = 1; // the first goal to prove
-			int lgoal = 1; // the last goal to prove
-
-			// for all functions :
-			for (int c = 0; c < FileInfos.functions.size(); c++) {
-				Function f = (Function) FileInfos.functions.get(c);
-				// if we have found our function
-				if (f.getName().equals(function)) {
-					// the first goal is ok
-					// we've just to increment the last goal number
-					lgoal = fgoal;
-					lgoal += f.getPOList().size();
-					lgoal--;
-					break;
-				} else { // if it's a previous function
-					fgoal += f.getPOList().size(); // we increment the first
-													// goal number to prove
-				}
-			}
-
-			// we've to make now the set of goals to prove
-			ArrayList<Integer> array = new ArrayList<Integer>();
-			boolean all = !FileInfos.showOnlyUnprovedGoals;
-			for (int i = fgoal - 1; i < lgoal; i++) {
-				if (!((PO) FileInfos.goals.get(i)).isProved() || all) {
-					array.add(i);
-				}
-			}
-			// prove now the set of sets of goals
-			prove(array, !FileInfos.showOnlyUnprovedGoals);
-
-		}
-		public void widgetDefaultSelected(SelectionEvent e) {
-			// do nothing
 		}
 	}
 
@@ -325,8 +233,8 @@ public class ProverView extends ViewPart {
 
 		FileInfos.initColumns();
 		makeColumns();
-		initView();
 		makeActions();
+		initView();
 		contributeToActionBars();
 	}
 
@@ -369,6 +277,32 @@ public class ProverView extends ViewPart {
 		square.setResizable(false); // can't resize this column
 		square.addSelectionListener(new ProverSelectionListener());
 	}
+	
+	public void updateKillAction () {
+
+		if (threads.size() == 0) {
+			kill.setEnabled(false);
+			reset.setEnabled(true);
+		} else {
+			kill.setEnabled(true);
+			reset.setEnabled(false);			
+		}
+	}
+	
+	private void updateActions (boolean haveGoals) {
+		if (haveGoals) {
+			runAllProvers.setEnabled(true);
+			mark.setEnabled(true);
+			runAssistant.setEnabled(true);
+			save.setEnabled(true);			
+		} else {
+			runAllProvers.setEnabled(false);
+			mark.setEnabled(false);
+			runAssistant.setEnabled(false);
+			save.setEnabled(false);
+		}
+		updateKillAction ();
+	}
 
 	/**
 	 * Creates all goal and function items and all buttons (1 by provers for all
@@ -384,7 +318,7 @@ public class ProverView extends ViewPart {
 		if (!showAllLines) {
 			nb_lines_to_show = store.getInt(IConstants.PREF_SHOW_NB_LINES);
 		} else {
-			nb_lines_to_show = FileInfos.functions.size() + FileInfos.numberOfGoals + 1;
+			nb_lines_to_show = FileInfos.functions.size() + FileInfos.numberOfGoals() + 1;
 		}
 		// gets all goals and functions which have to be created in the view
 		// and save them in array lists goalsInView and functionsInView
@@ -393,7 +327,12 @@ public class ProverView extends ViewPart {
 		// gets here the number of goals to create
 		int numberOfGoals = goalsInView.size();
 		int numberOfFunctions = functionsInView.size();
-
+		
+		if (numberOfGoals > 0)
+			updateActions(true);
+		else
+			updateActions(false);
+		
 		// initializes buttons boards
 		TreeEditor[][] goalsEditor = new TreeEditor[numberOfGoals][proversNumber];
 		TreeEditor[][] functionsEditor = new TreeEditor[numberOfFunctions][proversNumber];
@@ -418,8 +357,8 @@ public class ProverView extends ViewPart {
 			int g = goalsInView.get(n) - 1;
 			int l = 0;
 
-			currentFunction = ((PO) FileInfos.goals.get(g)).getFname(); // name
-			current = ((PO) FileInfos.goals.get(g)).getFnum(); // num
+			currentFunction = FileInfos.goals.get(g).getFname();
+			current = FileInfos.goals.get(g).getFnum();
 
 			// if we meet this function for the first time
 			if ((func == null) || (current != current_M)) {
@@ -430,7 +369,7 @@ public class ProverView extends ViewPart {
 				func.setText(currentFunction);
 				func.setData("function", Integer.valueOf(l));
 
-				Function f = (Function) FileInfos.functions.get(l);
+				Function f = FileInfos.functions.get(l);
 
 				if (f.isProved()) {
 					func.setImage(1, IConstants.IMAGE_BALL_GREEN);
@@ -444,7 +383,7 @@ public class ProverView extends ViewPart {
 
 			// new PO item
 			TreeItem item = new TreeItem(func, SWT.NONE);
-			PO po = (PO) FileInfos.goals.get(g);
+			PO po = FileInfos.goals.get(g);
 			item.setForeground(IConstants.COLOR_GREY);
 			item.setText(0, po.getTitle());
 			item.setImage(1, IConstants.IMAGE_BALL_WHITE);
@@ -465,13 +404,13 @@ public class ProverView extends ViewPart {
 		if (viewer.getItemCount() > 0) {
 			for (int r = 0; r < numberOfFunctions; r++) {
 				int a = functionsInView.get(r);
-				Function fct = (Function) FileInfos.functions.get(a - 1);
+				Function fct = FileInfos.functions.get(a - 1);
 				if (fct.isItem_expanded()) {
 					TreeItem tit = viewer.getItem(r);
 					tit.setExpanded(true);
 					for (int y = 0; y < tit.getItemCount(); y++) {
 						int z = (Integer)tit.getItem(y).getData("goal");
-						PO e = (PO) FileInfos.goals.get(z - 1);
+						PO e = FileInfos.goals.get(z - 1);
 						if (e.isItem_expanded()) {
 							tit.getItem(y).setExpanded(true);
 						}
@@ -649,7 +588,7 @@ public class ProverView extends ViewPart {
 					y[p].setExpanded(false);
 				}
 				for (int p = 0; p < FileInfos.functions.size(); p++) {
-					((Function) FileInfos.functions.get(p)).collapse();
+					FileInfos.functions.get(p).collapse();
 				}
 				updateView();
 			}
@@ -667,7 +606,7 @@ public class ProverView extends ViewPart {
 					y[p].setExpanded(true);
 				}
 				for (int p = 0; p < FileInfos.functions.size(); p++) {
-					((Function) FileInfos.functions.get(p)).expand();
+					FileInfos.functions.get(p).expand();
 				}
 
 				updateView();
@@ -739,30 +678,30 @@ public class ProverView extends ViewPart {
 	 *            the prover number
 	 * @throws SWTException
 	 */
-	public synchronized void updateElementAt(int goalNum, int proverNum) throws SWTException {
-		updateButtons (goalNum);
+	public synchronized void updateElementAt(int goalNum) throws SWTException {
+		updateState (goalNum);
 
 		
-		int state = ((PO) FileInfos.goals.get(goalNum - 1)).getState(0);
+		int state = FileInfos.goals.get(goalNum - 1).getState(0);
 
 		switch (state) {
 		case 0:
-			updateFButton(goalNum, false);
+			updateFunctionState(goalNum, false);
 			break;
 		case 1:
-			updateFButton(goalNum, true);
+			updateFunctionState(goalNum, true);
 			break;
 		case 2:
-			updateFButton(goalNum, false);
+			updateFunctionState(goalNum, false);
 			break;
 		case 3:
-			updateFButton(goalNum, false);
+			updateFunctionState(goalNum, false);
 			break;
 		case 4:
-			updateFButton(goalNum, false);
+			updateFunctionState(goalNum, false);
 			break;
 		case 5:
-			updateFButton(goalNum, false);
+			updateFunctionState(goalNum, false);
 			break;
 		default:
 			break;
@@ -791,14 +730,13 @@ public class ProverView extends ViewPart {
 	 *            the prover number
 	 * @throws SWTException
 	 */
-	private void updateButtons(int goalNumber)
+	private void updateState(int goalNumber)
 			throws SWTException {
 
 		TreeItem gitem = getGoalItem(goalNumber);
 
 		// is the goal proved?
-		boolean is_proved = ((PO) FileInfos.goals.get(goalNumber - 1))
-				.isProved();
+		boolean is_proved = FileInfos.goals.get(goalNumber - 1).isProved();
 
 		if (is_proved) { // if the goal has been proved
 			if (gitem != null) {
@@ -808,8 +746,29 @@ public class ProverView extends ViewPart {
 
 		if (!is_proved) { // if the goal hasn't been proved
 				if (gitem != null) {
-					if (!is_proved)
-						gitem.setImage(1, IConstants.IMAGE_BALL_RED);
+					if (!is_proved) {
+						int errno = FileInfos.goals.get(goalNumber - 1).getState(0);
+
+						Image image;
+						switch(errno) {
+							case 2:
+								image = IConstants.IMAGE_INVALID;
+								break;
+							case 3:
+								image = IConstants.IMAGE_UNKNOWN;
+								break;
+							case 4:
+								image = IConstants.IMAGE_TIME_OUT;
+								break;
+							case 5:
+								image = IConstants.IMAGE_FAILURE;
+								break;
+							default:
+								image = IConstants.IMAGE_BALL_RED;
+								break;
+						}
+						gitem.setImage(1, image);
+					}
 			}
 		}
 	}
@@ -827,7 +786,7 @@ public class ProverView extends ViewPart {
 	 *            otherwise.
 	 * @throws SWTException
 	 */
-	private void updateFButton(int goalNumber, boolean proved)
+	private void updateFunctionState (int goalNumber, boolean proved)
 			throws SWTException {
 
 		int g = getFunctionRow(goalNumber);
@@ -835,9 +794,9 @@ public class ProverView extends ViewPart {
 		if (g < 0)
 			return;
 
-		PO po = (PO) FileInfos.goals.get(goalNumber - 1);
+		PO po = FileInfos.goals.get(goalNumber - 1);
 		int fnum = po.getFnum();
-		Function fc = (Function) FileInfos.functions.get(fnum - 1);
+		Function fc = FileInfos.functions.get(fnum - 1);
 
 		TreeItem fitem = viewer.getItem(g);
 		if (fitem != null) {
@@ -897,7 +856,7 @@ public class ProverView extends ViewPart {
 		int line = -1; // function's row in the ArrayList functionsInView
 		int frow = -1; // the function number (cf. FileInfos.functions[])
 
-		PO po = (PO) FileInfos.goals.get(goalNum - 1);
+		PO po = FileInfos.goals.get(goalNum - 1);
 		frow = po.getFnum();
 
 		if (frow == 0) {
@@ -913,24 +872,6 @@ public class ProverView extends ViewPart {
 			}
 		}
 		return line;
-	}
-
-	/**
-	 * Enables/Disables the button to stop provers
-	 * 
-	 * @param b
-	 *            : true => enables the button ; false => disables the button
-	 */
-	public synchronized void killButton(boolean b) {
-
-		if (b) {
-			kill.setEnabled(true);
-			reset.setEnabled(false);
-		} else {
-			if (threads.size() == 0)
-				kill.setEnabled(false);
-			reset.setEnabled(true);
-		}
 	}
 
 	/**
@@ -1005,8 +946,7 @@ public class ProverView extends ViewPart {
 			// this is a function
 			showGoalInViewer(-1, null); // clean the PO Viewer
 			funcNum = (Integer)m.getData("function");
-			message = ((Function) FileInfos.functions.get(funcNum))
-					.getBehavior();
+			message = FileInfos.functions.get(funcNum).getBehavior();
 			image = IConstants.IMAGE_FUNC;
 		}
 
@@ -1061,7 +1001,7 @@ public class ProverView extends ViewPart {
 	private void proveAll (boolean begin_first, boolean all) {
 
 		int first = 1;
-		int last = FileInfos.numberOfGoals;
+		int last = FileInfos.numberOfGoals();
 		if (last == 0) { // empty set
 			return;
 		}
@@ -1247,7 +1187,7 @@ public class ProverView extends ViewPart {
 	private void getGoals(int lastLine) {
 		int i = 0;
 		int g = 1;
-		int max = FileInfos.numberOfGoals;
+		int max = FileInfos.numberOfGoals();
 		int numberOfFunctions;
 
 		goalsInView.clear();
@@ -1290,7 +1230,7 @@ public class ProverView extends ViewPart {
 					g++;
 					if (g > max)
 						break;
-					po = (PO) FileInfos.goals.get(g - 1);
+					po = FileInfos.goals.get(g - 1);
 				}
 			}
 		}
@@ -1304,7 +1244,7 @@ public class ProverView extends ViewPart {
 	 */
 	public synchronized void makeStats(int proverNum) {
 
-		int goalNum = FileInfos.numberOfGoals;
+		int goalNum = FileInfos.numberOfGoals();
 
 		int state;
 		int proved = 0;
@@ -1316,7 +1256,7 @@ public class ProverView extends ViewPart {
 		// gets the number of proved, invalid, unknown, timeout and
 		// failure results for all goals for this prover
 		for (int g = 1; g <= goalNum; g++) {
-			state = ((PO) FileInfos.goals.get(g - 1)).getState(proverNum);
+			state = FileInfos.goals.get(g - 1).getState(proverNum);
 			switch (state) {
 			case 1:
 				proved++;
@@ -1348,7 +1288,7 @@ public class ProverView extends ViewPart {
 		// puts this results into a FileInfos field and
 		// into the column tooltip text
 		FileInfos.proverStats[proverNum] = stats;
-		viewer.getColumn(proverNum + 2).setToolTipText(stats);
+		viewer.getColumn(1).setToolTipText(stats);
 	}
 
 }

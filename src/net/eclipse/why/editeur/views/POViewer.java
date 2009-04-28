@@ -9,8 +9,10 @@ import net.eclipse.why.editeur.IConstants;
 import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -86,25 +88,21 @@ public class POViewer extends ViewPart {
 	 */
 	private void makeActions() {
 		
-		seeContext = new Action() {
+		seeContext = new Action("CTX", IAction.AS_RADIO_BUTTON) {
 			public void run() {
-				seePO.setChecked(false); //uncheck the opposite button
-				POMode = false; //put the PO mode to false
 				try {
+					POMode = false;
 					inputCTX(); //prompt the context
 				} catch (IOException e) {
 					TraceView.print(MessageType.ERROR, "POViewer, can't display the CTX file : " + e);
 				}
 			}
 		};
-		seeContext.setChecked(false); //PO viewer by default
-		seeContext.setText("CTX");
 		
-		seePO = new Action() {
+		seePO = new Action("PO", IAction.AS_RADIO_BUTTON) {
 			public void run() {
-				seeContext.setChecked(false); //uncheck the opposite button
-				POMode = true; //put the PO mode to true
 				try {
+					POMode = true;
 					inputPO(); //prompt the selected goal
 				} catch (IOException e) {
 					TraceView.print(MessageType.ERROR, "POViewer, can't display the PO file : " + e);
@@ -112,7 +110,6 @@ public class POViewer extends ViewPart {
 			}
 		};
 		seePO.setChecked(true); //PO viewer by default
-		seePO.setText("PO");
 	}
 	
 	

@@ -49,8 +49,6 @@ public class InfosMaker {
 			addNewPO(f.getPath(), m);
 			m++;
 		}
-		FileInfos.numberOfGoals = m - 1;
-
 		return true;
 	}
 
@@ -217,8 +215,7 @@ public class InfosMaker {
 				f++;
 				mprim = 1;
 			} else {
-				mprim = ((PO) FileInfos.goals.get(FileInfos.goals.size() - 1))
-						.getNum_in_f() + 1;
+				mprim = FileInfos.goals.get(FileInfos.goals.size() - 1).getNum_in_f() + 1;
 			}
 
 			// we continue to read the file and we record what is interesting
@@ -279,7 +276,7 @@ public class InfosMaker {
 			po.initStates();
 			po.setXplFile(path);
 			FileInfos.goals.add(po);
-			((Function) FileInfos.functions.get(FileInfos.functions.size() - 1)).addPO(po);
+			FileInfos.functions.get(FileInfos.functions.size() - 1).addPO(po);
 
 			in.close();
 			fr.close();

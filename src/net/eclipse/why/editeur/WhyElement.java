@@ -139,8 +139,7 @@ public class WhyElement {
 	public static void setGoalMode() {
 		is_goal = true;
 		style = new StyleRange();
-		style.background = new Color(null, 0, 0, 0);
-		style.foreground = new Color(null, 255, 255, 255);
+		style.foreground = new Color(null, 0, 0, 0);
 		style.fontStyle = SWT.BOLD;
 		style.start = chars;
 	}
@@ -154,8 +153,8 @@ public class WhyElement {
 		recordStyleRange();
 		if(is_goal) {
 			style = new StyleRange();
-			style.foreground = new Color(null, 255, 255, 255);
-			style.background = new Color(null, 200, 0, 30);
+			style.foreground = new Color(null, 0, 0, 0);
+			style.fontStyle = SWT.ITALIC;
 			chars = content.length();
 			style.start = chars;
 			style.length = 2;

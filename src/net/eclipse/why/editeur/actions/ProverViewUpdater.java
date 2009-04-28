@@ -38,7 +38,7 @@ public class ProverViewUpdater {
 	 */
 	public synchronized void update(int goal, int prover) throws PartInitException {
 		try {
-			view.updateElementAt(goal, prover);
+			view.updateElementAt(goal);
 		} catch(SWTException swt) {
 			TraceView.print(MessageType.ERROR, "ProverView.updateElementAt(" + goal + "," + prover + ") : " + swt);
 		}
@@ -65,7 +65,7 @@ public class ProverViewUpdater {
 	 * @throws PartInitException
 	 */
 	public synchronized void activateKillProcessButton(boolean activate) throws PartInitException {
-		view.killButton(activate);
+		view.updateKillAction();
 	}
 	
 	/**

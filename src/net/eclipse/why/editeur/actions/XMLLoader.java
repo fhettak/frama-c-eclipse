@@ -20,16 +20,9 @@ import net.eclipse.why.editeur.views.TraceView;
 import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.xml.sax.Attributes;
@@ -39,7 +32,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 
 /**
- * Giving a XML file, load all usefull parameters and
+ * Giving a XML file, load all useful parameters and
  * create a past configuration of Prover View we wanted
  * to save
  * 
@@ -49,9 +42,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class XMLLoader extends DefaultHandler {
 
 	ProverView view;
-	private Shell shell;
 	private File file;
-	private FileFieldEditor feditor;
 	
 	private boolean inFunction = false;
 	private boolean inLemma = false;
@@ -77,8 +68,34 @@ public class XMLLoader extends DefaultHandler {
 	 * select the XML file to load.
 	 */
 	public void load() {
-		createShell();
-		openShell();
+
+		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+		String title = "Choose dump file to load proof obligations";
+		FileDialog dlg = new FileDialog(shell, SWT.OPEN);
+		dlg.setText(title);
+		String path = null;
+		while (path == null) {
+			path = dlg.open();
+
+			if (path == null)
+				return;
+			file = new File(path);
+			if (file.exists()) {
+				if (!file.canRead()) {
+					final String msg = "Could not read the file " + path;
+					MessageDialog.openError(shell, title, msg);
+					path = null;
+				}
+			} else {
+				final String msg = "File " + path + " doesn't exist";
+				MessageDialog.openError(shell, title, msg);
+				path = null;
+			}
+		}
+		if (path != null) {
+			parse();
+		}
+		return;
 	}
 	
 	/**
@@ -129,7 +146,6 @@ public class XMLLoader extends DefaultHandler {
 	 */
 	public void endDocument ()
 	throws SAXException {
-		FileInfos.numberOfGoals = FileInfos.goals.size();
 		Context.make();
 		WhyElement.saveAsContext();
 	}
@@ -278,29 +294,6 @@ public class XMLLoader extends DefaultHandler {
 				getPO().changeStateValue(rpnum, stnum);
 			}
 		}
-//		else if(qualifiedName.equals("tag")) { //						<tag>
-//			inTag = true;
-//			boolean valued = false;
-//			boolean checked = false;
-//			for(int q=0; q<attrs.getLength(); q++) {
-//				String a = attrs.getValue(q);
-//				if(attrs.getQName(q).equals("key")) {
-//					if(a.equals("eclipse:item_checked")) {
-//						valued = true;
-//					}
-//				} else if (attrs.getQName(q).equals("value")) {
-//					if(a.equals("true")) checked = true;
-//					else if(!a.equals("false")) valued = false;
-//				}
-//			}
-//			if(inGoal && valued && checked) {
-//				//getPO().check();
-//				//func.increase_po_checked();
-//				getPO().prove();
-//				func.increase_po_proved();
-//			}
-//		}
-
 	}
 	
 	/**
@@ -332,95 +325,5 @@ public class XMLLoader extends DefaultHandler {
 	private PO getPO() {
 		if(inGoal) return po;
 		else return null;
-	}
-	
-	/**
-	 * Creates a Shell object to select the XML loading file.
-	 */
-	private void createShell() {
-		
-		Color bgcolor = new Color(null, 255, 240, 206);
-		this.shell = new Shell(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.TITLE | SWT.PRIMARY_MODAL);
-		
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.marginHeight = 10;
-        gridLayout.marginWidth = 10;
-        gridLayout.verticalSpacing = 10;
-        shell.setLayout(gridLayout);
-        shell.setText("Load Proving Informations into View");
-        shell.setBackground(bgcolor);
-        
-        
-        Composite main = new Composite(shell, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 3;
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = 600;
-        main.setLayout(layout);
-        main.setLayoutData(data);
-        main.setBackground(bgcolor);
-        
-        
-        feditor = new FileFieldEditor("fedit", "XML File :", main);
-        feditor.getLabelControl(main).setBackground(bgcolor);
-        feditor.setFileExtensions(new String[]{"*.xml"});
-        feditor.getTextControl(main).setForeground(new Color(null, 230, 0, 0));
-        feditor.getLabelControl(main).setForeground(new Color(null, 230, 0, 0));
-        
-        
-        
-        Composite buttonComposite = new Composite(shell, SWT.NONE);
-        layout = new GridLayout();
-        layout.numColumns = 2;
-        buttonComposite.setLayout(layout);
-        buttonComposite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-        buttonComposite.setBackground(bgcolor);
-        
-        Button button1 = new Button(buttonComposite, SWT.NONE);
-        button1.setText("Ok");
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.widthHint = 80;
-        button1.setLayoutData(gridData);
-        button1.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				String l = feditor.getStringValue();
-				if(l==null || l.trim().equals("")) {
-					MessageDialog.openError(new Shell(), "Parameter Error", "You didn't choose a valid XML file");
-					return;
-				} else if(!l.trim().endsWith(".xml")) {
-					MessageDialog.openError(new Shell(), "Parameter Error", "You didn't choose a valid XML file");
-					return;
-				}
-				file = new File(l);
-				shell.close();
-				parse();
-			}
-		});
-        
-        Button button2 = new Button(buttonComposite, SWT.NONE);
-        button2.setText("Cancel");
-        gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.widthHint = 80;
-        button2.setLayoutData(gridData);
-        button2.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				shell.close();
-			}
-		});
-        
-        
-        shell.pack();
-	}
-	
-	/**
-	 * Opens the Shell object created by the createShell() function.
-	 * 
-	 * @see createShell()
-	 */
-	private void openShell() {
-		shell.open();
-		shell.layout();
 	}
 }

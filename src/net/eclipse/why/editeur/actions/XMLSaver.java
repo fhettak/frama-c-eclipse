@@ -15,17 +15,9 @@ import net.eclipse.why.editeur.views.TraceView;
 import net.eclipse.why.editeur.views.TraceView.MessageType;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
@@ -34,13 +26,11 @@ import org.eclipse.ui.PlatformUI;
  * Makes a XML formated file(XMLFF) that contains all necessary informations(NI)
  * to save the set of states(SOS) of goals into a proving work project(GIAPWP).
  * 
- * @author Aurélien Oudot
+ * @author A. Oudot
  */
 public class XMLSaver {
 
 	
-	private static StringFieldEditor name;
-	private static DirectoryFieldEditor directory;
 	private static Shell shell;
 	private static FileWriter writer;
 	
@@ -48,16 +38,7 @@ public class XMLSaver {
 	private static String wspace;
 	
 	/**
-	 * Creates and opens the main window which allows users to
-	 * define the name and the path of the new XML file.
-	 */
-	public static void save() {
-		createShell();
-		openShell();
-	}
-	
-	/**
-	 * Inits the 'wspace' variable which represents an indentation
+	 * Initializes the 'whitespace' variable which represents an indentation
 	 * in XML created file.
 	 */
 	private static void initSpace() {
@@ -65,28 +46,28 @@ public class XMLSaver {
 	}
 	
 	/**
-	 * Increments the 'wspace' variable of 3 whitespaces
+	 * Increments the 'whitespace' variable of 3 spaces
 	 */
 	private static void indent3() {
 		wspace += "   ";
 	}
 	
 	/**
-	 * Increments the 'wspace' variable of 6 whitespaces
+	 * Increments the 'whitespace' variable of 6 spaces
 	 */
 	private static void indent6() {
 		wspace += "      ";
 	}
 	
 	/**
-	 * Decrements the 'wspace' variable of 3 whitespaces
+	 * Decrements the 'whitespace' variable of 3 spaces
 	 */
 	private static void unindent3() {
 		wspace = wspace.substring(3);
 	}
 	
 	/**
-	 * Decrements the 'wspace' variable of 6 whitespaces
+	 * Decrements the 'whitespace' variable of 6 spaces
 	 */
 	private static void unindent6() {
 		wspace = wspace.substring(6);
@@ -97,109 +78,39 @@ public class XMLSaver {
 	 * Creates a new Shell object used to define the name and the path of
 	 * the new XML file.
 	 */
-	private static void createShell() {
+	public static void save() {
 		
-		
-		Color bgcolor = new Color(null, 200, 255, 225);
-		
-		shell = new Shell(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.TITLE | SWT.PRIMARY_MODAL);
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.marginHeight = 10;
-        gridLayout.marginWidth = 10;
-        gridLayout.verticalSpacing = 10;
-        shell.setLayout(gridLayout);
-        shell.setText("Save results into a XML file");
-        shell.setBackground(bgcolor);
-        
-        
-        Composite main = new Composite(shell, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 3;
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = 600;
-        main.setLayout(layout);
-        main.setLayoutData(data);
-        main.setBackground(bgcolor);
-        
-        
-        name = new StringFieldEditor("name", "Name :", main);
-        name.fillIntoGrid(main, 3);
-        name.getLabelControl(main).setBackground(bgcolor);
-        name.getTextControl(main).setForeground(new Color(null, 0, 0, 230));
-        name.getLabelControl(main).setForeground(new Color(null, 0, 0, 230));
-        
-        
-        directory = new DirectoryFieldEditor("dir", "Directory :", main);
-        directory.getLabelControl(main).setBackground(bgcolor);
-        directory.getTextControl(main).setForeground(new Color(null, 0, 0, 230));
-        directory.getLabelControl(main).setForeground(new Color(null, 0, 0, 230));
-        
-        
-        Composite buttonComposite = new Composite(shell, SWT.NONE);
-        layout = new GridLayout();
-        layout.numColumns = 2;
-        buttonComposite.setLayout(layout);
-        buttonComposite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-        buttonComposite.setBackground(bgcolor);
-        
-        Button button1 = new Button(buttonComposite, SWT.NONE);
-        button1.setText("Ok");
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.widthHint = 80;
-        button1.setLayoutData(gridData);
-        button1.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+		shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+		String title = "Choose file name for dump file";
+		FileDialog dlg = new FileDialog (shell, SWT.SAVE);
+		dlg.setFileName(createName());
+		dlg.setText(title);
+		String path= null;
+		while(path == null) {
+			path= dlg.open();
+			if (path == null)
+				return;
 
-				String l1 = name.getStringValue();
-				String l2 = directory.getStringValue();
-				
-				if(l1==null || l1.trim().equals("")) {
-					MessageDialog.openError(new Shell(), "Parameter Error", "The name can't be null");
-					return;
+			File file= new File(path);		
+			if (file.exists()) {
+				if (!file.canWrite()) {
+					final String msg= "File " + path + " is read only";
+					MessageDialog.openError(shell, title, msg);
+					path= null;
 				}
-				
-				if(l2==null || l2.trim().equals("")) {
-					MessageDialog.openError(new Shell(), "Parameter Error", "The directory can't be null");
-					return;
+				else {
+					final String msg= "File " + path + " already exists. Overwrite it?";
+					if (!MessageDialog.openQuestion(shell, title, msg)) {
+						path = null;
+					}
 				}
-				
-				makeFile();
-				shell.close();
 			}
-		});
-        
-        Button button2 = new Button(buttonComposite, SWT.NONE);
-        button2.setText("Cancel");
-        gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.widthHint = 80;
-        button2.setLayoutData(gridData);
-        button2.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				shell.close();
-			}
-		});
-        
-        
-        shell.pack();
+		}
+		if (path != null) {
+			makeFile(path);
+		}
+		return;
 	}
-	
-	
-	/**
-	 * Opens the new Shell object.
-	 * 
-	 * @see createShell()
-	 */
-	private static void openShell() {
-		String nmn = createName();
-		name.setStringValue(nmn);
-		String rtl = FileInfos.getRoot();
-		directory.setStringValue(rtl);
-		shell.open();
-		shell.layout();
-	}
-	
 	
 	/**
 	 * Method which creates a default name for the new XML file.
@@ -217,15 +128,10 @@ public class XMLSaver {
 	/**
 	 * Method which makes the new XML file.
 	 */
-	private static void makeFile() {
-		
-		String nm = name.getStringValue();
-		if(!nm.trim().endsWith(".xml")) {
-			nm += nm + ".xml";
-		}
+	private static void makeFile(String path) {
 		
 		try {
-			File file = new File(directory.getStringValue() + nm);
+			File file = new File(path);
 			writer = new FileWriter(file);
 			IPreferenceStore store = EditeurWHY.getDefault().getPreferenceStore();
 			boolean used = store.getBoolean(IConstants.PREF_DTD_USING_FILE);
@@ -243,8 +149,7 @@ public class XMLSaver {
 			writer.write("\n" + wspace + "context=\"" + FileInfos.getRoot() + "why" + File.separator + FileInfos.getName() + "_ctx.why\">");
 			unindent6();
 			indent3();
-			for(int f=0; f<FileInfos.functions.size(); f++) {
-				Function function = (Function)FileInfos.functions.get(f);
+			for(Function function : FileInfos.functions) {
 				boolean lemma = function.isLemma();
 				if(lemma)
 					writer.write("\n" + wspace + "<lemma ");

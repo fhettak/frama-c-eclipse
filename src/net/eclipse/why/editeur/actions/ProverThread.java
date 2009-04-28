@@ -96,7 +96,7 @@ public class ProverThread extends Thread implements Runnable {
 			
 			goal = (int)goals.get(0);
 			
-			PO po = ((PO)FileInfos.goals.get(goal-1));
+			PO po = FileInfos.goals.get(goal-1);
 			boolean prv = FileInfos.status[proverTmp].equals("prover");
 			
 			boolean remove = false; //do we have to remove the goal from the set

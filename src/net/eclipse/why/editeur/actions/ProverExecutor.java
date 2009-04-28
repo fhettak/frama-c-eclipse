@@ -69,7 +69,7 @@ public class ProverExecutor {
 		}
 
 		if (result > 0) {
-			PO op = (PO) FileInfos.goals.get(goalNumber - 1);
+			PO op = FileInfos.goals.get(goalNumber - 1);
 			op.setState(proverNumber, result);
 		}
 
